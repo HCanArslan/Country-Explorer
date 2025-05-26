@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { spawn } = require('child_process')
+import { spawn } from 'child_process'
 
 // Clear console for clean start
 console.clear()
@@ -28,10 +28,16 @@ const build = spawn('npx', ['nuxt', 'build'], {
 build.on('close', (code) => {
   if (code === 0) {
     console.log('\n✅ \x1b[32m\x1b[1mBuild completed successfully!\x1b[0m')
-    console.log('📁 Output: .output/ directory')
-    console.log('🚀 Ready for deployment to Vercel, Netlify, or any Node.js host')
-    console.log('🎯 Perfect for showcasing production-ready Vue.js applications\n')
+    console.log('🚀 Ready for production deployment')
+    console.log('📊 Optimized for performance and SEO\n')
   } else {
-    console.log(`\n❌ Build failed with code ${code}`)
+    console.log(`\n❌ Build failed with exit code ${code}`)
   }
+})
+
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\n\n🛑 Build process interrupted')
+  build.kill('SIGINT')
+  process.exit(0)
 })

@@ -10,6 +10,7 @@ export default defineNuxtConfig({
   // Optimize development experience
   nitro: {
     logLevel: 1, // Reduce nitro logging
+    preset: 'vercel', // Optimize for Vercel deployment
   },
 
   // Suppress common warnings
@@ -48,7 +49,7 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode',
   },
 
-  // Optimize for interview demo
+  // Optimize for production
   ssr: true, // Enable SSR for better SEO
   experimental: {
     payloadExtraction: false, // Faster development builds

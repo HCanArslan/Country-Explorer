@@ -1,14 +1,14 @@
 # 🌍 Country Explorer
 
-A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. Perfect for showcasing modern Vue.js development skills and best practices.
+A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
 
-![Country Explorer Demo](https://img.shields.io/badge/Demo-Live-brightgreen)
 ![Nuxt 3](https://img.shields.io/badge/Nuxt-3.17.4-00DC82)
 ![Vue 3](https://img.shields.io/badge/Vue-3.5.14-4FC08D)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4)
+![Tests](https://img.shields.io/badge/Tests-25%2B-brightgreen)
 
-## ✨ Key Features
+## ✨ Features
 
 ### 🔍 **Smart Search & Filtering**
 - Real-time search with type-ahead functionality
@@ -77,8 +77,8 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd country-explorer
+git clone https://github.com/HCanArslan/majority-app.git
+cd majority-app
 
 # Install dependencies
 npm install
@@ -106,34 +106,40 @@ npm run test:coverage # Generate coverage reports
 npm run test:watch   # Development mode with auto-reload
 
 # Demo
-npm run demo         # Show demo guide and features
+npm run demo         # Show application features
 ```
 
-## 📖 Demo Flow
+## 📖 Application Features
 
-Perfect for showcasing during interviews or presentations:
+The application provides a comprehensive country exploration experience:
 
-1. **Search Demo**: Type "United" → See real-time filtering
-2. **Country Selection**: Select USA → View detailed information
-3. **Theme Toggle**: Switch dark/light mode → Smooth transitions
-4. **Responsive Test**: Resize browser → Adaptive layout
-5. **Caching Demo**: Refresh page → Instant load from cache
+1. **Search Functionality**: Type to filter countries in real-time
+2. **Country Details**: View detailed information including population, capital, currencies, and languages
+3. **Theme Support**: Toggle between dark and light modes
+4. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
+5. **Performance**: Intelligent caching ensures fast subsequent loads
 
 ## 🏗️ Project Structure
 
 ```
-country-explorer/
+majority-app/
 ├── assets/
 │   └── css/
 │       └── main.css              # Global styles and Tailwind imports
+├── components/
+│   ├── AppHeader.vue             # Header with dark mode toggle
+│   ├── CountrySearch.vue         # Search input with dropdown
+│   ├── CountryDetails.vue        # Country information display
+│   ├── EmptyState.vue            # Empty state component
+│   └── AppFooter.vue             # Footer with API attribution
 ├── pages/
-│   └── index.vue                 # Main application page
+│   └── index.vue                 # Main application page (now using components)
 ├── stores/
 │   └── countryStore.ts           # Pinia store with caching logic
 ├── scripts/
 │   ├── dev.js                    # Enhanced development script
 │   ├── build.js                  # Production build script
-│   └── demo.js                   # Demo guide and features
+│   └── demo.js                   # Application features guide
 ├── tests/
 │   ├── setup.ts                  # Test configuration
 │   ├── helpers/
@@ -171,7 +177,25 @@ country-explorer/
 - ✅ User interaction flows
 - ✅ Performance optimization
 
-## 🎯 Interview Highlights
+## 🏗️ Component Architecture
+
+The application follows Vue.js best practices with a modular component structure:
+
+### **Component Breakdown**
+- **AppHeader.vue** (44 lines) - Header with title and dark mode toggle
+- **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, and status
+- **CountryDetails.vue** (232 lines) - Country information display with loading states
+- **EmptyState.vue** (30 lines) - Empty state when no country is selected
+- **AppFooter.vue** (24 lines) - Footer with API attribution
+
+### **Benefits of Component Structure**
+- **Maintainability**: Each component has a single responsibility
+- **Reusability**: Components can be easily reused across the application
+- **Testability**: Individual components can be tested in isolation
+- **Readability**: Main page is now clean and focused on orchestration
+- **Scalability**: Easy to add new features or modify existing ones
+
+## 🎯 Technical Highlights
 
 This project demonstrates expertise in:
 
@@ -308,6 +332,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ using modern Vue.js development practices**
-
-*Perfect for showcasing technical expertise in interviews and portfolio presentations.*
+**Built with modern Vue.js development practices and attention to performance, testing, and user experience.**

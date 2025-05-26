@@ -1,0 +1,32 @@
+# Development files
+scripts/
+tests/
+*.test.ts
+*.test.js
+vitest.config.ts
+
+# Documentation
+README.md
+TESTING_SUMMARY.md
+
+# Development dependencies
+.nuxt/
+node_modules/
+.output/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage reports
+coverage/ 

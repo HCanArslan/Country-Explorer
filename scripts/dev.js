@@ -6,7 +6,7 @@ import { spawn } from 'child_process'
 console.clear()
 
 // Professional startup message
-console.log('\n🌍 \x1b[36m\x1b[1mCountry Explorer\x1b[0m - Interview Demo')
+console.log('\n🌍 \x1b[36m\x1b[1mCountry Explorer\x1b[0m - Development Server')
 console.log('\x1b[2m─────────────────────────────────────────\x1b[0m')
 console.log('🚀 Starting development server...')
 console.log('📱 Responsive design with dark/light mode')
@@ -34,7 +34,7 @@ nuxt.on('close', (code) => {
 // Handle graceful shutdown
 process.on('SIGINT', () => {
   console.log('\n\n👋 Thanks for exploring Country Explorer!')
-  console.log('🌟 Perfect for showcasing modern Vue.js development skills\n')
+  console.log('🌟 A modern Vue.js application with comprehensive features\n')
   nuxt.kill('SIGINT')
   process.exit(0)
 })

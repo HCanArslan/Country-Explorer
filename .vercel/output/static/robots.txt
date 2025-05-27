@@ -1,8 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /api/
-Disallow: /_nuxt/
-Disallow: /.nuxt/
-
-# Sitemap
-Sitemap: https://majority-app.vercel.app/sitemap.xml

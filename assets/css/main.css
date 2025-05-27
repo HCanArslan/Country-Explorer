@@ -1,5 +1,203 @@
 @import 'tailwindcss';
 
+/* Dark mode */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+/* Force dark mode styles to be applied with higher specificity */
+html.dark,
+html.dark body,
+.dark {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: rgb(17 24 39) !important; /* Force dark background */
+  color: rgb(243 244 246) !important; /* Force light text */
+}
+
+/* Force light mode styles */
+html.light,
+html.light body,
+.light {
+  background-color: rgb(249 250 251) !important; /* Force light background */
+  color: rgb(17 24 39) !important; /* Force dark text */
+}
+
+/* Ensure all elements inherit dark mode properly */
+html.dark *,
+.dark * {
+  border-color: inherit;
+}
+
+/* Force page background colors with high specificity */
+html.dark .min-h-screen,
+.dark .min-h-screen {
+  background-color: rgb(17 24 39) !important; /* gray-900 */
+}
+
+html.light .min-h-screen,
+.light .min-h-screen {
+  background-color: rgb(249 250 251) !important; /* gray-50 */
+}
+
+/* Force header backgrounds */
+html.dark header,
+.dark header {
+  background-color: rgba(31, 41, 55, 0.8) !important; /* gray-800/80 */
+  border-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+html.light header,
+.light header {
+  background-color: rgba(255, 255, 255, 0.8) !important; /* white/80 */
+  border-color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* Force text colors */
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark p,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark p {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+html.light h1,
+html.light h2,
+html.light h3,
+html.light p,
+.light h1,
+.light h2,
+.light h3,
+.light p {
+  color: rgb(17 24 39) !important; /* gray-900 */
+}
+
+/* Force input and card backgrounds */
+html.dark input,
+html.dark .bg-white,
+.dark input,
+.dark .bg-white {
+  background-color: rgb(31 41 55) !important; /* gray-800 */
+  color: rgb(243 244 246) !important; /* white */
+  border-color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+html.light input,
+html.light .bg-gray-800,
+.light input,
+.light .bg-gray-800 {
+  background-color: rgb(255 255 255) !important; /* white */
+  color: rgb(17 24 39) !important; /* gray-900 */
+  border-color: rgb(229 231 235) !important; /* gray-200 */
+}
+
+/* Country Details specific dark mode styles */
+html.dark .bg-gradient-to-br.from-blue-50,
+.dark .bg-gradient-to-br.from-blue-50 {
+  background: linear-gradient(to bottom right, rgba(30, 58, 138, 0.2), rgba(30, 64, 175, 0.2)) !important;
+}
+
+html.dark .bg-gradient-to-br.from-green-50,
+.dark .bg-gradient-to-br.from-green-50 {
+  background: linear-gradient(to bottom right, rgba(20, 83, 45, 0.2), rgba(22, 101, 52, 0.2)) !important;
+}
+
+html.dark .bg-gradient-to-br.from-yellow-50,
+.dark .bg-gradient-to-br.from-yellow-50 {
+  background: linear-gradient(to bottom right, rgba(146, 64, 14, 0.2), rgba(161, 98, 7, 0.2)) !important;
+}
+
+html.dark .bg-gradient-to-br.from-purple-50,
+.dark .bg-gradient-to-br.from-purple-50 {
+  background: linear-gradient(to bottom right, rgba(88, 28, 135, 0.2), rgba(107, 33, 168, 0.2)) !important;
+}
+
+/* Force text colors in country detail cards */
+html.dark .text-blue-700,
+.dark .text-blue-700 {
+  color: rgb(147 197 253) !important; /* blue-300 */
+}
+
+html.dark .text-green-700,
+.dark .text-green-700 {
+  color: rgb(134 239 172) !important; /* green-300 */
+}
+
+html.dark .text-yellow-700,
+.dark .text-yellow-700 {
+  color: rgb(253 224 71) !important; /* yellow-300 */
+}
+
+html.dark .text-purple-700,
+.dark .text-purple-700 {
+  color: rgb(196 181 253) !important; /* purple-300 */
+}
+
+/* Force ALL text-gray-900 elements to be white in dark mode */
+html.dark .text-gray-900,
+.dark .text-gray-900,
+html.dark [class*="text-gray-900"],
+.dark [class*="text-gray-900"] {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+/* Force all span elements in country details to be white in dark mode */
+html.dark span.block,
+html.dark span.inline-block,
+.dark span.block,
+.dark span.inline-block {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+/* Force all text in country detail cards */
+html.dark .bg-gradient-to-br span,
+html.dark .bg-gradient-to-br p,
+.dark .bg-gradient-to-br span,
+.dark .bg-gradient-to-br p {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+/* Specific targeting for currency and language text */
+html.dark [class*="from-yellow-50"] span,
+html.dark [class*="from-purple-50"] span,
+.dark [class*="from-yellow-50"] span,
+.dark [class*="from-purple-50"] span {
+  color: rgb(243 244 246) !important; /* white */
+}
+
+/* Force border colors for country detail cards */
+html.dark .border-blue-200,
+.dark .border-blue-200 {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+html.dark .border-green-200,
+.dark .border-green-200 {
+  border-color: rgba(34, 197, 94, 0.5) !important;
+}
+
+html.dark .border-yellow-200,
+.dark .border-yellow-200 {
+  border-color: rgba(234, 179, 8, 0.5) !important;
+}
+
+html.dark .border-purple-200,
+.dark .border-purple-200 {
+  border-color: rgba(168, 85, 247, 0.5) !important;
+}
+
 /* Custom utility classes for compatibility */
 @layer utilities {
   .bg-gray-100 {
@@ -53,7 +251,7 @@
   }
 
   /* Ensure dropdown is always visible */
-  [data-headlessui-state="open"] {
+  [data-headlessui-state='open'] {
     z-index: 9999 !important;
   }
 
@@ -94,4 +292,120 @@
   .dark .dropdown-option:hover {
     background: linear-gradient(135deg, rgb(55 65 81), rgb(75 85 99));
   }
+
+  /* Screen reader only classes for accessibility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Enhanced focus styles for better accessibility */
+  *:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  button:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* High contrast focus for dark mode */
+  .dark *:focus {
+    outline-color: #60a5fa;
+  }
+
+  .bg-gray-750 {
+    background-color: rgb(55 65 81); /* Between gray-700 and gray-800 */
+  }
+  
+  .dark .hover\:bg-gray-750:hover {
+    background-color: rgb(55 65 81);
+  }
+}
+
+/* Enhanced dark mode support for country details */
+html.dark .bg-white {
+  background-color: #1f2937 !important;
+}
+
+html.dark .border-gray-100 {
+  border-color: #374151 !important;
+}
+
+html.dark .hover\:bg-gray-50:hover {
+  background-color: #374151 !important;
+}
+
+/* Ensure text visibility in dark mode */
+html.dark .text-gray-900 {
+  color: #f3f4f6 !important;
+}
+
+html.dark .text-gray-600 {
+  color: #9ca3af !important;
+}
+
+/* Force all text elements with text-gray-900 to be white in dark mode */
+html.dark [class*="text-gray-900"] {
+  color: #f3f4f6 !important;
+}
+
+/* Force all span elements in country details to be white in dark mode */
+html.dark span.block,
+html.dark span.inline-block {
+  color: #f3f4f6 !important;
+}
+
+/* Country Details specific styles */
+html.dark .bg-white {
+  background-color: #1f2937 !important;
+}
+
+html.light .bg-gray-800 {
+  background-color: #ffffff !important;
+}
+
+/* Card backgrounds */
+html.dark [class*="bg-white"] {
+  background-color: #1f2937 !important;
+}
+
+html.dark [class*="border-gray-200"] {
+  border-color: #374151 !important;
+}
+
+html.light [class*="border-gray-700"] {
+  border-color: #e5e7eb !important;
+}
+
+/* Ring colors for flag */
+html.dark [class*="ring-gray-200"] {
+  --tw-ring-color: #4b5563 !important;
+}
+
+/* Loading skeleton backgrounds */
+html.dark [class*="bg-gray-200"] {
+  background-color: #374151 !important;
 }

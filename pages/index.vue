@@ -1,10 +1,18 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Skip Navigation Link -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    >
+      Skip to main content
+    </a>
+
     <!-- Header Component -->
     <AppHeader />
 
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+    <main id="main-content" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
       <!-- Search Component -->
       <CountrySearch
         :country-options="countryOptions"
@@ -13,7 +21,6 @@
         :error-message="errorMessage"
         @country-selected="handleCountrySelected"
         @retry="fetchCountries"
-        @test-select="handleTestSelect"
         @refresh="refreshCountries"
       />
 
@@ -34,9 +41,6 @@
         :country-options="countryOptions"
       />
     </main>
-
-    <!-- Footer Component -->
-    <AppFooter />
   </div>
 </template>
 
@@ -82,10 +86,6 @@ function handleCountrySelected(countryCode: string) {
   selectedCountry.value = countryCode
 }
 
-function handleTestSelect(countryCode: string) {
-  selectedCountry.value = countryCode
-}
-
 // Watchers
 watch(selectedCountry, async (newCountry) => {
   countryStore.selectedCountry = newCountry
@@ -111,6 +111,15 @@ onMounted(async () => {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+}
+
+/* Enhanced dark mode transitions */
+html {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Optimize image loading and transforms */

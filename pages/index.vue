@@ -86,7 +86,9 @@
                 class="h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
               >
                 <ClientOnly>
-                  <ErrorBoundary fallback-message="Failed to load the interactive map. This might be due to a network issue or browser compatibility.">
+                  <ErrorBoundary
+                    fallback-message="Failed to load the interactive map. This might be due to a network issue or browser compatibility."
+                  >
                     <InteractiveMap
                       height="100%"
                       :initial-zoom="2"

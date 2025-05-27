@@ -1,12 +1,17 @@
 <template>
   <ClientOnly>
-    <div class="w-full h-full relative">
-      <!-- Loading State for GeoJSON -->
+    <!-- Fixed container with explicit dimensions to prevent layout shift -->
+    <div class="w-full relative" :style="{ height: props.height }">
+      <!-- Loading State for GeoJSON with skeleton -->
       <div
         v-if="isLoadingGeoJSON"
         class="absolute inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50"
       >
         <div class="text-center">
+          <!-- Skeleton map placeholder -->
+          <div
+            class="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mb-4"
+          ></div>
           <div
             class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
           ></div>
@@ -37,7 +42,7 @@
         />
       </div>
 
-      <!-- Map Container -->
+      <!-- Map Container with fixed dimensions -->
       <div v-else class="w-full h-full">
         <LMap
           ref="mapRef"
@@ -45,9 +50,10 @@
           :center="mapCenter"
           :options="mapOptions"
           class="w-full h-full rounded-lg"
+          :style="{ minHeight: props.height }"
           @ready="onMapReady"
         >
-          <!-- Base Tile Layer -->
+          <!-- Base Tile Layer with optimized loading -->
           <LTileLayer
             :url="tileLayerUrl"
             :attribution="tileLayerAttribution"
@@ -63,7 +69,7 @@
           />
         </LMap>
 
-        <!-- Country Details Panel -->
+        <!-- Country Details Panel with fixed positioning -->
         <Transition
           enter-active-class="transition-all duration-300 ease-out"
           enter-from-class="opacity-0 transform translate-x-full"
@@ -75,6 +81,7 @@
           <div
             v-if="selectedCountryData || isLoadingCountryData"
             class="absolute top-2 right-2 w-72 max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 z-[1000]"
+            style="will-change: transform"
           >
             <!-- Loading State for Country Data -->
             <div v-if="isLoadingCountryData" class="p-4">
@@ -111,6 +118,8 @@
                     :alt="`${selectedCountryData.name?.common} flag`"
                     class="w-6 h-4 object-cover rounded shadow-sm"
                     loading="lazy"
+                    width="24"
+                    height="16"
                   />
                   <h3 class="text-base font-bold text-gray-900 dark:text-white">
                     {{ selectedCountryData.name?.common }}

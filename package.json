@@ -21,6 +21,8 @@
     "build:clean": "cross-env NODE_OPTIONS=\"--no-deprecation\" nuxt build",
     "build:verbose": "nuxt build",
     "build:analyze": "cross-env ANALYZE=true nuxt build",
+    "build:optimized": "node scripts/optimize-build.js",
+    "build:production": "cross-env NODE_ENV=production node scripts/optimize-build.js",
     "dev": "node scripts/dev.js",
     "dev:clean": "cross-env NODE_OPTIONS=\"--no-deprecation\" nuxt dev",
     "generate": "cross-env NODE_OPTIONS=\"--no-deprecation\" nuxt generate",
@@ -34,7 +36,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "nuxt typecheck",
-    "demo": "node scripts/demo.js"
+    "demo": "node scripts/demo.js",
+    "performance:audit": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
+    "performance:analyze": "npx nuxi analyze"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.4.1",

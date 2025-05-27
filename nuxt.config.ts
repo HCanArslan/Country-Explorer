@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@pinia/nuxt',
     '@nuxt/ui',
-    // '@nuxt/image', // Temporarily disabled due to IPX initialization error
     '@nuxt/test-utils',
     '@nuxtjs/tailwindcss',
   ],
@@ -23,7 +22,7 @@ export default defineNuxtConfig({
     },
   },
 
-  // HTML head configuration
+  // HTML head configuration with performance optimizations
   app: {
     head: {
       htmlAttrs: {
@@ -42,8 +41,18 @@ export default defineNuxtConfig({
         { property: 'og:title', content: 'Country Explorer' },
         { property: 'og:description', content: 'Discover countries around the world' },
         { property: 'og:type', content: 'website' },
+        // Performance hints
+        { 'http-equiv': 'x-dns-prefetch-control', content: 'on' },
       ],
       link: [
+        // DNS prefetch for external resources
+        { rel: 'dns-prefetch', href: '//restcountries.com' },
+        { rel: 'dns-prefetch', href: '//tile.openstreetmap.org' },
+        { rel: 'dns-prefetch', href: '//majority.imgix.net' },
+        // Preconnect for critical resources
+        { rel: 'preconnect', href: 'https://restcountries.com', crossorigin: 'anonymous' },
+        { rel: 'preconnect', href: 'https://tile.openstreetmap.org', crossorigin: 'anonymous' },
+        // Optimized favicons
         {
           rel: 'icon',
           type: 'image/png',
@@ -72,20 +81,27 @@ export default defineNuxtConfig({
     },
   },
 
-  // Production optimizations for Vercel
+  // Enhanced Nitro configuration for performance
   nitro: {
-    preset: 'vercel',
-    compressPublicAssets: true,
+    preset: process.env.VERCEL ? 'vercel' : 'node-server',
+    compressPublicAssets: {
+      gzip: true,
+      brotli: true,
+    },
     minify: true,
+    // Prerender critical pages
+    prerender: {
+      routes: ['/'],
+      crawlLinks: false,
+    },
   },
 
-  // Build optimizations - Fixed for @nuxt/ui compatibility
+  // Enhanced build optimizations
   build: {
     transpile: [
       '@iconify/utils',
       '@vueuse/core',
       '@vue/shared',
-      '@nuxt/ui',
       'consola',
       'defu',
       'h3',
@@ -93,24 +109,39 @@ export default defineNuxtConfig({
       'ofetch',
       'nitropack',
       '@vue-leaflet/vue-leaflet',
-      // 'sharp', // Removed since @nuxt/image is disabled
+      'leaflet',
     ],
   },
 
-  // Vite optimizations for production - Simplified for better compatibility
+  // Enhanced Vite optimizations
   vite: {
     build: {
       sourcemap: false,
       minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-leaflet': ['leaflet', '@vue-leaflet/vue-leaflet'],
+            'vendor-utils': ['@vueuse/core', 'pinia'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
-      include: ['@vueuse/core', '@vue/shared'],
+      include: ['@vueuse/core', '@vue/shared', 'leaflet', '@vue-leaflet/vue-leaflet'],
     },
     define: {
       global: 'globalThis',
     },
     ssr: {
-      noExternal: ['@vue-leaflet/vue-leaflet'],
+      noExternal: ['@vue-leaflet/vue-leaflet', 'leaflet'],
     },
   },
 
@@ -133,29 +164,26 @@ export default defineNuxtConfig({
     storageKey: 'nuxt-color-mode',
   },
 
-  // Production settings
+  // Enhanced production settings
   ssr: true,
   experimental: {
     payloadExtraction: false,
   },
 
-  // Image optimization - Temporarily disabled due to IPX error
-  // image: {
-  //   quality: 80,
-  //   format: ['webp', 'png'],
-  //   screens: {
-  //     xs: 320,
-  //     sm: 640,
-  //     md: 768,
-  //     lg: 1024,
-  //     xl: 1280,
-  //     xxl: 1536,
-  //   },
-  //   // Disable IPX to fix the "Cannot access 'Fj' before initialization" error
-  //   provider: 'none',
-  //   // Alternative: use static provider for better compatibility
-  //   // provider: 'static',
-  // },
+  // Route rules for performance optimization
+  routeRules: {
+    // Homepage pre-rendered at build time
+    '/': { prerender: true },
+    // Country pages cached for 1 hour
+    '/country/**': {
+      headers: { 'Cache-Control': 's-maxage=3600' },
+      prerender: false,
+    },
+    // API routes cached
+    '/api/**': {
+      headers: { 'Cache-Control': 's-maxage=60' },
+    },
+  },
 
   // Fix for @nuxt/ui module import issues
   imports: {

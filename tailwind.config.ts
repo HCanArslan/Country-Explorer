@@ -6,6 +6,8 @@ export default {
     './layouts/**/*.vue',
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
+    './composables/**/*.{js,ts}',
+    './stores/**/*.{js,ts}',
     './app.vue',
     './error.vue',
   ],
@@ -66,4 +68,11 @@ export default {
     },
   },
   plugins: [],
+  // Performance optimizations - simplified to avoid conflicts
+  corePlugins: {
+    // Only disable plugins that are definitely not used
+    container: false,
+    float: false,
+    clear: false,
+  },
 } satisfies Config

@@ -1,5 +1,6 @@
 <template>
   <header
+    role="banner"
     class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm"
   >
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -19,10 +20,10 @@
         <UButton
           :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
           size="lg"
-          class="shrink-0"
-          :ui="{ rounded: 'rounded-full' }"
-          color="gray"
+          class="shrink-0 rounded-full transition-all duration-300 hover:scale-110 active:scale-95"
+          color="neutral"
           variant="ghost"
+          :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
           @click="toggleColorMode"
         />
       </div>
@@ -31,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+// Use Nuxt UI's color mode composable
 const colorMode = useColorMode()
 
 // Computed
@@ -38,6 +40,27 @@ const isDark = computed(() => colorMode.value === 'dark')
 
 // Methods
 function toggleColorMode() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  const newMode = colorMode.value === 'dark' ? 'light' : 'dark'
+  colorMode.preference = newMode
+
+  // Force immediate update of HTML classes
+  if (import.meta.client) {
+    const html = document.documentElement
+    const body = document.body
+
+    // Remove all existing classes
+    html.classList.remove('light', 'dark')
+    body.classList.remove('light', 'dark')
+
+    // Add the new mode class immediately
+    html.classList.add(newMode)
+    body.classList.add(newMode)
+
+    // Set color scheme
+    html.style.colorScheme = newMode
+
+    // Force a repaint
+    void html.offsetHeight
+  }
 }
 </script>

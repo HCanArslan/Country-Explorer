@@ -23,21 +23,25 @@ tests/
 ## 🚀 Running Tests
 
 ### Run all tests once
+
 ```bash
 npm run test:run
 ```
 
 ### Run tests in watch mode (for development)
+
 ```bash
 npm run test:watch
 ```
 
 ### Run tests with coverage report
+
 ```bash
 npm run test:coverage
 ```
 
 ### Run tests interactively
+
 ```bash
 npm test
 ```
@@ -47,6 +51,7 @@ npm test
 The country store tests cover:
 
 ### ✅ **fetchCountries** Function
+
 - ✅ Successful API response handling
 - ✅ Loading state management
 - ✅ Network error handling
@@ -56,6 +61,7 @@ The country store tests cover:
 - ✅ State updates verification
 
 ### ✅ **fetchCountryDetail** Function
+
 - ✅ Successful API response handling
 - ✅ Loading detail state management
 - ✅ Network error handling
@@ -65,31 +71,37 @@ The country store tests cover:
 - ✅ State updates verification
 
 ### ✅ **Error State Management**
+
 - ✅ Error message clearing on new requests
 - ✅ Proper error state transitions
 
 ### ✅ **Initial State**
+
 - ✅ Correct default values for all state properties
 
 ## 🔧 Mock Strategy
 
 ### API Mocking
+
 - Uses Vitest's `vi.mocked()` to mock the global `fetch` function
 - Provides realistic API response structures
 - Tests both success and failure scenarios
 
 ### State Management
+
 - Fresh Pinia instance for each test
 - Proper cleanup between tests
 - Isolated test environments
 
 ### Console Mocking
+
 - Console methods are mocked to reduce test noise
 - Maintains clean test output
 
 ## 📝 Test Examples
 
 ### Testing Successful API Call
+
 ```typescript
 it('should fetch countries successfully and update state', async () => {
   const mockFetch = vi.mocked(global.fetch)
@@ -107,6 +119,7 @@ it('should fetch countries successfully and update state', async () => {
 ```
 
 ### Testing Error Handling
+
 ```typescript
 it('should handle network errors correctly', async () => {
   const mockFetch = vi.mocked(global.fetch)
@@ -123,12 +136,13 @@ it('should handle network errors correctly', async () => {
 ```
 
 ### Testing Loading States
+
 ```typescript
 it('should set loading state correctly during fetch', async () => {
   // Test loading state during async operation
   const fetchPromise = store.fetchCountries()
   expect(store.isLoading).toBe(true)
-  
+
   await fetchPromise
   expect(store.isLoading).toBe(false)
 })
@@ -148,11 +162,13 @@ it('should set loading state correctly during fetch', async () => {
 To debug failing tests:
 
 1. **Run specific test file**:
+
    ```bash
    npx vitest run tests/stores/countryStore.test.ts
    ```
 
 2. **Run specific test**:
+
    ```bash
    npx vitest run -t "should fetch countries successfully"
    ```
@@ -171,4 +187,4 @@ When adding new tests:
 3. Ensure proper cleanup with `beforeEach` hooks
 4. Test both success and failure scenarios
 5. Verify state changes and side effects
-6. Add appropriate TypeScript types 
+6. Add appropriate TypeScript types

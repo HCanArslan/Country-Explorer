@@ -1,4 +1,4 @@
-# 🌍 Country Explorer
+# 🌍 Country Explorer 
 
 A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
 
@@ -11,30 +11,35 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 ## ✨ Features
 
 ### 🔍 **Smart Search & Filtering**
+
 - Real-time search with type-ahead functionality
 - Intelligent caching system for optimal performance
 - Searchable dropdown with country codes
 - Instant filtering with visual feedback
 
 ### 🌙 **Dark/Light Mode**
+
 - System preference detection
 - Smooth theme transitions
 - Persistent theme selection
 - Modern toggle with sun/moon icons
 
 ### 📱 **Responsive Design**
+
 - Mobile-first approach
 - Touch-friendly interfaces
 - Adaptive layouts for all screen sizes
-- Glass-morphism effects and modern UI
+- Minimalist shadows and hover effects
 
 ### ⚡ **Performance Optimized**
+
 - Intelligent caching with Pinia state management
 - Lazy loading and code splitting
 - Optimized API calls with error handling
 - Smooth animations and transitions
 
 ### 🧪 **Comprehensive Testing**
+
 - 25+ tests covering unit and integration scenarios
 - Vitest testing framework
 - Mock API responses for reliable testing
@@ -43,26 +48,31 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 ## 🛠️ Technology Stack
 
 ### **Frontend Framework**
+
 - **Nuxt 3.17.4** - Full-stack Vue framework
 - **Vue 3.5.14** - Progressive JavaScript framework
 - **TypeScript 5.8.3** - Type-safe development
 
 ### **UI & Styling**
+
 - **Tailwind CSS v4** - Utility-first CSS framework
 - **Nuxt UI v3.1.3** - Beautiful Vue components
 - **Nuxt Image** - Optimized image handling
 - **Heroicons** - Beautiful SVG icons
 
 ### **State Management**
+
 - **Pinia 3.0.2** - Intuitive state management
 - **Intelligent caching** - Optimized data fetching
 
 ### **Testing**
+
 - **Vitest 3.1.4** - Fast unit testing framework
 - **@vue/test-utils** - Vue component testing utilities
 - **Happy DOM** - Lightweight DOM simulation
 
 ### **Development Tools**
+
 - **ESLint** - Code linting and formatting
 - **Prettier** - Code formatting
 - **TypeScript** - Static type checking
@@ -70,8 +80,22 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** 18+ 
+
+- **Node.js** 18+
 - **npm** or **yarn**
+
+### 📝 Known Issues & Solutions
+
+#### Deprecation Warnings
+You may see Node.js deprecation warnings like `[DEP0155] DeprecationWarning` during builds. These are harmless warnings from dependencies using deprecated export patterns and don't affect functionality.
+
+**Solutions implemented:**
+- Custom build script that filters these warnings
+- Updated dependencies to latest versions
+- Multiple build options available:
+  - `npm run build` - Clean build (warnings filtered)
+  - `npm run build:verbose` - Full build output
+  - `npm run build:clean` - Build with all warnings suppressed
 
 ### Installation
 
@@ -131,7 +155,7 @@ majority-app/
 │   ├── CountrySearch.vue         # Search input with dropdown
 │   ├── CountryDetails.vue        # Country information display
 │   ├── EmptyState.vue            # Empty state component
-│   └── AppFooter.vue             # Footer with API attribution
+│   └── AppFooter.vue             # Footer with API attribution // removed from the page
 ├── pages/
 │   └── index.vue                 # Main application page (now using components)
 ├── stores/
@@ -157,6 +181,7 @@ majority-app/
 ## 🧪 Testing Strategy
 
 ### **Unit Tests (17 tests)**
+
 - Store state management
 - API integration logic
 - Error handling scenarios
@@ -164,6 +189,7 @@ majority-app/
 - Data transformation
 
 ### **Integration Tests (8 tests)**
+
 - Complete user journeys
 - Error recovery flows
 - Concurrent operations
@@ -171,6 +197,7 @@ majority-app/
 - Edge case handling
 
 ### **Coverage Areas**
+
 - ✅ State management patterns
 - ✅ API error handling
 - ✅ Caching mechanisms
@@ -182,6 +209,7 @@ majority-app/
 The application follows Vue.js best practices with a modular component structure:
 
 ### **Component Breakdown**
+
 - **AppHeader.vue** (44 lines) - Header with title and dark mode toggle
 - **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, and status
 - **CountryDetails.vue** (232 lines) - Country information display with loading states
@@ -189,6 +217,7 @@ The application follows Vue.js best practices with a modular component structure
 - **AppFooter.vue** (24 lines) - Footer with API attribution
 
 ### **Benefits of Component Structure**
+
 - **Maintainability**: Each component has a single responsibility
 - **Reusability**: Components can be easily reused across the application
 - **Testability**: Individual components can be tested in isolation
@@ -200,30 +229,35 @@ The application follows Vue.js best practices with a modular component structure
 This project demonstrates expertise in:
 
 ### **Modern Vue.js Development**
+
 - Composition API usage
 - Reactive state management
 - Component architecture
 - TypeScript integration
 
 ### **Performance Optimization**
+
 - Intelligent caching strategies
 - Lazy loading implementation
 - Optimized API calls
 - Smooth user interactions
 
 ### **Testing Excellence**
+
 - Comprehensive test coverage
 - Mock strategies
 - Integration testing
 - Error scenario handling
 
 ### **UI/UX Design**
+
 - Responsive design principles
 - Accessibility considerations
 - Modern design patterns
 - Smooth animations
 
 ### **Development Best Practices**
+
 - TypeScript for type safety
 - ESLint and Prettier configuration
 - Git workflow optimization
@@ -232,12 +266,14 @@ This project demonstrates expertise in:
 ## 🌐 API Integration
 
 ### **REST Countries API**
+
 - **Endpoint**: `https://restcountries.com/v3.1/all`
 - **Data**: Country names, flags, capitals, populations, currencies, languages
 - **Caching**: Intelligent client-side caching for optimal performance
 - **Error Handling**: Comprehensive error states with retry functionality
 
 ### **Data Structure**
+
 ```typescript
 interface Country {
   name: string
@@ -252,6 +288,7 @@ interface Country {
 ## 🎨 Design Features
 
 ### **Visual Elements**
+
 - Glass-morphism effects
 - Gradient backgrounds
 - Smooth hover animations
@@ -259,11 +296,13 @@ interface Country {
 - Modern card designs
 
 ### **Responsive Breakpoints**
+
 - Mobile: 320px - 768px
 - Tablet: 768px - 1024px
 - Desktop: 1024px+
 
 ### **Color Scheme**
+
 - **Primary**: Blue (#3B82F6)
 - **Secondary**: Gray (#6B7280)
 - **Success**: Green (#10B981)
@@ -273,18 +312,21 @@ interface Country {
 ## 🔧 Configuration
 
 ### **Nuxt Configuration**
+
 - SSR enabled for better SEO
 - Auto-imports for components
 - Optimized build settings
 - Development experience enhancements
 
 ### **Tailwind Configuration**
+
 - Custom color palette
 - Responsive design utilities
 - Dark mode support
 - Custom animations
 
 ### **TypeScript Configuration**
+
 - Strict type checking
 - Path aliases
 - Vue SFC support
@@ -300,11 +342,13 @@ interface Country {
 ## 🚀 Deployment
 
 ### **Build for Production**
+
 ```bash
 npm run build
 ```
 
 ### **Deployment Platforms**
+
 - **Vercel**: Zero-config deployment
 - **Netlify**: Static site hosting
 - **Node.js**: Server deployment

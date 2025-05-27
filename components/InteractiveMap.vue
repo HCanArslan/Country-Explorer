@@ -2,20 +2,23 @@
   <ClientOnly>
     <!-- Fixed container with explicit dimensions to prevent layout shift -->
     <div class="w-full relative" :style="{ height: props.height }">
-      <!-- Loading State for GeoJSON with skeleton -->
+      <!-- Mobile-optimized loading state -->
       <div
-        v-if="isLoadingGeoJSON"
+        v-if="isLoadingGeoJSON || (isMobile && !mapReady)"
         class="absolute inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50"
       >
         <div class="text-center">
-          <!-- Skeleton map placeholder -->
+          <!-- Mobile-optimized skeleton -->
           <div
-            class="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mb-4"
+            class="w-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse mb-4"
+            :style="{ height: isMobile ? '300px' : props.height }"
           ></div>
           <div
-            class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
+            class="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-2"
           ></div>
-          <p class="text-lg font-medium text-gray-600 dark:text-gray-400">Loading world map...</p>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
+            {{ isMobile ? 'Loading map...' : 'Loading world map...' }}
+          </p>
         </div>
       </div>
 
@@ -42,34 +45,68 @@
         />
       </div>
 
-      <!-- Map Container with fixed dimensions -->
+      <!-- Map Container with mobile optimizations -->
       <div v-else class="w-full h-full">
+        <!-- Mobile: Show simplified map or defer loading -->
+        <div v-if="isMobile && !userInteracted" class="w-full h-full relative">
+          <!-- Mobile placeholder with interaction prompt -->
+          <div
+            class="w-full h-full bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-800 dark:to-gray-700 rounded-lg flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 transition-colors"
+            @click="initializeMobileMap"
+          >
+            <div class="text-center p-6">
+              <div
+                class="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
+              >
+                <UIcon
+                  name="i-heroicons-globe-americas"
+                  class="w-8 h-8 text-blue-600 dark:text-blue-400"
+                />
+              </div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Interactive World Map
+              </h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Tap to load the interactive map and explore countries
+              </p>
+              <div
+                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium"
+              >
+                <UIcon name="i-heroicons-cursor-arrow-rays" class="w-4 h-4 mr-2" />
+                Load Map
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full map for desktop or after mobile interaction -->
         <LMap
+          v-else
           ref="mapRef"
           :zoom="mapZoom"
           :center="mapCenter"
           :options="mapOptions"
           class="w-full h-full rounded-lg"
-          :style="{ minHeight: props.height }"
+          :style="{ minHeight: isMobile ? '300px' : props.height }"
           @ready="onMapReady"
         >
-          <!-- Base Tile Layer with optimized loading -->
+          <!-- Mobile-optimized tile layer -->
           <LTileLayer
             :url="tileLayerUrl"
             :attribution="tileLayerAttribution"
-            :options="tileLayerOptions"
+            :options="mobileOptimizedTileOptions"
           />
 
-          <!-- Countries GeoJSON Layer -->
+          <!-- Countries GeoJSON Layer with mobile optimization -->
           <LGeoJson
-            v-if="geoJSONData"
+            v-if="geoJSONData && (!isMobile || mapReady)"
             :geojson="geoJSONData"
             :options="geoJSONOptions"
             :options-style="getCountryStyle"
           />
         </LMap>
 
-        <!-- Country Details Panel with fixed positioning -->
+        <!-- Country Details Panel with mobile optimization -->
         <Transition
           enter-active-class="transition-all duration-300 ease-out"
           enter-from-class="opacity-0 transform translate-x-full"
@@ -80,7 +117,12 @@
         >
           <div
             v-if="selectedCountryData || isLoadingCountryData"
-            class="absolute top-2 right-2 w-72 max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 z-[1000]"
+            :class="[
+              'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50',
+              isMobile
+                ? 'bottom-2 left-2 right-2 max-h-[40vh]'
+                : 'top-2 right-2 w-72 max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)]',
+            ]"
             style="will-change: transform"
           >
             <!-- Loading State for Country Data -->
@@ -99,7 +141,7 @@
             </div>
 
             <!-- Country Data Display -->
-            <div v-else-if="selectedCountryData" class="p-4">
+            <div v-else-if="selectedCountryData" class="p-4 overflow-y-auto">
               <!-- Close Button -->
               <button
                 class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -133,10 +175,10 @@
                 </p>
               </div>
 
-              <!-- Country Details -->
+              <!-- Country Details - Mobile optimized layout -->
               <div class="space-y-2">
                 <!-- Primary Info Grid -->
-                <div class="grid grid-cols-2 gap-2">
+                <div :class="isMobile ? 'space-y-2' : 'grid grid-cols-2 gap-2'">
                   <!-- Capital -->
                   <div
                     v-if="selectedCountryData.capital?.length"
@@ -310,7 +352,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, h } from 'vue'
+import { ref, onMounted, computed, h, nextTick, onUnmounted } from 'vue'
 
 // Types
 interface CountryFeature {
@@ -449,6 +491,11 @@ const isLoadingCountryData = ref(false)
 const geoJSONError = ref<string | null>(null)
 const countryDataError = ref<string | null>(null)
 
+// Mobile-specific state
+const isMobile = ref(false)
+const mapReady = ref(false)
+const userInteracted = ref(false)
+
 // Map configuration
 const mapZoom = ref(props.initialZoom)
 const mapCenter = ref<[number, number]>(props.initialCenter)
@@ -466,10 +513,18 @@ const mapOptions = {
 
 const tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const tileLayerAttribution = '© OpenStreetMap contributors'
-const tileLayerOptions = {
-  maxZoom: 18,
+
+// Mobile-optimized tile layer options
+const mobileOptimizedTileOptions = computed(() => ({
+  maxZoom: isMobile.value ? 16 : 18,
   minZoom: 1,
-}
+  tileSize: isMobile.value ? 256 : 256,
+  updateWhenZooming: !isMobile.value,
+  updateWhenIdle: isMobile.value,
+  keepBuffer: isMobile.value ? 1 : 2,
+  // Reduce quality on mobile for faster loading
+  detectRetina: !isMobile.value,
+}))
 
 // GeoJSON configuration
 const geoJSONOptions = computed(() => ({
@@ -620,6 +675,26 @@ function clearSelection() {
 
 function onMapReady() {
   console.log('Map is ready')
+  mapReady.value = true
+}
+
+// Mobile-specific functions
+function initializeMobileMap() {
+  userInteracted.value = true
+  // Small delay to ensure smooth transition
+  nextTick(() => {
+    if (mapRef.value) {
+      mapRef.value.leafletObject?.invalidateSize()
+    }
+  })
+}
+
+function detectMobile() {
+  if (import.meta.client) {
+    isMobile.value =
+      window.innerWidth < 768 ||
+      /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  }
 }
 
 // Data loading
@@ -696,7 +771,20 @@ async function loadGeoJSONData() {
 
 // Lifecycle
 onMounted(() => {
+  detectMobile()
   loadGeoJSONData()
+
+  // Listen for resize events to update mobile detection
+  if (import.meta.client) {
+    window.addEventListener('resize', detectMobile)
+  }
+})
+
+// Cleanup
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('resize', detectMobile)
+  }
 })
 
 // Expose methods for parent components

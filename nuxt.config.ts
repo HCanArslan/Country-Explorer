@@ -43,6 +43,15 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         // Performance hints
         { 'http-equiv': 'x-dns-prefetch-control', content: 'on' },
+        // Mobile-specific meta tags
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+        // Mobile viewport optimization
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
+        },
       ],
       link: [
         // DNS prefetch for external resources
@@ -77,6 +86,12 @@ export default defineNuxtConfig({
           type: 'image/x-icon',
           href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=32',
         },
+        // Mobile-critical resources
+        { rel: 'dns-prefetch', href: 'https://tile.openstreetmap.org' },
+        { rel: 'dns-prefetch', href: 'https://restcountries.com' },
+        // Mobile font optimization
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com', crossorigin: '' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
       ],
     },
   },
@@ -93,6 +108,31 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/'],
       crawlLinks: false,
+    },
+    // Mobile-specific route rules
+    routeRules: {
+      // Homepage pre-rendered at build time
+      '/': { prerender: true },
+      // Country pages cached for 1 hour
+      '/country/**': {
+        headers: { 'Cache-Control': 's-maxage=3600' },
+        prerender: false,
+      },
+      // API routes cached
+      '/api/**': {
+        cors: true,
+        headers: {
+          'Cache-Control': 's-maxage=60',
+          'cache-control': 'max-age=300, stale-while-revalidate=60',
+        },
+      },
+      // Aggressive caching for mobile assets
+      '/_nuxt/**': {
+        headers: {
+          'cache-control': 'max-age=31536000, immutable',
+          vary: 'Accept-Encoding',
+        },
+      },
     },
   },
 
@@ -122,13 +162,33 @@ export default defineNuxtConfig({
         compress: {
           drop_console: true,
           drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
+          passes: 3,
+          unsafe_arrows: true,
+          unsafe_methods: true,
         },
       },
       rollupOptions: {
         output: {
-          manualChunks: {
-            'vendor-leaflet': ['leaflet', '@vue-leaflet/vue-leaflet'],
-            'vendor-utils': ['@vueuse/core', 'pinia'],
+          manualChunks: (id) => {
+            // Critical mobile chunks
+            if (id.includes('leaflet')) {
+              return 'map-mobile'
+            }
+            if (id.includes('vue3-leaflet')) {
+              return 'map-mobile'
+            }
+
+            // Defer non-critical chunks on mobile
+            if (id.includes('node_modules')) {
+              if (id.includes('vue') || id.includes('nuxt')) {
+                return 'vendor-core'
+              }
+              if (id.includes('@nuxt/ui') || id.includes('tailwindcss')) {
+                return 'vendor-ui'
+              }
+              return 'vendor-utils'
+            }
           },
         },
       },
@@ -168,6 +228,7 @@ export default defineNuxtConfig({
   ssr: true,
   experimental: {
     payloadExtraction: false,
+    viewTransition: true,
   },
 
   // Route rules for performance optimization

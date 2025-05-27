@@ -38,7 +38,8 @@
     "typecheck": "nuxt typecheck",
     "demo": "node scripts/demo.js",
     "performance:audit": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
-    "performance:analyze": "npx nuxi analyze"
+    "performance:analyze": "npx nuxi analyze",
+    "mobile:test": "node scripts/test-mobile-performance.js"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.4.1",

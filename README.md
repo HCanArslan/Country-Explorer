@@ -18,28 +18,6 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 ![Main Page Dark Mode](./screenshots/main-page-dark.png)
 *Elegant dark theme with smooth transitions and modern aesthetics*
 
-### 🔍 Search Functionality
-![Search Functionality](./screenshots/search-functionality.png)
-*Real-time search with intelligent filtering and dropdown suggestions*
-
-### 🗺️ Interactive World Map
-![Interactive Map](./screenshots/interactive-map.png)
-*Clickable world map with country boundaries and real-time data integration*
-
-### 📄 Country Details Page - Light Mode
-![Country Details Light](./screenshots/country-details-light.png)
-*Comprehensive country information with organized sections and interactive maps*
-
-### 🌃 Country Details Page - Dark Mode
-![Country Details Dark](./screenshots/country-details-dark.png)
-*Beautiful dark mode compatibility across all detail sections*
-
-### 📱 Mobile Responsive Design
-![Mobile Design](./screenshots/mobile-responsive.png)
-*Fully responsive design optimized for mobile devices*
-
-### ⚡ Performance & Quality Metrics
-
 #### 🚀 Lighthouse Desktop Test
 ![Lighthouse Performance](./screenshots/lighthouse-desktop.png)
 *Lighthouse performance audit showing excellent scores across all metrics*
@@ -102,6 +80,10 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Smooth animations and transitions
 - **Majority Favicon**: Professional branding with optimized favicon delivery
 - Client-side only map rendering for better performance
+- **Mobile-First Performance**: Comprehensive mobile optimizations for 85+ Lighthouse score
+- **Lazy Map Loading**: Interactive map loads only on user interaction for mobile
+- **Mobile-Optimized Tiles**: Reduced quality and buffer for faster mobile rendering
+- **Progressive Enhancement**: Desktop features enhanced, mobile performance prioritized
 
 ### 🧪 **Comprehensive Testing**
 
@@ -275,6 +257,11 @@ majority-app/
 │   │   └── countryStore.test.ts  # Store unit tests
 │   └── integration/
 │       └── countryStore.integration.test.ts # Integration tests
+├── plugins/
+│   ├── performance.client.ts     # Performance monitoring and optimization
+│   └── mobile-performance.client.ts # Mobile-specific performance optimizations
+├── PERFORMANCE_OPTIMIZATIONS.md  # Comprehensive performance guide
+├── MOBILE_PERFORMANCE_OPTIMIZATIONS.md # Mobile-specific optimization guide
 ├── nuxt.config.ts                # Nuxt configuration with Majority favicon
 ├── tailwind.config.ts            # Tailwind configuration
 ├── vitest.config.ts              # Vitest configuration

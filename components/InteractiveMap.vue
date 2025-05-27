@@ -576,17 +576,152 @@ function getSelectedCountryStyle() {
 
 // Event handlers
 async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) {
-  // Try multiple possible country identifier fields
-  const isoCode =
+  // Try multiple possible country identifier fields with better mapping
+  let isoCode =
     feature.properties?.ISO_A3 ||
     feature.properties?.iso_a3 ||
     feature.properties?.ISO3 ||
     feature.properties?.iso3 ||
     feature.properties?.ADM0_A3 ||
-    feature.properties?.adm0_a3
+    feature.properties?.adm0_a3 ||
+    feature.properties?.ISO_A2 ||
+    feature.properties?.iso_a2 ||
+    feature.properties?.ISO2 ||
+    feature.properties?.iso2
+
+  // Clean up the ISO code (remove any extra characters, ensure proper format)
+  if (isoCode) {
+    isoCode = String(isoCode).trim().toUpperCase()
+
+    // Handle special cases and common mapping issues
+    const isoCodeMappings: Record<string, string> = {
+      USA: 'US',
+      GBR: 'GB',
+      FRA: 'FR',
+      DEU: 'DE',
+      ITA: 'IT',
+      ESP: 'ES',
+      CAN: 'CA',
+      AUS: 'AU',
+      JPN: 'JP',
+      CHN: 'CN',
+      IND: 'IN',
+      BRA: 'BR',
+      RUS: 'RU',
+      MEX: 'MX',
+      ZAF: 'ZA',
+      KOR: 'KR',
+      IDN: 'ID',
+      TUR: 'TR',
+      SAU: 'SA',
+      ARG: 'AR',
+      THA: 'TH',
+      EGY: 'EG',
+      NGA: 'NG',
+      VNM: 'VN',
+      PHL: 'PH',
+      MYS: 'MY',
+      SGP: 'SG',
+      CHE: 'CH',
+      AUT: 'AT',
+      BEL: 'BE',
+      NLD: 'NL',
+      SWE: 'SE',
+      NOR: 'NO',
+      DNK: 'DK',
+      FIN: 'FI',
+      POL: 'PL',
+      CZE: 'CZ',
+      HUN: 'HU',
+      PRT: 'PT',
+      GRC: 'GR',
+      IRE: 'IE',
+      NZL: 'NZ',
+      ISR: 'IL',
+      ARE: 'AE',
+      QAT: 'QA',
+      KWT: 'KW',
+      BHR: 'BH',
+      OMN: 'OM',
+      JOR: 'JO',
+      LBN: 'LB',
+      SYR: 'SY',
+      IRQ: 'IQ',
+      IRN: 'IR',
+      AFG: 'AF',
+      PAK: 'PK',
+      BGD: 'BD',
+      LKA: 'LK',
+      NPL: 'NP',
+      BTN: 'BT',
+      MMR: 'MM',
+      LAO: 'LA',
+      KHM: 'KH',
+      PRK: 'KP',
+      MNG: 'MN',
+      KAZ: 'KZ',
+      UZB: 'UZ',
+      TKM: 'TM',
+      KGZ: 'KG',
+      TJK: 'TJ',
+      AZE: 'AZ',
+      ARM: 'AM',
+      GEO: 'GE',
+      UKR: 'UA',
+      BLR: 'BY',
+      MDA: 'MD',
+      ROU: 'RO',
+      BGR: 'BG',
+      SRB: 'RS',
+      HRV: 'HR',
+      BIH: 'BA',
+      MNE: 'ME',
+      MKD: 'MK',
+      ALB: 'AL',
+      SVN: 'SI',
+      SVK: 'SK',
+      EST: 'EE',
+      LVA: 'LV',
+      LTU: 'LT',
+      CYP: 'CY',
+      MLT: 'MT',
+      LUX: 'LU',
+      MCO: 'MC',
+      AND: 'AD',
+      SMR: 'SM',
+      VAT: 'VA',
+      LIE: 'LI',
+      ISL: 'IS',
+      FRO: 'FO',
+      GRL: 'GL',
+      SJM: 'SJ',
+    }
+
+    // Use mapping if available, otherwise keep original
+    isoCode = isoCodeMappings[isoCode] || isoCode
+  }
 
   if (!isoCode) {
     console.warn('No ISO code found for country feature:', feature.properties)
+
+    // Try to use country name as fallback
+    const countryName =
+      feature.properties?.NAME ||
+      feature.properties?.name ||
+      feature.properties?.NAME_EN ||
+      feature.properties?.name_en ||
+      feature.properties?.ADMIN ||
+      feature.properties?.admin
+
+    if (countryName) {
+      console.log('Attempting to load country by name:', countryName)
+      await loadCountryDataByName(String(countryName), layer)
+      return
+    }
+
+    // Show error if no identifier found
+    selectedCountryData.value = null
+    countryDataError.value = 'Unable to identify this country'
     return
   }
 
@@ -606,9 +741,50 @@ async function loadCountryData(isoCode: string) {
   countryDataError.value = null
 
   try {
-    const response = await $fetch<CountryData[]>(
-      `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
-    )
+    // Try different API endpoints for better compatibility
+    let response: CountryData[] | null = null
+    
+    // First try with alpha code (2 or 3 letter)
+    try {
+      response = await $fetch<CountryData[]>(
+        `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
+      )
+    } catch (alphaError) {
+      console.warn(`Alpha code lookup failed for ${isoCode}:`, alphaError)
+      
+      // If 3-letter code failed, try 2-letter code
+      if (isoCode.length === 3) {
+        // Try to convert 3-letter to 2-letter using common mappings
+        const threeToTwoMapping: Record<string, string> = {
+          USA: 'US',
+          GBR: 'GB',
+          FRA: 'FR',
+          DEU: 'DE',
+          ITA: 'IT',
+          ESP: 'ES',
+          CAN: 'CA',
+          AUS: 'AU',
+          JPN: 'JP',
+          CHN: 'CN',
+          IND: 'IN',
+          BRA: 'BR',
+          RUS: 'RU',
+          MEX: 'MX',
+          ZAF: 'ZA',
+        }
+
+        const twoLetterCode = threeToTwoMapping[isoCode]
+        if (twoLetterCode) {
+          try {
+            response = await $fetch<CountryData[]>(
+              `https://restcountries.com/v3.1/alpha/${twoLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
+            )
+          } catch (twoLetterError) {
+            console.warn(`Two-letter code lookup failed for ${twoLetterCode}:`, twoLetterError)
+          }
+        }
+      }
+    }
 
     if (response && response.length > 0) {
       selectedCountryData.value = response[0]
@@ -618,7 +794,48 @@ async function loadCountryData(isoCode: string) {
     }
   } catch (error) {
     console.error('Error loading country data:', error)
-    countryDataError.value = 'Failed to load country information'
+    countryDataError.value = `Unable to load information for country code: ${isoCode}`
+    
+    // Clear selection on error
+    selectedCountryData.value = null
+    if (selectedLayer.value) {
+      selectedLayer.value.setStyle(getCountryStyle())
+      selectedLayer.value = null
+    }
+  } finally {
+    isLoadingCountryData.value = false
+  }
+}
+
+async function loadCountryDataByName(countryName: string, layer: CountryLayer) {
+  isLoadingCountryData.value = true
+  countryDataError.value = null
+
+  try {
+    // Clean up country name for search
+    const cleanName = countryName.trim().replace(/[^\w\s]/g, '').toLowerCase()
+    
+    const response = await $fetch<CountryData[]>(
+      `https://restcountries.com/v3.1/name/${encodeURIComponent(cleanName)}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3&fullText=false`,
+    )
+
+    if (response && response.length > 0) {
+      // Update selected layer styling
+      if (selectedLayer.value) {
+        selectedLayer.value.setStyle(getCountryStyle())
+      }
+      selectedLayer.value = layer
+      layer.setStyle(getSelectedCountryStyle())
+      
+      selectedCountryData.value = response[0]
+      emit('countrySelected', response[0])
+    } else {
+      throw new Error('No country data found by name')
+    }
+  } catch (error) {
+    console.error('Error loading country data by name:', error)
+    countryDataError.value = `Unable to load information for: ${countryName}`
+    selectedCountryData.value = null
   } finally {
     isLoadingCountryData.value = false
   }

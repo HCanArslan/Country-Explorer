@@ -434,14 +434,14 @@ const emit = defineEmits<{
 // Ensure Leaflet is properly loaded before Vue Leaflet components
 const ensureLeafletLoaded = async () => {
   if (!import.meta.client) return false
-  
+
   if (window.L) return true
-  
+
   try {
     await import('leaflet/dist/leaflet.css')
     const L = await import('leaflet')
     const LeafletLib = L.default || L
-    
+
     if (!LeafletLib) {
       throw new Error('Leaflet library not available')
     }
@@ -477,7 +477,7 @@ const LMap = defineAsyncComponent({
     if (!leafletReady) {
       throw new Error('Leaflet failed to initialize')
     }
-    
+
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
     if (!vueLeaflet?.LMap) {
       throw new Error('Vue Leaflet LMap component not available')
@@ -496,7 +496,7 @@ const LTileLayer = defineAsyncComponent({
     if (!leafletReady) {
       throw new Error('Leaflet failed to initialize')
     }
-    
+
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
     if (!vueLeaflet?.LTileLayer) {
       throw new Error('Vue Leaflet LTileLayer component not available')
@@ -514,7 +514,7 @@ const LGeoJson = defineAsyncComponent({
     if (!leafletReady) {
       throw new Error('Leaflet failed to initialize')
     }
-    
+
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
     if (!vueLeaflet?.LGeoJson) {
       throw new Error('Vue Leaflet LGeoJson component not available')

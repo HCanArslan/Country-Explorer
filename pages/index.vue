@@ -86,12 +86,14 @@
                 class="h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
               >
                 <ClientOnly>
-                  <InteractiveMap
-                    height="100%"
-                    :initial-zoom="2"
-                    :initial-center="[20, 0]"
-                    @country-selected="handleMapCountrySelected"
-                  />
+                  <ErrorBoundary fallback-message="Failed to load the interactive map. This might be due to a network issue or browser compatibility.">
+                    <InteractiveMap
+                      height="100%"
+                      :initial-zoom="2"
+                      :initial-center="[20, 0]"
+                      @country-selected="handleMapCountrySelected"
+                    />
+                  </ErrorBoundary>
                   <template #fallback>
                     <div
                       class="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700"

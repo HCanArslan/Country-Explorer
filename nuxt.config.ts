@@ -52,6 +52,8 @@ export default defineNuxtConfig({
           name: 'viewport',
           content: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
         },
+        // Cache busting
+        { name: 'app-version', content: `v${Date.now()}` },
       ],
       link: [
         // DNS prefetch for external resources
@@ -138,9 +140,11 @@ export default defineNuxtConfig({
           drop_console: true,
           drop_debugger: true,
           pure_funcs: ['console.log', 'console.info', 'console.debug'],
-          passes: 2,
+          passes: 1,
           unsafe_arrows: false,
           unsafe_methods: false,
+          keep_fnames: true,
+          keep_classnames: true,
         },
       },
       rollupOptions: {
@@ -172,6 +176,7 @@ export default defineNuxtConfig({
     },
     define: {
       global: 'globalThis',
+      __VUE_PROD_DEVTOOLS__: false,
     },
     ssr: {
       noExternal: [],

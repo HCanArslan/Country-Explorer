@@ -196,12 +196,14 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       include: ['@vueuse/core', '@vue/shared', 'leaflet', '@vue-leaflet/vue-leaflet'],
+      exclude: ['leaflet'],
     },
     define: {
       global: 'globalThis',
     },
     ssr: {
-      noExternal: ['@vue-leaflet/vue-leaflet', 'leaflet'],
+      noExternal: ['@vue-leaflet/vue-leaflet'],
+      external: ['leaflet'],
     },
   },
 

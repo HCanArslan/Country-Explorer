@@ -431,54 +431,71 @@ const emit = defineEmits<{
   countrySelected: [countryData: CountryData]
 }>()
 
+// Ensure Leaflet is properly loaded before Vue Leaflet components
+const ensureLeafletLoaded = async () => {
+  if (import.meta.client && !window.L) {
+    try {
+      await import('leaflet/dist/leaflet.css')
+      const L = await import('leaflet')
+      const LeafletLib = L.default || L
+
+      // Fix marker icons
+      if (LeafletLib?.Icon?.Default) {
+        try {
+          const iconRetinaUrl = await import('leaflet/dist/images/marker-icon-2x.png')
+          const iconUrl = await import('leaflet/dist/images/marker-icon.png')
+          const shadowUrl = await import('leaflet/dist/images/marker-shadow.png')
+
+          LeafletLib.Icon.Default.mergeOptions({
+            iconRetinaUrl: iconRetinaUrl.default,
+            iconUrl: iconUrl.default,
+            shadowUrl: shadowUrl.default,
+          })
+        } catch {
+          // Continue without icons - this is not critical
+        }
+      }
+
+      window.L = LeafletLib
+    } catch {
+      // Continue if Leaflet fails to load
+    }
+  }
+}
+
 // Dynamic imports for @vue-leaflet/vue-leaflet components with error handling
 const LMap = defineAsyncComponent({
   loader: async () => {
-    try {
-      const module = await import('@vue-leaflet/vue-leaflet')
-      console.log('✅ LMap loaded successfully')
-      return module.LMap
-    } catch (error) {
-      console.error('❌ Failed to load LMap:', error)
-      throw error
-    }
+    await ensureLeafletLoaded()
+    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    return vueLeaflet.LMap
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load map component'),
   loadingComponent: () => h('div', { class: 'text-gray-500 p-4' }, 'Loading map...'),
   delay: 200,
-  timeout: 10000,
+  timeout: 15000,
 })
 
 const LTileLayer = defineAsyncComponent({
   loader: async () => {
-    try {
-      const module = await import('@vue-leaflet/vue-leaflet')
-      console.log('✅ LTileLayer loaded successfully')
-      return module.LTileLayer
-    } catch (error) {
-      console.error('❌ Failed to load LTileLayer:', error)
-      throw error
-    }
+    await ensureLeafletLoaded()
+    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    return vueLeaflet.LTileLayer
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load tile layer'),
   delay: 200,
-  timeout: 10000,
+  timeout: 15000,
 })
 
 const LGeoJson = defineAsyncComponent({
   loader: async () => {
-    try {
-      const module = await import('@vue-leaflet/vue-leaflet')
-      console.log('✅ LGeoJson loaded successfully')
-      return module.LGeoJson
-    } catch (error) {
-      console.error('❌ Failed to load LGeoJson:', error)
-      throw error
-    }
+    await ensureLeafletLoaded()
+    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    return vueLeaflet.LGeoJson
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load GeoJSON layer'),
   delay: 200,
-  timeout: 10000,
+  timeout: 15000,
 })
 
 // Reactive state
@@ -573,9 +590,6 @@ function getSelectedCountryStyle() {
 
 // Event handlers
 async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) {
-  // Debug: Log all available properties
-  console.log('🔍 Country feature properties:', feature.properties)
-
   // Try multiple possible country identifier fields
   const isoCode =
     feature.properties?.ISO_A3 ||
@@ -593,10 +607,7 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
     feature.properties?.ADMIN ||
     feature.properties?.admin
 
-  console.log('🏷️ Extracted identifiers:', { isoCode, countryName })
-
   if (!isoCode && !countryName) {
-    console.warn('❌ Country feature missing both ISO code and name:', feature.properties)
     return
   }
 
@@ -619,45 +630,39 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
 
     // Try to fetch by ISO code first (most reliable)
     if (isoCode) {
-      console.log(`🌐 Fetching country data by ISO code: ${isoCode}`)
       try {
         response = await $fetch<CountryData[]>(`https://restcountries.com/v3.1/alpha/${isoCode}`)
-      } catch (isoError) {
-        console.warn(`⚠️ Failed to fetch by ISO code ${isoCode}:`, isoError)
+      } catch {
+        // Continue to try by name
       }
     }
 
     // If ISO code failed or not available, try by name
     if (!response && countryName) {
-      console.log(`🌐 Fetching country data by name: ${countryName}`)
       try {
         response = await $fetch<CountryData[]>(
           `https://restcountries.com/v3.1/name/${encodeURIComponent(String(countryName))}?fullText=true`,
         )
-      } catch (nameError) {
-        console.warn(`⚠️ Failed to fetch by name ${countryName}:`, nameError)
+      } catch {
         // Try partial name search as fallback
         try {
           response = await $fetch<CountryData[]>(
             `https://restcountries.com/v3.1/name/${encodeURIComponent(String(countryName))}`,
           )
-        } catch (partialError) {
-          console.warn(`⚠️ Failed to fetch by partial name ${countryName}:`, partialError)
+        } catch {
+          // All attempts failed
         }
       }
     }
 
     if (response && response.length > 0) {
       selectedCountryData.value = response[0]
-      console.log(`✅ Successfully loaded data for: ${response[0].name?.common}`)
-
       // Emit the country selection event to parent component
       emit('countrySelected', response[0])
     } else {
       throw new Error(`No country data found for ${isoCode || countryName}`)
     }
   } catch (error) {
-    console.error('💥 Error fetching country data:', error)
     countryDataError.value = error instanceof Error ? error.message : 'Failed to fetch country data'
   } finally {
     isLoadingCountryData.value = false
@@ -674,7 +679,6 @@ function clearSelection() {
 }
 
 function onMapReady() {
-  console.log('Map is ready')
   mapReady.value = true
 }
 
@@ -703,8 +707,6 @@ async function loadGeoJSONData() {
   geoJSONError.value = null
 
   try {
-    console.log('🌍 Loading GeoJSON data...')
-
     // Use $fetch with explicit type handling
     const rawResponse = await $fetch<string>(
       'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
@@ -713,56 +715,35 @@ async function loadGeoJSONData() {
     // Parse the JSON string
     let response: GeoJSONData | string
     if (typeof rawResponse === 'string') {
-      console.log('📝 Response is string, parsing JSON...')
       response = JSON.parse(rawResponse)
     } else {
       response = rawResponse
     }
 
-    console.log('📦 Raw response received:', {
-      type: typeof response,
-      isObject: typeof response === 'object',
-      isNull: response === null,
-      keys: response ? Object.keys(response) : [],
-    })
-
     // Detailed validation with helpful error messages
     if (!response) {
-      throw new Error('❌ No response received from server')
+      throw new Error('No response received from server')
     }
 
     if (typeof response !== 'object') {
-      throw new Error(`❌ Expected object response, got ${typeof response}`)
+      throw new Error(`Expected object response, got ${typeof response}`)
     }
 
-    console.log('🔍 Validating GeoJSON structure:', {
-      hasType: 'type' in response,
-      typeValue: response.type,
-      hasFeatures: 'features' in response,
-      featuresType: typeof response.features,
-      featuresLength: Array.isArray(response.features) ? response.features.length : 'not array',
-    })
-
     if (response.type !== 'FeatureCollection') {
-      throw new Error(`❌ Expected FeatureCollection, got: ${response.type || 'undefined'}`)
+      throw new Error(`Expected FeatureCollection, got: ${response.type || 'undefined'}`)
     }
 
     if (!Array.isArray(response.features)) {
-      throw new Error(`❌ Expected features array, got: ${typeof response.features}`)
+      throw new Error(`Expected features array, got: ${typeof response.features}`)
     }
 
     if (response.features.length === 0) {
-      throw new Error('❌ Features array is empty')
+      throw new Error('Features array is empty')
     }
 
     // Success! Assign the validated data
     geoJSONData.value = response as GeoJSONData
-    console.log('✅ GeoJSON data loaded successfully!', {
-      featuresCount: response.features.length,
-      firstFeature: response.features[0]?.properties?.NAME || 'Unknown',
-    })
   } catch (error) {
-    console.error('💥 Error loading GeoJSON data:', error)
     geoJSONError.value = error instanceof Error ? error.message : 'Failed to load map data'
   } finally {
     isLoadingGeoJSON.value = false

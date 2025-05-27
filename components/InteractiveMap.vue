@@ -23,11 +23,10 @@
           name="i-heroicons-exclamation-triangle"
           class="w-12 h-12 text-yellow-500 mx-auto mb-4"
         />
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          Map Loading Failed
-        </h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Map Loading Failed</h3>
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          The interactive map could not be loaded. This might be due to a network issue or browser compatibility.
+          The interactive map could not be loaded. This might be due to a network issue or browser
+          compatibility.
         </p>
         <UButton color="blue" variant="outline" size="sm" @click="retryMapLoad">
           Try Again
@@ -103,7 +102,10 @@
                   aria-label="Close country details"
                   @click="clearSelection"
                 >
-                  <UIcon name="i-heroicons-x-mark" class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  <UIcon
+                    name="i-heroicons-x-mark"
+                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                  />
                 </button>
               </div>
             </div>
@@ -288,7 +290,9 @@
           />
         </LMap>
         <template #fallback>
-          <div class="w-full h-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+          <div
+            class="w-full h-full bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center"
+          >
             <div class="text-center">
               <div
                 class="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
@@ -603,7 +607,7 @@ async function loadCountryData(isoCode: string) {
 
   try {
     const response = await $fetch<CountryData[]>(
-      `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`
+      `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
     )
 
     if (response && response.length > 0) {
@@ -658,7 +662,7 @@ async function loadGeoJSONData() {
   try {
     // Use a reliable GeoJSON source for world countries
     const response = await $fetch<GeoJSONData>(
-      'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
+      'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
     )
 
     if (response && response.features) {

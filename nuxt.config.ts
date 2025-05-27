@@ -39,9 +39,7 @@ export default defineNuxtConfig({
           content: 'Explore countries around the world with detailed information.',
         },
       ],
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
 

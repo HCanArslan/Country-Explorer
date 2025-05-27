@@ -22,6 +22,9 @@ const nuxt = spawn('npx', ['nuxt', 'dev'], {
     ...process.env,
     NODE_OPTIONS: '--no-deprecation --no-warnings',
     NUXT_TELEMETRY_DISABLED: '1',
+    NODE_ENV: 'development',
+    // Disable Sharp for development to avoid ES module issues
+    NUXT_IMAGE_PROVIDER: 'ipx',
   },
 })
 

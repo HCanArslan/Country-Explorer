@@ -89,11 +89,12 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 #### **Vercel Deployment Error: `ERR_MODULE_NOT_FOUND: Cannot find package 'consola'`**
 **✅ FIXED**: This error occurred when deploying to Vercel due to missing runtime dependencies.
 
-**Solution Applied:**
-- Added `consola`, `defu`, `h3`, `ufo`, `ofetch` to dependencies
-- Updated Nuxt config with proper Vercel preset
-- Added `vercel.json` configuration file
-- Configured Nitro externals for proper bundling
+**Final Solution Applied:**
+- Added `consola`, `defu`, `h3`, `ufo`, `ofetch`, `nitropack` to dependencies
+- Updated Nuxt config with dynamic preset selection (`vercel` for Vercel, `node-server` for local)
+- Added `vercel.json` with custom build command
+- Configured `noExternals: true` to force bundle all dependencies
+- Created `npm run build:vercel` script for Vercel-specific builds
 
 #### **Deprecation Warnings**
 You may see Node.js deprecation warnings like `[DEP0155] DeprecationWarning` during builds. These are harmless warnings from dependencies using deprecated export patterns and don't affect functionality.
@@ -375,10 +376,10 @@ vercel --prod
 ```
 
 **✅ Vercel Configuration Applied:**
-- Proper Nitro preset (`vercel`)
-- Required dependencies bundled (`consola`, `defu`, `h3`, etc.)
-- Optimized build configuration
-- `vercel.json` configuration file
+- Dynamic Nitro preset selection (vercel/node-server)
+- All dependencies force-bundled with `noExternals: true`
+- Custom build command: `npm run build:vercel`
+- Optimized `vercel.json` configuration
 - **Fixed**: `ERR_MODULE_NOT_FOUND` consola error
 
 #### **Netlify**

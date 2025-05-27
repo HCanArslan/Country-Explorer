@@ -77,7 +77,7 @@
               <!-- Simple Flag Container with Elegant Shadow -->
               <div class="flex justify-center">
                 <div class="relative group">
-                  <NuxtImg
+                  <img
                     :src="countryDetail.flag"
                     :alt="`${countryDetail.name} flag`"
                     class="w-24 h-16 sm:w-32 sm:h-22 lg:w-40 lg:h-28 object-cover rounded-xl shadow-md shadow-gray-300/40 dark:shadow-gray-900/60 group-hover:shadow-lg group-hover:shadow-gray-400/50 dark:group-hover:shadow-black/40 transition-all duration-300"

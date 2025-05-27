@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@pinia/nuxt',
     '@nuxt/ui',
-    '@nuxt/image', // Always load @nuxt/image
+    // '@nuxt/image', // Temporarily disabled due to IPX initialization error
     '@nuxt/test-utils',
     '@nuxtjs/tailwindcss',
   ],
@@ -98,7 +98,7 @@ export default defineNuxtConfig({
       'ofetch',
       'nitropack',
       '@vue-leaflet/vue-leaflet',
-      'sharp', // Always transpile sharp for consistency
+      // 'sharp', // Removed since @nuxt/image is disabled
     ],
   },
 
@@ -183,20 +183,23 @@ export default defineNuxtConfig({
     payloadExtraction: false,
   },
 
-  // Image optimization - Always enabled for consistency
-  image: {
-    quality: 80,
-    format: ['webp', 'png'],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
-    },
-    provider: 'ipx',
-  },
+  // Image optimization - Temporarily disabled due to IPX error
+  // image: {
+  //   quality: 80,
+  //   format: ['webp', 'png'],
+  //   screens: {
+  //     xs: 320,
+  //     sm: 640,
+  //     md: 768,
+  //     lg: 1024,
+  //     xl: 1280,
+  //     xxl: 1536,
+  //   },
+  //   // Disable IPX to fix the "Cannot access 'Fj' before initialization" error
+  //   provider: 'none',
+  //   // Alternative: use static provider for better compatibility
+  //   // provider: 'static',
+  // },
 
   // Fix for @nuxt/ui module import issues
   imports: {

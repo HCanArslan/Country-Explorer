@@ -28,15 +28,15 @@ export default defineNuxtPlugin(() => {
     })
     document.head.appendChild(fontLink)
 
-    // Performance observer for monitoring
+    // Performance observer for monitoring (silent)
     if ('PerformanceObserver' in window) {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'largest-contentful-paint') {
-            console.log('LCP:', entry.startTime)
+            // LCP monitoring without console output
           }
           if (entry.entryType === 'layout-shift' && !entry.hadRecentInput) {
-            console.log('CLS:', entry.value)
+            // CLS monitoring without console output
           }
         }
       })

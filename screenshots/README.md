@@ -42,23 +42,17 @@ Please add the following screenshots to showcase the application features:
 - **Recommended size**: 375x812 (iPhone) or similar mobile resolution
 - **Focus**: Mobile-first responsive design and touch-friendly interface
 
-### 7. `lighthouse-performance.png`
-- **Description**: Lighthouse performance audit results
-- **Content**: Full Lighthouse performance report showing all metrics
+### 7. `lighthouse-desktop.png`
+- **Description**: Lighthouse desktop audit results
+- **Content**: Full Lighthouse desktop report showing all metrics (Performance, Accessibility, Best Practices, SEO)
 - **Recommended size**: 1920x1080 or 1440x900
-- **Focus**: Performance scores (FCP, LCP, CLS, TTI) and overall performance rating
+- **Focus**: Desktop performance scores and overall quality metrics
 
-### 8. `lighthouse-accessibility.png`
-- **Description**: Lighthouse accessibility audit results
-- **Content**: Accessibility score and detailed breakdown
+### 8. `lighthouse-mobile.png`
+- **Description**: Lighthouse mobile audit results
+- **Content**: Full Lighthouse mobile report showing all metrics (Performance, Accessibility, Best Practices, SEO)
 - **Recommended size**: 1920x1080 or 1440x900
-- **Focus**: Perfect accessibility score and compliance details
-
-### 9. `lighthouse-seo.png`
-- **Description**: Lighthouse SEO audit results
-- **Content**: SEO score and optimization recommendations
-- **Recommended size**: 1920x1080 or 1440x900
-- **Focus**: SEO best practices and search engine optimization metrics
+- **Focus**: Mobile performance scores and responsive design quality
 
 ## Screenshot Guidelines
 

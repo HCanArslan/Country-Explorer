@@ -228,9 +228,8 @@ majority-app/
 │   ├── country-details-light.png # Country details page light mode
 │   ├── country-details-dark.png  # Country details page dark mode
 │   ├── mobile-responsive.png     # Mobile responsive design
-│   ├── lighthouse-performance.png # Lighthouse performance audit results
-│   ├── lighthouse-accessibility.png # Lighthouse accessibility audit results
-│   └── lighthouse-seo.png        # Lighthouse SEO audit results
+│   ├── lighthouse-desktop.png    # Lighthouse desktop audit results
+│   └── lighthouse-mobile.png     # Lighthouse mobile audit results
 ├── stores/
 │   └── countryStore.ts           # Pinia store with caching logic
 ├── types/

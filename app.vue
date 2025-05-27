@@ -4,7 +4,7 @@
 
 <script setup>
 // Set meta tags for better mobile experience
-// Updated for interview deployment
+
 useHead({
   meta: [
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },

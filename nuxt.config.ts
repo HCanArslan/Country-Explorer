@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// Force deployment update - ensuring all optimizations are live
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: false }, // Disable in production

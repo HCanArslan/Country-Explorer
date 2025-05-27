@@ -1,0 +1,743 @@
+<template>
+  <ClientOnly>
+    <div class="w-full h-full relative">
+      <!-- Loading State for GeoJSON -->
+      <div
+        v-if="isLoadingGeoJSON"
+        class="absolute inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50"
+      >
+        <div class="text-center">
+          <div
+            class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
+          ></div>
+          <p class="text-lg font-medium text-gray-600 dark:text-gray-400">Loading world map...</p>
+        </div>
+      </div>
+
+      <!-- Error State for GeoJSON -->
+      <div
+        v-else-if="geoJSONError"
+        class="absolute inset-0 bg-white dark:bg-gray-900 flex items-center justify-center z-50"
+      >
+        <UAlert
+          icon="i-heroicons-exclamation-triangle"
+          color="red"
+          variant="soft"
+          title="Failed to load map data"
+          :description="geoJSONError"
+          :actions="[
+            {
+              variant: 'solid',
+              color: 'red',
+              label: 'Retry',
+              click: loadGeoJSONData,
+            },
+          ]"
+          class="max-w-md"
+        />
+      </div>
+
+      <!-- Map Container -->
+      <div v-else class="w-full h-full">
+        <LMap
+          ref="mapRef"
+          :zoom="mapZoom"
+          :center="mapCenter"
+          :options="mapOptions"
+          class="w-full h-full rounded-lg"
+          @ready="onMapReady"
+        >
+          <!-- Base Tile Layer -->
+          <LTileLayer
+            :url="tileLayerUrl"
+            :attribution="tileLayerAttribution"
+            :options="tileLayerOptions"
+          />
+
+          <!-- Countries GeoJSON Layer -->
+          <LGeoJson
+            v-if="geoJSONData"
+            :geojson="geoJSONData"
+            :options="geoJSONOptions"
+            :options-style="getCountryStyle"
+          />
+        </LMap>
+
+        <!-- Country Details Panel -->
+        <Transition
+          enter-active-class="transition-all duration-300 ease-out"
+          enter-from-class="opacity-0 transform translate-x-full"
+          enter-to-class="opacity-100 transform translate-x-0"
+          leave-active-class="transition-all duration-200 ease-in"
+          leave-from-class="opacity-100 transform translate-x-0"
+          leave-to-class="opacity-0 transform translate-x-full"
+        >
+          <div
+            v-if="selectedCountryData || isLoadingCountryData"
+            class="absolute top-2 right-2 w-72 max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)] overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 z-[1000]"
+          >
+            <!-- Loading State for Country Data -->
+            <div v-if="isLoadingCountryData" class="p-4">
+              <div class="flex items-center space-x-2 mb-3">
+                <div
+                  class="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin"
+                ></div>
+                <span class="text-xs font-medium text-gray-600 dark:text-gray-400">Loading...</span>
+              </div>
+              <div class="space-y-2">
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
+                <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-1/2"></div>
+              </div>
+            </div>
+
+            <!-- Country Data Display -->
+            <div v-else-if="selectedCountryData" class="p-4">
+              <!-- Close Button -->
+              <button
+                class="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Close country details"
+                @click="clearSelection"
+              >
+                <UIcon name="i-heroicons-x-mark" class="w-5 h-5 text-gray-500 dark:text-gray-400" />
+              </button>
+
+              <!-- Country Header -->
+              <div class="mb-3">
+                <div class="flex items-center space-x-2 mb-1">
+                  <img
+                    v-if="selectedCountryData.flags?.svg"
+                    :src="selectedCountryData.flags.svg"
+                    :alt="`${selectedCountryData.name?.common} flag`"
+                    class="w-6 h-4 object-cover rounded shadow-sm"
+                    loading="lazy"
+                  />
+                  <h3 class="text-base font-bold text-gray-900 dark:text-white">
+                    {{ selectedCountryData.name?.common }}
+                  </h3>
+                </div>
+                <p
+                  v-if="selectedCountryData.name?.official"
+                  class="text-xs text-gray-600 dark:text-gray-400 ml-8"
+                >
+                  {{ selectedCountryData.name.official }}
+                </p>
+              </div>
+
+              <!-- Country Details -->
+              <div class="space-y-2">
+                <!-- Primary Info Grid -->
+                <div class="grid grid-cols-2 gap-2">
+                  <!-- Capital -->
+                  <div
+                    v-if="selectedCountryData.capital?.length"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                  >
+                    <div class="flex items-center gap-1 mb-1">
+                      <UIcon
+                        name="i-heroicons-building-office-2"
+                        class="w-3 h-3 text-blue-500 dark:text-blue-400"
+                      />
+                      <span
+                        class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                        >Capital</span
+                      >
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                      {{ selectedCountryData.capital.join(', ') }}
+                    </p>
+                  </div>
+
+                  <!-- Population -->
+                  <div
+                    v-if="selectedCountryData.population"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                  >
+                    <div class="flex items-center gap-1 mb-1">
+                      <UIcon
+                        name="i-heroicons-users"
+                        class="w-3 h-3 text-green-500 dark:text-green-400"
+                      />
+                      <span
+                        class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                        >Population</span
+                      >
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                      {{ selectedCountryData.population.toLocaleString() }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Region -->
+                <div
+                  v-if="selectedCountryData.region"
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                >
+                  <div class="flex items-center gap-1 mb-1">
+                    <UIcon
+                      name="i-heroicons-globe-americas"
+                      class="w-3 h-3 text-purple-500 dark:text-purple-400"
+                    />
+                    <span
+                      class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                      >Region</span
+                    >
+                  </div>
+                  <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                    {{ selectedCountryData.region }}
+                    <span
+                      v-if="selectedCountryData.subregion"
+                      class="text-gray-600 dark:text-gray-300"
+                    >
+                      • {{ selectedCountryData.subregion }}
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Languages -->
+                <div
+                  v-if="
+                    selectedCountryData.languages &&
+                    Object.keys(selectedCountryData.languages).length
+                  "
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                >
+                  <div class="flex items-center gap-1 mb-1">
+                    <UIcon
+                      name="i-heroicons-language"
+                      class="w-3 h-3 text-orange-500 dark:text-orange-400"
+                    />
+                    <span
+                      class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                      >Languages</span
+                    >
+                  </div>
+                  <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                    {{ Object.values(selectedCountryData.languages).join(', ') }}
+                  </p>
+                </div>
+
+                <!-- Currencies -->
+                <div
+                  v-if="
+                    selectedCountryData.currencies &&
+                    Object.keys(selectedCountryData.currencies).length
+                  "
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                >
+                  <div class="flex items-center gap-1 mb-1">
+                    <UIcon
+                      name="i-heroicons-banknotes"
+                      class="w-3 h-3 text-emerald-500 dark:text-emerald-400"
+                    />
+                    <span
+                      class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                      >Currencies</span
+                    >
+                  </div>
+                  <div class="space-y-0.5">
+                    <div
+                      v-for="(currency, code) in selectedCountryData.currencies"
+                      :key="code"
+                      class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight"
+                    >
+                      {{ currency.name }}
+                      <span class="text-gray-600 dark:text-gray-300">
+                        ({{ currency.symbol || code }})
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- View Details Button -->
+              <div class="mt-3 pt-2 border-t border-gray-200/60 dark:border-gray-700/60">
+                <NuxtLink
+                  :to="`/country/${selectedCountryData.cca2?.toLowerCase()}`"
+                  class="block w-full group"
+                >
+                  <button
+                    class="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium text-xs rounded-md transition-all duration-200 ease-in-out transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 dark:focus:ring-offset-gray-800 cursor-pointer"
+                  >
+                    <span>View Details</span>
+                    <UIcon
+                      name="i-heroicons-arrow-top-right-on-square"
+                      class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
+                  </button>
+                </NuxtLink>
+              </div>
+            </div>
+
+            <!-- Error State for Country Data -->
+            <div v-else-if="countryDataError" class="p-4">
+              <UAlert
+                icon="i-heroicons-exclamation-triangle"
+                color="red"
+                variant="soft"
+                title="Failed to load"
+                :description="countryDataError"
+                size="xs"
+              />
+            </div>
+          </div>
+        </Transition>
+      </div>
+    </div>
+    <template #fallback>
+      <div
+        class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+      >
+        <div class="text-center">
+          <div
+            class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
+          ></div>
+          <p class="text-lg font-medium text-gray-600 dark:text-gray-400">Loading map...</p>
+        </div>
+      </div>
+    </template>
+  </ClientOnly>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted, computed, h } from 'vue'
+
+// Types
+interface CountryFeature {
+  type: 'Feature'
+  properties: {
+    // Common ISO code fields
+    ISO_A3?: string
+    iso_a3?: string
+    ISO3?: string
+    iso3?: string
+    ADM0_A3?: string
+    adm0_a3?: string
+
+    // Common name fields
+    NAME?: string
+    name?: string
+    NAME_EN?: string
+    name_en?: string
+    ADMIN?: string
+    admin?: string
+
+    // Allow any other properties
+    [key: string]: unknown
+  }
+  geometry: {
+    type: string
+    coordinates: unknown
+  }
+}
+
+interface CountryLayer {
+  feature: CountryFeature
+  setStyle: (style: Record<string, unknown>) => void
+  on: (event: string, handler: (e: Event) => void) => void
+}
+
+interface GeoJSONData {
+  type: 'FeatureCollection'
+  features: CountryFeature[]
+}
+
+interface CountryData {
+  name: {
+    common: string
+    official?: string
+  }
+  capital?: string[]
+  population?: number
+  region?: string
+  subregion?: string
+  languages?: Record<string, string>
+  currencies?: Record<string, { name: string; symbol?: string }>
+  flags?: {
+    svg?: string
+    png?: string
+  }
+  cca2?: string
+  cca3?: string
+}
+
+// Component props
+interface Props {
+  height?: string
+  initialZoom?: number
+  initialCenter?: [number, number]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  height: '500px',
+  initialZoom: 2,
+  initialCenter: () => [0, 0] as [number, number],
+})
+
+// Component emits
+const emit = defineEmits<{
+  countrySelected: [countryData: CountryData]
+}>()
+
+// Dynamic imports for @vue-leaflet/vue-leaflet components with error handling
+const LMap = defineAsyncComponent({
+  loader: async () => {
+    try {
+      const module = await import('@vue-leaflet/vue-leaflet')
+      console.log('✅ LMap loaded successfully')
+      return module.LMap
+    } catch (error) {
+      console.error('❌ Failed to load LMap:', error)
+      throw error
+    }
+  },
+  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load map component'),
+  loadingComponent: () => h('div', { class: 'text-gray-500 p-4' }, 'Loading map...'),
+  delay: 200,
+  timeout: 10000,
+})
+
+const LTileLayer = defineAsyncComponent({
+  loader: async () => {
+    try {
+      const module = await import('@vue-leaflet/vue-leaflet')
+      console.log('✅ LTileLayer loaded successfully')
+      return module.LTileLayer
+    } catch (error) {
+      console.error('❌ Failed to load LTileLayer:', error)
+      throw error
+    }
+  },
+  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load tile layer'),
+  delay: 200,
+  timeout: 10000,
+})
+
+const LGeoJson = defineAsyncComponent({
+  loader: async () => {
+    try {
+      const module = await import('@vue-leaflet/vue-leaflet')
+      console.log('✅ LGeoJson loaded successfully')
+      return module.LGeoJson
+    } catch (error) {
+      console.error('❌ Failed to load LGeoJson:', error)
+      throw error
+    }
+  },
+  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load GeoJSON layer'),
+  delay: 200,
+  timeout: 10000,
+})
+
+// Reactive state
+const mapRef = ref<InstanceType<typeof LMap> | null>(null)
+const geoJSONData = ref<GeoJSONData | null>(null)
+const selectedCountryData = ref<CountryData | null>(null)
+const selectedLayer = ref<CountryLayer | null>(null)
+const isLoadingGeoJSON = ref(true)
+const isLoadingCountryData = ref(false)
+const geoJSONError = ref<string | null>(null)
+const countryDataError = ref<string | null>(null)
+
+// Map configuration
+const mapZoom = ref(props.initialZoom)
+const mapCenter = ref<[number, number]>(props.initialCenter)
+
+const mapOptions = {
+  zoomControl: true,
+  attributionControl: true,
+  scrollWheelZoom: true,
+  doubleClickZoom: true,
+  boxZoom: true,
+  keyboard: true,
+  dragging: true,
+  touchZoom: true,
+}
+
+const tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+const tileLayerAttribution = '© OpenStreetMap contributors'
+const tileLayerOptions = {
+  maxZoom: 18,
+  minZoom: 1,
+}
+
+// GeoJSON configuration
+const geoJSONOptions = computed(() => ({
+  onEachFeature: (feature: CountryFeature, layer: CountryLayer) => {
+    // Add click event handler
+    layer.on('click', () => handleCountryClick(feature, layer))
+
+    // Add hover effects
+    layer.on('mouseover', () => {
+      if (layer !== selectedLayer.value) {
+        layer.setStyle({
+          fillOpacity: 0.5,
+          weight: 2,
+        })
+      }
+    })
+
+    layer.on('mouseout', () => {
+      if (layer !== selectedLayer.value) {
+        layer.setStyle(getCountryStyle())
+      }
+    })
+  },
+}))
+
+// Styling functions
+function getCountryStyle() {
+  return {
+    fillColor: '#e5e7eb', // gray-200
+    weight: 1,
+    opacity: 1,
+    color: '#6b7280', // gray-500
+    fillOpacity: 0.3,
+  }
+}
+
+function getSelectedCountryStyle() {
+  return {
+    fillColor: '#3b82f6', // blue-500
+    weight: 3,
+    opacity: 1,
+    color: '#1d4ed8', // blue-700
+    fillOpacity: 0.6,
+  }
+}
+
+// Event handlers
+async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) {
+  // Debug: Log all available properties
+  console.log('🔍 Country feature properties:', feature.properties)
+
+  // Try multiple possible country identifier fields
+  const isoCode =
+    feature.properties?.ISO_A3 ||
+    feature.properties?.iso_a3 ||
+    feature.properties?.ISO3 ||
+    feature.properties?.iso3 ||
+    feature.properties?.ADM0_A3 ||
+    feature.properties?.adm0_a3
+
+  const countryName =
+    feature.properties?.NAME ||
+    feature.properties?.name ||
+    feature.properties?.NAME_EN ||
+    feature.properties?.name_en ||
+    feature.properties?.ADMIN ||
+    feature.properties?.admin
+
+  console.log('🏷️ Extracted identifiers:', { isoCode, countryName })
+
+  if (!isoCode && !countryName) {
+    console.warn('❌ Country feature missing both ISO code and name:', feature.properties)
+    return
+  }
+
+  // Reset previous selection
+  if (selectedLayer.value && selectedLayer.value !== layer) {
+    selectedLayer.value.setStyle(getCountryStyle())
+  }
+
+  // Set new selection
+  selectedLayer.value = layer
+  layer.setStyle(getSelectedCountryStyle())
+
+  // Clear previous data and errors
+  selectedCountryData.value = null
+  countryDataError.value = null
+  isLoadingCountryData.value = true
+
+  try {
+    let response: CountryData[] | null = null
+
+    // Try to fetch by ISO code first (most reliable)
+    if (isoCode) {
+      console.log(`🌐 Fetching country data by ISO code: ${isoCode}`)
+      try {
+        response = await $fetch<CountryData[]>(`https://restcountries.com/v3.1/alpha/${isoCode}`)
+      } catch (isoError) {
+        console.warn(`⚠️ Failed to fetch by ISO code ${isoCode}:`, isoError)
+      }
+    }
+
+    // If ISO code failed or not available, try by name
+    if (!response && countryName) {
+      console.log(`🌐 Fetching country data by name: ${countryName}`)
+      try {
+        response = await $fetch<CountryData[]>(
+          `https://restcountries.com/v3.1/name/${encodeURIComponent(String(countryName))}?fullText=true`,
+        )
+      } catch (nameError) {
+        console.warn(`⚠️ Failed to fetch by name ${countryName}:`, nameError)
+        // Try partial name search as fallback
+        try {
+          response = await $fetch<CountryData[]>(
+            `https://restcountries.com/v3.1/name/${encodeURIComponent(String(countryName))}`,
+          )
+        } catch (partialError) {
+          console.warn(`⚠️ Failed to fetch by partial name ${countryName}:`, partialError)
+        }
+      }
+    }
+
+    if (response && response.length > 0) {
+      selectedCountryData.value = response[0]
+      console.log(`✅ Successfully loaded data for: ${response[0].name?.common}`)
+
+      // Emit the country selection event to parent component
+      emit('countrySelected', response[0])
+    } else {
+      throw new Error(`No country data found for ${isoCode || countryName}`)
+    }
+  } catch (error) {
+    console.error('💥 Error fetching country data:', error)
+    countryDataError.value = error instanceof Error ? error.message : 'Failed to fetch country data'
+  } finally {
+    isLoadingCountryData.value = false
+  }
+}
+
+function clearSelection() {
+  if (selectedLayer.value) {
+    selectedLayer.value.setStyle(getCountryStyle())
+    selectedLayer.value = null
+  }
+  selectedCountryData.value = null
+  countryDataError.value = null
+}
+
+function onMapReady() {
+  console.log('Map is ready')
+}
+
+// Data loading
+async function loadGeoJSONData() {
+  isLoadingGeoJSON.value = true
+  geoJSONError.value = null
+
+  try {
+    console.log('🌍 Loading GeoJSON data...')
+
+    // Use $fetch with explicit type handling
+    const rawResponse = await $fetch<string>(
+      'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+    )
+
+    // Parse the JSON string
+    let response: GeoJSONData | string
+    if (typeof rawResponse === 'string') {
+      console.log('📝 Response is string, parsing JSON...')
+      response = JSON.parse(rawResponse)
+    } else {
+      response = rawResponse
+    }
+
+    console.log('📦 Raw response received:', {
+      type: typeof response,
+      isObject: typeof response === 'object',
+      isNull: response === null,
+      keys: response ? Object.keys(response) : [],
+    })
+
+    // Detailed validation with helpful error messages
+    if (!response) {
+      throw new Error('❌ No response received from server')
+    }
+
+    if (typeof response !== 'object') {
+      throw new Error(`❌ Expected object response, got ${typeof response}`)
+    }
+
+    console.log('🔍 Validating GeoJSON structure:', {
+      hasType: 'type' in response,
+      typeValue: response.type,
+      hasFeatures: 'features' in response,
+      featuresType: typeof response.features,
+      featuresLength: Array.isArray(response.features) ? response.features.length : 'not array',
+    })
+
+    if (response.type !== 'FeatureCollection') {
+      throw new Error(`❌ Expected FeatureCollection, got: ${response.type || 'undefined'}`)
+    }
+
+    if (!Array.isArray(response.features)) {
+      throw new Error(`❌ Expected features array, got: ${typeof response.features}`)
+    }
+
+    if (response.features.length === 0) {
+      throw new Error('❌ Features array is empty')
+    }
+
+    // Success! Assign the validated data
+    geoJSONData.value = response as GeoJSONData
+    console.log('✅ GeoJSON data loaded successfully!', {
+      featuresCount: response.features.length,
+      firstFeature: response.features[0]?.properties?.NAME || 'Unknown',
+    })
+  } catch (error) {
+    console.error('💥 Error loading GeoJSON data:', error)
+    geoJSONError.value = error instanceof Error ? error.message : 'Failed to load map data'
+  } finally {
+    isLoadingGeoJSON.value = false
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  loadGeoJSONData()
+})
+
+// Expose methods for parent components
+defineExpose({
+  clearSelection,
+  loadGeoJSONData,
+})
+</script>
+
+<style scoped>
+@reference "@/assets/css/main.css";
+/* Ensure the map container has proper height */
+:deep(.leaflet-container) {
+  height: v-bind(height);
+  min-height: 350px;
+}
+
+/* Dark mode adjustments for Leaflet controls */
+:deep(.leaflet-control-zoom a) {
+  @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600;
+}
+
+:deep(.leaflet-control-zoom a:hover) {
+  @apply bg-gray-50 dark:bg-gray-700;
+}
+
+:deep(.leaflet-control-attribution) {
+  @apply bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400;
+}
+
+/* Custom scrollbar for country details panel */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(156 163 175) transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgb(156 163 175);
+  border-radius: 3px;
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgb(75 85 99);
+}
+</style>

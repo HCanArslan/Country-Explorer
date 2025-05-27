@@ -12,34 +12,132 @@
     <AppHeader />
 
     <!-- Main Content -->
-    <main id="main-content" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-      <!-- Search Component -->
-      <CountrySearch
-        :country-options="countryOptions"
-        :selected-country="selectedCountry"
-        :is-loading="isLoading"
-        :error-message="errorMessage"
-        @country-selected="handleCountrySelected"
-        @retry="fetchCountries"
-        @refresh="refreshCountries"
-      />
+    <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+      <!-- Search and Map Section - Side by Side -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Left Column - Search Component -->
+        <div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 h-full"
+          >
+            <div class="p-4 lg:p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Country Search
+                  </h2>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Search and explore countries worldwide
+                  </p>
+                </div>
+                <UIcon name="i-heroicons-magnifying-glass" class="w-6 h-6 text-blue-500" />
+              </div>
 
-      <!-- Country Details Component -->
-      <CountryDetails
-        :selected-country="selectedCountry"
-        :country-detail="countryDetail"
-        :is-loading-detail="isLoadingDetail"
-        :error-message="errorMessage"
-        @retry="() => fetchCountryDetail(selectedCountry)"
-        @clear-selection="clearSelection"
-      />
+              <CountrySearch
+                :country-options="countryOptions"
+                :selected-country="selectedCountry"
+                :is-loading="isLoading"
+                :error-message="errorMessage"
+                @country-selected="handleCountrySelected"
+                @retry="fetchCountries"
+                @refresh="refreshCountries"
+              />
 
-      <!-- Empty State Component -->
-      <EmptyState
-        :selected-country="selectedCountry"
-        :is-loading="isLoading"
-        :country-options="countryOptions"
-      />
+              <!-- Empty State Content (when no country selected) -->
+              <div
+                v-if="!selectedCountry && !isLoading && countryOptions.length > 0"
+                class="text-center py-8 mt-6 border-t border-gray-200 dark:border-gray-700"
+              >
+                <UIcon
+                  name="i-heroicons-globe-alt"
+                  class="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-3"
+                />
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  Select a Country
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Choose a country from the dropdown above to explore its details
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Interactive Map -->
+        <div>
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 h-full"
+          >
+            <div class="p-4 lg:p-6">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Interactive World Map
+                  </h2>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Click on any country to explore
+                  </p>
+                </div>
+                <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-blue-500" />
+              </div>
+
+              <!-- Map Component -->
+              <div
+                class="h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+              >
+                <ClientOnly>
+                  <InteractiveMap
+                    height="100%"
+                    :initial-zoom="2"
+                    :initial-center="[20, 0]"
+                    @country-selected="handleMapCountrySelected"
+                  />
+                  <template #fallback>
+                    <div
+                      class="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700"
+                    >
+                      <div class="text-center">
+                        <div
+                          class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
+                        ></div>
+                        <p class="text-gray-600 dark:text-gray-400">Loading map...</p>
+                      </div>
+                    </div>
+                  </template>
+                </ClientOnly>
+              </div>
+
+              <!-- Map Instructions -->
+              <div class="mt-3 flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
+                <div class="flex items-center">
+                  <UIcon name="i-heroicons-cursor-arrow-rays" class="w-3 h-3 mr-1" />
+                  <span>Click countries</span>
+                </div>
+                <div class="flex items-center">
+                  <UIcon name="i-heroicons-magnifying-glass-plus" class="w-3 h-3 mr-1" />
+                  <span>Zoom</span>
+                </div>
+                <div class="flex items-center">
+                  <UIcon name="i-heroicons-hand-raised" class="w-3 h-3 mr-1" />
+                  <span>Drag</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Country Details Section - Full Width Below -->
+      <div class="mt-8">
+        <CountryDetails
+          :selected-country="selectedCountry"
+          :country-detail="countryDetail"
+          :is-loading-detail="isLoadingDetail"
+          :error-message="errorMessage"
+          @retry="() => fetchCountryDetail(selectedCountry)"
+          @clear-selection="clearSelection"
+        />
+      </div>
     </main>
   </div>
 </template>
@@ -84,6 +182,26 @@ async function refreshCountries() {
 // Event handlers
 function handleCountrySelected(countryCode: string) {
   selectedCountry.value = countryCode
+}
+
+function handleMapCountrySelected(countryData: {
+  name?: { common?: string }
+  cca2?: string
+  cca3?: string
+}) {
+  // Extract country code from the map selection
+  // The map component provides country data, we need to extract the ISO code
+  if (countryData?.cca2) {
+    selectedCountry.value = countryData.cca2
+  } else if (countryData?.name?.common) {
+    // If no ISO code, try to find the country by name in our options
+    const foundCountry = countryOptions.value.find(
+      (country) => country.label.toLowerCase() === countryData.name?.common?.toLowerCase(),
+    )
+    if (foundCountry) {
+      selectedCountry.value = foundCountry.value
+    }
+  }
 }
 
 // Watchers

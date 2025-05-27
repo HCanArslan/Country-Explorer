@@ -1,15 +1,19 @@
 <template>
   <header
     role="banner"
-    class="sticky top-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm transition-all duration-300"
+    class="sticky top-0 z-[9999] bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm transition-all duration-300"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 sm:h-20">
         <!-- Brand Section -->
-        <div class="flex items-center space-x-3 sm:space-x-4">
+        <NuxtLink
+          to="/"
+          class="flex items-center space-x-3 sm:space-x-4 group transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 rounded-xl p-1 -m-1"
+          aria-label="Go to Country Explorer home page"
+        >
           <!-- Logo/Icon -->
           <div
-            class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            class="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl cursor-pointer"
             aria-hidden="true"
           >
             <span class="text-xl sm:text-2xl">🌍</span>
@@ -18,12 +22,12 @@
           <!-- Brand Text -->
           <div class="flex flex-col">
             <h1
-              class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-none"
+              class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-none cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300"
             >
               Country Explorer
             </h1>
           </div>
-        </div>
+        </NuxtLink>
 
         <!-- Actions Section -->
         <div class="flex items-center space-x-2 sm:space-x-3">
@@ -32,7 +36,7 @@
             :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
             size="lg"
             variant="ghost"
-            color="neutral"
+            color="gray"
             class="relative group rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
             :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
             @click="toggleColorMode"

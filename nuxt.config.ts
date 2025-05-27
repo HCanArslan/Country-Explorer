@@ -74,14 +74,9 @@ export default defineNuxtConfig({
 
   // Production optimizations for Vercel
   nitro: {
-    preset: 'vercel', // Always use vercel preset for consistency
+    preset: 'vercel',
     compressPublicAssets: true,
     minify: true,
-    experimental: {
-      wasm: true,
-    },
-    // Force bundle all dependencies to avoid module resolution issues
-    noExternals: true,
   },
 
   // Build optimizations - Fixed for @nuxt/ui compatibility
@@ -102,53 +97,14 @@ export default defineNuxtConfig({
     ],
   },
 
-  // Vite optimizations for production - Fixed module resolution
+  // Vite optimizations for production - Simplified for better compatibility
   vite: {
-    plugins: [
-      // Add CommonJS support for legacy modules
-      {
-        name: 'commonjs-externals',
-        config(config) {
-          config.build = config.build || {}
-          config.build.rollupOptions = config.build.rollupOptions || {}
-          config.build.rollupOptions.external = config.build.rollupOptions.external || []
-
-          // Don't externalize these packages, bundle them instead
-          const bundlePackages = ['object-assign', '@turf/turf', 'proj4leaflet', '@terraformer/wkt']
-          if (Array.isArray(config.build.rollupOptions.external)) {
-            config.build.rollupOptions.external = config.build.rollupOptions.external.filter(
-              (ext: string) => !bundlePackages.includes(ext),
-            )
-          }
-        },
-      },
-    ],
     build: {
       sourcemap: false,
       minify: 'terser',
-      rollupOptions: {
-        external: ['@nuxt/kit'],
-        output: {
-          manualChunks: {
-            vendor: ['vue', 'vue-router'],
-            leaflet: ['leaflet', '@vue-leaflet/vue-leaflet'],
-          },
-        },
-      },
-      commonjsOptions: {
-        include: [/node_modules/],
-        transformMixedEsModules: true,
-      },
     },
     optimizeDeps: {
-      include: ['@vueuse/core', '@vue/shared', '@vue-leaflet/vue-leaflet', 'leaflet'],
-      exclude: [], // Remove conditional exclude for consistency
-      force: true,
-    },
-    resolve: {
-      alias: {
-        '@nuxt/kit': '@nuxt/kit/dist/index.mjs',
-      },
+      include: ['@vueuse/core', '@vue/shared'],
     },
     define: {
       global: 'globalThis',

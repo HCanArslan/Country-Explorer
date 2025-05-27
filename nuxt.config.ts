@@ -38,13 +38,19 @@ export default defineNuxtConfig({
     },
   },
 
-  // Production optimizations
+  // Production optimizations for Vercel
   nitro: {
     preset: 'vercel',
     compressPublicAssets: true,
     minify: true,
     experimental: {
       wasm: true,
+    },
+    // Ensure all dependencies are bundled
+    bundledStorage: ['redis'],
+    // Fix for missing dependencies
+    externals: {
+      inline: ['consola', 'defu', 'h3', 'ufo', 'ofetch'],
     },
   },
 

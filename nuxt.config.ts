@@ -35,7 +35,32 @@ export default defineNuxtConfig({
         { property: 'og:description', content: 'Discover countries around the world' },
         { property: 'og:type', content: 'website' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=16',
+          sizes: '16x16',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=32',
+          sizes: '32x32',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=96',
+          sizes: '96x96',
+        },
+        // Fallback for older browsers
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=32',
+        },
+      ],
     },
   },
 

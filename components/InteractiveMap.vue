@@ -660,19 +660,81 @@ async function loadGeoJSONData() {
   geoJSONError.value = null
 
   try {
-    // Use a reliable GeoJSON source for world countries
-    const response = await $fetch<GeoJSONData>(
-      'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+    // Try multiple reliable GeoJSON sources for world countries
+    let response: GeoJSONData | null = null
+
+    // Primary source: Natural Earth data via GitHub
+    try {
+      response = await $fetch<GeoJSONData>(
+        'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson',
+      )
+    } catch (primaryError) {
+      console.warn('Primary GeoJSON source failed, trying fallback:', primaryError)
+
+      // Fallback source: Alternative GitHub repository
+      try {
+        response = await $fetch<GeoJSONData>(
+          'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
+        )
+      } catch (fallbackError) {
+        console.warn('Fallback GeoJSON source failed, trying final source:', fallbackError)
+
+        // Final fallback: Simple world countries
+        response = await $fetch<GeoJSONData>(
+          'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
+        )
+      }
+    }
+
+    // Validate the response
+    if (!response) {
+      throw new Error('No response received from any GeoJSON source')
+    }
+
+    if (typeof response === 'string') {
+      try {
+        response = JSON.parse(response) as GeoJSONData
+      } catch {
+        throw new Error('Failed to parse GeoJSON data')
+      }
+    }
+
+    if (!response || typeof response !== 'object') {
+      throw new Error('Invalid response format')
+    }
+
+    if (response.type !== 'FeatureCollection') {
+      throw new Error(`Expected FeatureCollection, got: ${response.type || 'undefined'}`)
+    }
+
+    if (!Array.isArray(response.features)) {
+      throw new Error('Features property is not an array')
+    }
+
+    if (response.features.length === 0) {
+      throw new Error('No countries found in GeoJSON data')
+    }
+
+    // Validate that features have the required structure
+    const validFeatures = response.features.filter(
+      (feature) => feature && feature.type === 'Feature' && feature.properties && feature.geometry,
     )
 
-    if (response && response.features) {
-      geoJSONData.value = response
-    } else {
-      throw new Error('Invalid GeoJSON data')
+    if (validFeatures.length === 0) {
+      throw new Error('No valid country features found')
     }
+
+    // Use only valid features
+    geoJSONData.value = {
+      type: 'FeatureCollection',
+      features: validFeatures,
+    }
+
+    console.log(`Successfully loaded ${validFeatures.length} countries`)
+
   } catch (error) {
     console.error('Error loading GeoJSON data:', error)
-    geoJSONError.value = 'Failed to load map data'
+    geoJSONError.value = error instanceof Error ? error.message : 'Failed to load map data'
     mapLoadError.value = true
   } finally {
     isLoadingGeoJSON.value = false

@@ -101,11 +101,11 @@ export default defineNuxtConfig({
     preset: 'vercel',
     compressPublicAssets: true,
     minify: true,
-    // Prerender critical pages
-    prerender: {
-      routes: ['/'],
-      crawlLinks: false,
-    },
+    // Temporarily disable prerendering due to file URL issues
+    // prerender: {
+    //   routes: ['/'],
+    //   crawlLinks: false,
+    // },
   },
 
   // Enhanced build optimizations
@@ -130,6 +130,39 @@ export default defineNuxtConfig({
     build: {
       sourcemap: false,
       minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info', 'console.debug'],
+          passes: 1,
+          unsafe_arrows: false,
+          unsafe_methods: false,
+          keep_fnames: true,
+          keep_classnames: true,
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            // Critical mobile chunks
+            if (id.includes('leaflet') || id.includes('@vue-leaflet')) {
+              return 'map-vendor'
+            }
+
+            // Defer non-critical chunks on mobile
+            if (id.includes('node_modules')) {
+              if (id.includes('vue') || id.includes('nuxt')) {
+                return 'vendor-core'
+              }
+              if (id.includes('@nuxt/ui') || id.includes('tailwindcss')) {
+                return 'vendor-ui'
+              }
+              return 'vendor-utils'
+            }
+          },
+        },
+      },
       chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
@@ -170,31 +203,31 @@ export default defineNuxtConfig({
     viewTransition: true,
   },
 
-  // Route rules for performance optimization
-  routeRules: {
-    // Homepage pre-rendered at build time
-    '/': { prerender: true },
-    // Country pages cached for 1 hour
-    '/country/**': {
-      headers: { 'Cache-Control': 's-maxage=3600' },
-      prerender: false,
-    },
-    // API routes cached with CORS
-    '/api/**': {
-      cors: true,
-      headers: {
-        'Cache-Control': 's-maxage=60',
-        'cache-control': 'max-age=300, stale-while-revalidate=60',
-      },
-    },
-    // Aggressive caching for static assets
-    '/_nuxt/**': {
-      headers: {
-        'cache-control': 'max-age=31536000, immutable',
-        vary: 'Accept-Encoding',
-      },
-    },
-  },
+  // Route rules for performance optimization - Temporarily disabled
+  // routeRules: {
+  //   // Homepage pre-rendered at build time
+  //   '/': { prerender: true },
+  //   // Country pages cached for 1 hour
+  //   '/country/**': {
+  //     headers: { 'Cache-Control': 's-maxage=3600' },
+  //     prerender: false,
+  //   },
+  //   // API routes cached with CORS
+  //   '/api/**': {
+  //     cors: true,
+  //     headers: {
+  //       'Cache-Control': 's-maxage=60',
+  //       'cache-control': 'max-age=300, stale-while-revalidate=60',
+  //     },
+  //   },
+  //   // Aggressive caching for static assets
+  //   '/_nuxt/**': {
+  //     headers: {
+  //       'cache-control': 'max-age=31536000, immutable',
+  //       vary: 'Accept-Encoding',
+  //     },
+  //   },
+  // },
 
   // Fix for @nuxt/ui module import issues
   imports: {

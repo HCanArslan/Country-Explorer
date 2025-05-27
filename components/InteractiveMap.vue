@@ -47,48 +47,17 @@
 
       <!-- Map Container with mobile optimizations -->
       <div v-else class="w-full h-full">
-        <!-- Mobile: Show simplified map or defer loading -->
-        <div v-if="isMobile && !userInteracted" class="w-full h-full relative">
-          <!-- Mobile placeholder with interaction prompt -->
-          <div
-            class="w-full h-full bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-800 dark:to-gray-700 rounded-lg flex items-center justify-center cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 transition-colors"
-            @click="initializeMobileMap"
-          >
-            <div class="text-center p-6">
-              <div
-                class="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
-              >
-                <UIcon
-                  name="i-heroicons-globe-americas"
-                  class="w-8 h-8 text-blue-600 dark:text-blue-400"
-                />
-              </div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Interactive World Map
-              </h3>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Tap to load the interactive map and explore countries
-              </p>
-              <div
-                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium"
-              >
-                <UIcon name="i-heroicons-cursor-arrow-rays" class="w-4 h-4 mr-2" />
-                Load Map
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Full map for desktop or after mobile interaction -->
         <LMap
-          v-else
+          v-if="!mapLoadError"
           ref="mapRef"
           :zoom="mapZoom"
           :center="mapCenter"
           :options="mapOptions"
           class="w-full h-full rounded-lg"
-          :style="{ minHeight: isMobile ? '300px' : props.height }"
+          :style="{ minHeight: '350px', height: props.height }"
           @ready="onMapReady"
+          @error="handleMapError"
         >
           <!-- Mobile-optimized tile layer -->
           <LTileLayer
@@ -99,12 +68,39 @@
 
           <!-- Countries GeoJSON Layer with mobile optimization -->
           <LGeoJson
-            v-if="geoJSONData && (!isMobile || mapReady)"
+            v-if="geoJSONData"
             :geojson="geoJSONData"
             :options="geoJSONOptions"
             :options-style="getCountryStyle"
           />
         </LMap>
+
+        <!-- Fallback when map fails to load -->
+        <div
+          v-else
+          class="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600"
+        >
+          <div class="text-center p-8">
+            <UIcon
+              name="i-heroicons-globe-americas"
+              class="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-4"
+            />
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Map Unavailable
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              The interactive map could not be loaded. This might be due to a network issue or browser compatibility.
+            </p>
+            <UButton
+              color="blue"
+              variant="outline"
+              size="sm"
+              @click="retryMapLoad"
+            >
+              Try Again
+            </UButton>
+          </div>
+        </div>
 
         <!-- Country Details Panel with mobile optimization -->
         <Transition
@@ -352,7 +348,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, h, nextTick, onUnmounted } from 'vue'
+import { ref, onMounted, computed, onUnmounted } from 'vue'
 
 // Types
 interface CountryFeature {
@@ -435,7 +431,9 @@ const emit = defineEmits<{
 const ensureLeafletLoaded = async () => {
   if (!import.meta.client) return false
 
-  if (window.L) return true
+  if (window.L) {
+    return true
+  }
 
   try {
     await import('leaflet/dist/leaflet.css')
@@ -443,7 +441,7 @@ const ensureLeafletLoaded = async () => {
     const LeafletLib = L.default || L
 
     if (!LeafletLib) {
-      throw new Error('Leaflet library not available')
+      return false
     }
 
     // Fix marker icons
@@ -471,59 +469,61 @@ const ensureLeafletLoaded = async () => {
 }
 
 // Dynamic imports for @vue-leaflet/vue-leaflet components with error handling
-const LMap = defineAsyncComponent({
-  loader: async () => {
-    const leafletReady = await ensureLeafletLoaded()
-    if (!leafletReady) {
-      throw new Error('Leaflet failed to initialize')
-    }
+const LMap = defineAsyncComponent(async () => {
+  if (!import.meta.client) {
+    throw new Error('Map only available on client')
+  }
 
-    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
-    if (!vueLeaflet?.LMap) {
-      throw new Error('Vue Leaflet LMap component not available')
-    }
-    return vueLeaflet.LMap
-  },
-  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load map component'),
-  loadingComponent: () => h('div', { class: 'text-gray-500 p-4' }, 'Loading map...'),
-  delay: 200,
-  timeout: 15000,
+  const leafletReady = await ensureLeafletLoaded()
+  if (!leafletReady) {
+    throw new Error('Leaflet failed to initialize')
+  }
+
+  const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+
+  if (!vueLeaflet.LMap) {
+    throw new Error('LMap component not found in Vue Leaflet')
+  }
+
+  return vueLeaflet.LMap
 })
 
-const LTileLayer = defineAsyncComponent({
-  loader: async () => {
-    const leafletReady = await ensureLeafletLoaded()
-    if (!leafletReady) {
-      throw new Error('Leaflet failed to initialize')
-    }
+const LTileLayer = defineAsyncComponent(async () => {
+  if (!import.meta.client) {
+    throw new Error('TileLayer only available on client')
+  }
 
-    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
-    if (!vueLeaflet?.LTileLayer) {
-      throw new Error('Vue Leaflet LTileLayer component not available')
-    }
-    return vueLeaflet.LTileLayer
-  },
-  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load tile layer'),
-  delay: 200,
-  timeout: 15000,
+  const leafletReady = await ensureLeafletLoaded()
+  if (!leafletReady) {
+    throw new Error('Leaflet failed to initialize')
+  }
+
+  const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+
+  if (!vueLeaflet.LTileLayer) {
+    throw new Error('LTileLayer component not found in Vue Leaflet')
+  }
+
+  return vueLeaflet.LTileLayer
 })
 
-const LGeoJson = defineAsyncComponent({
-  loader: async () => {
-    const leafletReady = await ensureLeafletLoaded()
-    if (!leafletReady) {
-      throw new Error('Leaflet failed to initialize')
-    }
+const LGeoJson = defineAsyncComponent(async () => {
+  if (!import.meta.client) {
+    throw new Error('GeoJson only available on client')
+  }
 
-    const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
-    if (!vueLeaflet?.LGeoJson) {
-      throw new Error('Vue Leaflet LGeoJson component not available')
-    }
-    return vueLeaflet.LGeoJson
-  },
-  errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load GeoJSON layer'),
-  delay: 200,
-  timeout: 15000,
+  const leafletReady = await ensureLeafletLoaded()
+  if (!leafletReady) {
+    throw new Error('Leaflet failed to initialize')
+  }
+
+  const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+
+  if (!vueLeaflet.LGeoJson) {
+    throw new Error('LGeoJson component not found in Vue Leaflet')
+  }
+
+  return vueLeaflet.LGeoJson
 })
 
 // Reactive state
@@ -540,6 +540,7 @@ const countryDataError = ref<string | null>(null)
 const isMobile = ref(false)
 const mapReady = ref(false)
 const userInteracted = ref(false)
+const mapLoadError = ref(false)
 
 // Map configuration
 const mapZoom = ref(props.initialZoom)
@@ -710,17 +711,17 @@ function onMapReady() {
   mapReady.value = true
 }
 
-// Mobile-specific functions
-function initializeMobileMap() {
-  userInteracted.value = true
-  // Small delay to ensure smooth transition
-  nextTick(() => {
-    if (mapRef.value) {
-      mapRef.value.leafletObject?.invalidateSize()
-    }
-  })
+function handleMapError() {
+  mapLoadError.value = true
 }
 
+function retryMapLoad() {
+  mapLoadError.value = false
+  mapReady.value = false
+  userInteracted.value = false
+}
+
+// Mobile-specific functions
 function detectMobile() {
   if (import.meta.client) {
     isMobile.value =

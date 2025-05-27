@@ -18,12 +18,6 @@
       "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },
-      "src": "/_fonts/(.*)"
-    },
-    {
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      },
       "src": "/_nuxt/(.*)"
     },
     {
@@ -35,13 +29,6 @@
     },
     {
       "src": "/_nuxt/builds(.*)",
-      "headers": {
-        "cache-control": "public,max-age=31536000,immutable"
-      },
-      "continue": true
-    },
-    {
-      "src": "/_fonts(.*)",
       "headers": {
         "cache-control": "public,max-age=31536000,immutable"
       },

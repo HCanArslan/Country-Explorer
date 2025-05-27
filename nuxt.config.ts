@@ -30,7 +30,10 @@ export default defineNuxtConfig({
       },
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
+        },
         {
           name: 'description',
           content:
@@ -47,11 +50,6 @@ export default defineNuxtConfig({
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
-        // Mobile viewport optimization
-        {
-          name: 'viewport',
-          content: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
-        },
         // Cache busting
         { name: 'app-version', content: `v${Date.now()}` },
       ],
@@ -100,11 +98,8 @@ export default defineNuxtConfig({
 
   // Enhanced Nitro configuration for performance
   nitro: {
-    preset: process.env.VERCEL ? 'vercel' : 'node-server',
-    compressPublicAssets: {
-      gzip: true,
-      brotli: true,
-    },
+    preset: 'vercel',
+    compressPublicAssets: true,
     minify: true,
     // Prerender critical pages
     prerender: {
@@ -135,52 +130,17 @@ export default defineNuxtConfig({
     build: {
       sourcemap: false,
       minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info', 'console.debug'],
-          passes: 1,
-          unsafe_arrows: false,
-          unsafe_methods: false,
-          keep_fnames: true,
-          keep_classnames: true,
-        },
-      },
-      rollupOptions: {
-        output: {
-          manualChunks: (id) => {
-            // Critical mobile chunks
-            if (id.includes('leaflet') || id.includes('@vue-leaflet')) {
-              return 'map-vendor'
-            }
-
-            // Defer non-critical chunks on mobile
-            if (id.includes('node_modules')) {
-              if (id.includes('vue') || id.includes('nuxt')) {
-                return 'vendor-core'
-              }
-              if (id.includes('@nuxt/ui') || id.includes('tailwindcss')) {
-                return 'vendor-ui'
-              }
-              return 'vendor-utils'
-            }
-          },
-        },
-      },
       chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
       include: ['@vueuse/core', '@vue/shared'],
-      exclude: ['leaflet', '@vue-leaflet/vue-leaflet'],
     },
     define: {
       global: 'globalThis',
       __VUE_PROD_DEVTOOLS__: false,
     },
     ssr: {
-      noExternal: [],
-      external: ['leaflet', '@vue-leaflet/vue-leaflet'],
+      noExternal: ['@vue-leaflet/vue-leaflet'],
     },
   },
 

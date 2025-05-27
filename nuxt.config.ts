@@ -8,8 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@pinia/nuxt',
     '@nuxt/ui',
-    // Conditionally load @nuxt/image only in production to avoid Sharp issues
-    ...(process.env.NODE_ENV === 'production' ? ['@nuxt/image'] : []),
+    '@nuxt/image', // Always load @nuxt/image
     '@nuxt/test-utils',
     '@nuxtjs/tailwindcss',
   ],
@@ -75,7 +74,7 @@ export default defineNuxtConfig({
 
   // Production optimizations for Vercel
   nitro: {
-    preset: process.env.NITRO_PRESET || 'node-server',
+    preset: 'vercel', // Always use vercel preset for consistency
     compressPublicAssets: true,
     minify: true,
     experimental: {
@@ -83,12 +82,6 @@ export default defineNuxtConfig({
     },
     // Force bundle all dependencies to avoid module resolution issues
     noExternals: true,
-    // Additional Vercel-specific configuration
-    ...(process.env.NITRO_PRESET === 'vercel' && {
-      rollupConfig: {
-        external: [],
-      },
-    }),
   },
 
   // Build optimizations - Fixed for @nuxt/ui compatibility
@@ -105,8 +98,7 @@ export default defineNuxtConfig({
       'ofetch',
       'nitropack',
       '@vue-leaflet/vue-leaflet',
-      // Only transpile sharp in production when @nuxt/image is loaded
-      ...(process.env.NODE_ENV === 'production' ? ['sharp'] : []),
+      'sharp', // Always transpile sharp for consistency
     ],
   },
 
@@ -150,8 +142,7 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       include: ['@vueuse/core', '@vue/shared', '@vue-leaflet/vue-leaflet', 'leaflet'],
-      // Only exclude sharp in development
-      exclude: process.env.NODE_ENV === 'development' ? ['sharp'] : [],
+      exclude: [], // Remove conditional exclude for consistency
       force: true,
     },
     resolve: {
@@ -192,22 +183,20 @@ export default defineNuxtConfig({
     payloadExtraction: false,
   },
 
-  // Image optimization - Only enabled in production
-  ...(process.env.NODE_ENV === 'production' && {
-    image: {
-      quality: 80,
-      format: ['webp', 'png'],
-      screens: {
-        xs: 320,
-        sm: 640,
-        md: 768,
-        lg: 1024,
-        xl: 1280,
-        xxl: 1536,
-      },
-      provider: 'ipx',
+  // Image optimization - Always enabled for consistency
+  image: {
+    quality: 80,
+    format: ['webp', 'png'],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
     },
-  }),
+    provider: 'ipx',
+  },
 
   // Fix for @nuxt/ui module import issues
   imports: {

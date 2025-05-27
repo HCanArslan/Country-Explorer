@@ -5,11 +5,12 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/eslint',
-    '@nuxt/image',
-    '@nuxt/test-utils',
-    '@nuxt/ui',
     '@nuxtjs/color-mode',
     '@pinia/nuxt',
+    '@nuxt/ui',
+    // Conditionally load @nuxt/image only in production to avoid Sharp issues
+    ...(process.env.NODE_ENV === 'production' ? ['@nuxt/image'] : []),
+    '@nuxt/test-utils',
   ],
 
   css: ['~/assets/css/main.css'],
@@ -34,29 +35,69 @@ export default defineNuxtConfig({
         { property: 'og:description', content: 'Discover countries around the world' },
         { property: 'og:type', content: 'website' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=16',
+          sizes: '16x16',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=32',
+          sizes: '32x32',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=96',
+          sizes: '96x96',
+        },
+        // Fallback for older browsers
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: 'https://majority.imgix.net/web-assets/favicons/favicon96.png?fit=crop&auto=format%2Ccompress&lossless=true&fm=png&q=50&w=32',
+        },
+      ],
     },
   },
 
   // Production optimizations for Vercel
   nitro: {
-    preset: 'vercel',
+    preset: process.env.NITRO_PRESET || 'node-server',
     compressPublicAssets: true,
     minify: true,
     experimental: {
       wasm: true,
     },
-    // Ensure all dependencies are bundled
-    bundledStorage: ['redis'],
-    // Fix for missing dependencies
-    externals: {
-      inline: ['consola', 'defu', 'h3', 'ufo', 'ofetch'],
-    },
+    // Force bundle all dependencies to avoid module resolution issues
+    noExternals: true,
+    // Additional Vercel-specific configuration
+    ...(process.env.NITRO_PRESET === 'vercel' && {
+      rollupConfig: {
+        external: [],
+      },
+    }),
   },
 
   // Build optimizations - Fixed for @nuxt/ui compatibility
   build: {
-    transpile: ['@iconify/utils', '@vueuse/core', '@vue/shared', '@nuxt/ui'],
+    transpile: [
+      '@iconify/utils',
+      '@vueuse/core',
+      '@vue/shared',
+      '@nuxt/ui',
+      'consola',
+      'defu',
+      'h3',
+      'ufo',
+      'ofetch',
+      'nitropack',
+      // Only transpile sharp in production when @nuxt/image is loaded
+      ...(process.env.NODE_ENV === 'production' ? ['sharp'] : []),
+    ],
   },
 
   // Vite optimizations for production - Fixed module resolution
@@ -75,11 +116,16 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       include: ['@vueuse/core', '@vue/shared'],
+      // Only exclude sharp in development
+      exclude: process.env.NODE_ENV === 'development' ? ['sharp'] : [],
     },
     resolve: {
       alias: {
         '@nuxt/kit': '@nuxt/kit/dist/index.mjs',
       },
+    },
+    define: {
+      global: 'globalThis',
     },
   },
 
@@ -108,19 +154,22 @@ export default defineNuxtConfig({
     payloadExtraction: false,
   },
 
-  // Image optimization
-  image: {
-    quality: 80,
-    format: ['webp', 'png'],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
+  // Image optimization - Only enabled in production
+  ...(process.env.NODE_ENV === 'production' && {
+    image: {
+      quality: 80,
+      format: ['webp', 'png'],
+      screens: {
+        xs: 320,
+        sm: 640,
+        md: 768,
+        lg: 1024,
+        xl: 1280,
+        xxl: 1536,
+      },
+      provider: 'ipx',
     },
-  },
+  }),
 
   // Fix for @nuxt/ui module import issues
   imports: {

@@ -77,7 +77,7 @@
               <!-- Simple Flag Container with Elegant Shadow -->
               <div class="flex justify-center">
                 <div class="relative group">
-                  <NuxtImg
+                  <img
                     :src="countryDetail.flag"
                     :alt="`${countryDetail.name} flag`"
                     class="w-24 h-16 sm:w-32 sm:h-22 lg:w-40 lg:h-28 object-cover rounded-xl shadow-md shadow-gray-300/40 dark:shadow-gray-900/60 group-hover:shadow-lg group-hover:shadow-gray-400/50 dark:group-hover:shadow-black/40 transition-all duration-300"
@@ -191,8 +191,22 @@
               </div>
             </div>
 
-            <!-- Simple Clear Selection Button with Elegant Shadow -->
-            <div class="mt-10 text-center">
+            <!-- Action Buttons -->
+            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <!-- View Details Button -->
+              <NuxtLink :to="`/country/${countryDetail.code}`">
+                <UButton
+                  color="primary"
+                  variant="solid"
+                  size="lg"
+                  icon="i-heroicons-eye"
+                  class="rounded-xl shadow-sm shadow-blue-200/60 dark:shadow-blue-900/40 hover:shadow-md hover:shadow-blue-300/50 dark:hover:shadow-blue-800/30 hover:-translate-y-0.5 transition-all duration-300"
+                >
+                  View Details
+                </UButton>
+              </NuxtLink>
+
+              <!-- Clear Selection Button -->
               <UButton
                 color="neutral"
                 variant="soft"
@@ -219,6 +233,7 @@ interface Currency {
 
 interface CountryDetail {
   name: string
+  code: string
   capital: string[]
   population: number
   flag: string

@@ -1,12 +1,49 @@
 # 🌍 Country Explorer 
 
-A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
+A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. Features dynamic routing, comprehensive country details pages, and beautiful dark/light mode interface. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
 
 ![Nuxt 3](https://img.shields.io/badge/Nuxt-3.17.4-00DC82)
 ![Vue 3](https://img.shields.io/badge/Vue-3.5.14-4FC08D)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4)
 ![Tests](https://img.shields.io/badge/Tests-25%2B-brightgreen)
+
+## 📸 Screenshots
+
+### 🏠 Main Page - Light Mode
+![Main Page Light Mode](./screenshots/main-page-light.png)
+*Country search and selection interface with beautiful card design*
+
+### 🌙 Main Page - Dark Mode  
+![Main Page Dark Mode](./screenshots/main-page-dark.png)
+*Elegant dark theme with smooth transitions and modern aesthetics*
+
+### 🔍 Search Functionality
+![Search Functionality](./screenshots/search-functionality.png)
+*Real-time search with intelligent filtering and dropdown suggestions*
+
+### 📄 Country Details Page - Light Mode
+![Country Details Light](./screenshots/country-details-light.png)
+*Comprehensive country information with organized sections and interactive maps*
+
+### 🌃 Country Details Page - Dark Mode
+![Country Details Dark](./screenshots/country-details-dark.png)
+*Beautiful dark mode compatibility across all detail sections*
+
+### 📱 Mobile Responsive Design
+![Mobile Design](./screenshots/mobile-responsive.png)
+*Fully responsive design optimized for mobile devices*
+
+### ⚡ Performance & Quality Metrics
+
+#### 🚀 Lighthouse Desktop Test
+![Lighthouse Performance](./screenshots/lighthouse-desktop.png)
+*Lighthouse performance audit showing excellent scores across all metrics*
+
+#### 📊 Lighthouse Mobile Test
+![Lighthouse Accessibility](./screenshots/lighthouse-mobile.png)
+*Perfect Mobile score demonstrating inclusive design practices*
+
 
 ## ✨ Features
 
@@ -17,12 +54,21 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Searchable dropdown with country codes
 - Instant filtering with visual feedback
 
+### 🗺️ **Dynamic Country Details**
+
+- **Dynamic Routing**: Navigate to detailed country pages (`/country/US`, `/country/FR`, etc.)
+- **Comprehensive Information**: Geography, currencies, languages, government, and more
+- **Interactive Maps**: Direct links to Google Maps and OpenStreetMap
+- **SEO Optimized**: Dynamic meta tags and page titles
+- **Loading States**: Beautiful loading animations and error handling
+
 ### 🌙 **Dark/Light Mode**
 
 - System preference detection
 - Smooth theme transitions
 - Persistent theme selection
 - Modern toggle with sun/moon icons
+- **Full Compatibility**: All sections optimized for both themes
 
 ### 📱 **Responsive Design**
 
@@ -37,6 +83,7 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Lazy loading and code splitting
 - Optimized API calls with error handling
 - Smooth animations and transitions
+- **Majority Favicon**: Professional branding with optimized favicon delivery
 
 ### 🧪 **Comprehensive Testing**
 
@@ -89,11 +136,12 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 #### **Vercel Deployment Error: `ERR_MODULE_NOT_FOUND: Cannot find package 'consola'`**
 **✅ FIXED**: This error occurred when deploying to Vercel due to missing runtime dependencies.
 
-**Solution Applied:**
-- Added `consola`, `defu`, `h3`, `ufo`, `ofetch` to dependencies
-- Updated Nuxt config with proper Vercel preset
-- Added `vercel.json` configuration file
-- Configured Nitro externals for proper bundling
+**Final Solution Applied:**
+- Added `consola`, `defu`, `h3`, `ufo`, `ofetch`, `nitropack` to dependencies
+- Updated Nuxt config with dynamic preset selection (`vercel` for Vercel, `node-server` for local)
+- Added `vercel.json` with custom build command
+- Configured `noExternals: true` to force bundle all dependencies
+- Created `npm run build:vercel` script for Vercel-specific builds
 
 #### **Deprecation Warnings**
 You may see Node.js deprecation warnings like `[DEP0155] DeprecationWarning` during builds. These are harmless warnings from dependencies using deprecated export patterns and don't affect functionality.
@@ -146,11 +194,15 @@ npm run demo         # Show application features
 
 The application provides a comprehensive country exploration experience:
 
-1. **Search Functionality**: Type to filter countries in real-time
-2. **Country Details**: View detailed information including population, capital, currencies, and languages
-3. **Theme Support**: Toggle between dark and light modes
-4. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
-5. **Performance**: Intelligent caching ensures fast subsequent loads
+1. **Search Functionality**: Type to filter countries in real-time with intelligent dropdown
+2. **Country Selection**: Click on any country to view basic information in an elegant card
+3. **Detailed Country Pages**: Navigate to dedicated pages with comprehensive country information
+4. **Dynamic Routing**: SEO-friendly URLs like `/country/US` for each country
+5. **Interactive Maps**: Direct access to Google Maps and OpenStreetMap
+6. **Theme Support**: Toggle between dark and light modes with full compatibility
+7. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
+8. **Performance**: Intelligent caching ensures fast subsequent loads
+9. **Professional Branding**: Majority favicon with optimized delivery
 
 ## 🏗️ Project Structure
 
@@ -162,13 +214,27 @@ majority-app/
 ├── components/
 │   ├── AppHeader.vue             # Header with dark mode toggle
 │   ├── CountrySearch.vue         # Search input with dropdown
-│   ├── CountryDetails.vue        # Country information display
+│   ├── CountryDetails.vue        # Country information display with "View Details" button
 │   ├── EmptyState.vue            # Empty state component
-│   └── AppFooter.vue             # Footer with API attribution // removed from the page
+│   └── AppFooter.vue             # Footer with API attribution
 ├── pages/
-│   └── index.vue                 # Main application page (now using components)
+│   ├── index.vue                 # Main application page (country search & selection)
+│   └── country/
+│       └── [code].vue            # Dynamic country details page (/country/US, /country/FR, etc.)
+├── screenshots/                  # Application screenshots for documentation
+│   ├── main-page-light.png       # Main page in light mode
+│   ├── main-page-dark.png        # Main page in dark mode
+│   ├── search-functionality.png  # Search and filtering demo
+│   ├── country-details-light.png # Country details page light mode
+│   ├── country-details-dark.png  # Country details page dark mode
+│   ├── mobile-responsive.png     # Mobile responsive design
+│   ├── lighthouse-performance.png # Lighthouse performance audit results
+│   ├── lighthouse-accessibility.png # Lighthouse accessibility audit results
+│   └── lighthouse-seo.png        # Lighthouse SEO audit results
 ├── stores/
 │   └── countryStore.ts           # Pinia store with caching logic
+├── types/
+│   └── nuxt.d.ts                 # TypeScript declarations for Nuxt auto-imports
 ├── scripts/
 │   ├── dev.js                    # Enhanced development script
 │   ├── build.js                  # Production build script
@@ -181,7 +247,7 @@ majority-app/
 │   │   └── countryStore.test.ts  # Store unit tests
 │   └── integration/
 │       └── countryStore.integration.test.ts # Integration tests
-├── nuxt.config.ts                # Nuxt configuration
+├── nuxt.config.ts                # Nuxt configuration with Majority favicon
 ├── tailwind.config.ts            # Tailwind configuration
 ├── vitest.config.ts              # Vitest configuration
 └── package.json                  # Dependencies and scripts
@@ -221,9 +287,19 @@ The application follows Vue.js best practices with a modular component structure
 
 - **AppHeader.vue** (44 lines) - Header with title and dark mode toggle
 - **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, and status
-- **CountryDetails.vue** (232 lines) - Country information display with loading states
+- **CountryDetails.vue** (232 lines) - Country information display with "View Details" navigation button
 - **EmptyState.vue** (30 lines) - Empty state when no country is selected
 - **AppFooter.vue** (24 lines) - Footer with API attribution
+
+### **Page Structure**
+
+- **pages/index.vue** - Main application page with search and country selection
+- **pages/country/[code].vue** (458 lines) - Dynamic country details page with:
+  - Comprehensive country information (Basic Info, Geography, Currencies, Languages, Government)
+  - Interactive maps (Google Maps & OpenStreetMap links)
+  - SEO-optimized with dynamic meta tags
+  - Full dark/light mode compatibility
+  - Responsive design with loading states and error handling
 
 ### **Benefits of Component Structure**
 
@@ -276,14 +352,16 @@ This project demonstrates expertise in:
 
 ### **REST Countries API**
 
-- **Endpoint**: `https://restcountries.com/v3.1/all`
-- **Data**: Country names, flags, capitals, populations, currencies, languages
+- **Main Endpoint**: `https://restcountries.com/v3.1/all` - All countries data
+- **Detail Endpoint**: `https://restcountries.com/v3.1/alpha/{code}` - Individual country details
+- **Data**: Country names, flags, capitals, populations, currencies, languages, geography, government
 - **Caching**: Intelligent client-side caching for optimal performance
 - **Error Handling**: Comprehensive error states with retry functionality
 
 ### **Data Structure**
 
 ```typescript
+// Main country interface for search and selection
 interface Country {
   name: string
   capital: string[]
@@ -291,6 +369,36 @@ interface Country {
   flag: string
   currencies: Record<string, Currency>
   languages: Record<string, string>
+  code: string // Added for routing
+}
+
+// Extended interface for detailed country pages
+interface CountryApiResponse {
+  name: {
+    common: string
+    official: string
+  }
+  flags: { svg: string }
+  capital?: string[]
+  population: number
+  region: string
+  subregion?: string
+  area?: number
+  landlocked?: boolean
+  borders?: string[]
+  latlng?: number[]
+  currencies?: Record<string, { name: string; symbol: string }>
+  languages?: Record<string, string>
+  government?: string
+  independent?: boolean
+  unMember?: boolean
+  timezones?: string[]
+  tld?: string[]
+  callingCodes?: { root: string; suffixes?: string[] }
+  maps?: {
+    googleMaps?: string
+    openStreetMaps?: string
+  }
 }
 ```
 
@@ -375,10 +483,10 @@ vercel --prod
 ```
 
 **✅ Vercel Configuration Applied:**
-- Proper Nitro preset (`vercel`)
-- Required dependencies bundled (`consola`, `defu`, `h3`, etc.)
-- Optimized build configuration
-- `vercel.json` configuration file
+- Dynamic Nitro preset selection (vercel/node-server)
+- All dependencies force-bundled with `noExternals: true`
+- Custom build command: `npm run build:vercel`
+- Optimized `vercel.json` configuration
 - **Fixed**: `ERR_MODULE_NOT_FOUND` consola error
 
 #### **Netlify**
@@ -412,9 +520,9 @@ NUXT_PUBLIC_SITE_URL=https://your-domain.com
 ### **Performance Metrics**
 
 #### **Lighthouse Scores**
-- 🟢 **Performance**: 95+
+- 🟢 **Performance**: 98
 - 🟢 **Accessibility**: 100
-- 🟢 **Best Practices**: 95+
+- 🟢 **Best Practices**: 100
 - 🟢 **SEO**: 100
 
 #### **Bundle Analysis**
@@ -434,7 +542,7 @@ NUXT_PUBLIC_SITE_URL=https://your-domain.com
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is built for majority.
 
 ## 🌟 Acknowledgments
 

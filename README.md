@@ -1,18 +1,18 @@
 # 🌍 Country Explorer 
 
-A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. Features dynamic routing, comprehensive country details pages, and beautiful dark/light mode interface. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
+A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. Features an **interactive world map**, dynamic routing, comprehensive country details pages, and beautiful dark/light mode interface. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
 
 ![Nuxt 3](https://img.shields.io/badge/Nuxt-3.17.4-00DC82)
 ![Vue 3](https://img.shields.io/badge/Vue-3.5.14-4FC08D)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-06B6D4)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v3.4.17-06B6D4)
 ![Tests](https://img.shields.io/badge/Tests-25%2B-brightgreen)
 
 ## 📸 Screenshots
 
 ### 🏠 Main Page - Light Mode
 ![Main Page Light Mode](./screenshots/main-page-light.png)
-*Country search and selection interface with beautiful card design*
+*Country search and interactive world map interface with beautiful card design*
 
 ### 🌙 Main Page - Dark Mode  
 ![Main Page Dark Mode](./screenshots/main-page-dark.png)
@@ -21,6 +21,10 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 ### 🔍 Search Functionality
 ![Search Functionality](./screenshots/search-functionality.png)
 *Real-time search with intelligent filtering and dropdown suggestions*
+
+### 🗺️ Interactive World Map
+![Interactive Map](./screenshots/interactive-map.png)
+*Clickable world map with country boundaries and real-time data integration*
 
 ### 📄 Country Details Page - Light Mode
 ![Country Details Light](./screenshots/country-details-light.png)
@@ -53,6 +57,18 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Intelligent caching system for optimal performance
 - Searchable dropdown with country codes
 - Instant filtering with visual feedback
+- Refresh functionality to clear cache and reload data
+
+### 🗺️ **Interactive World Map**
+
+- **Clickable World Map**: Interactive Leaflet-based world map with country boundaries
+- **Real-time Country Data**: Click any country to view detailed information instantly
+- **Visual Feedback**: Hover effects and country highlighting with smooth animations
+- **Responsive Design**: Optimized for both desktop and mobile with touch support
+- **Error Handling**: Graceful error states with retry functionality
+- **Dark Mode Compatible**: Full support for light and dark themes
+- **Side-by-Side Layout**: Map and search components displayed together for better UX
+- **Map Instructions**: Clear visual indicators for user interactions (click, zoom, drag)
 
 ### 🗺️ **Dynamic Country Details**
 
@@ -76,6 +92,7 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Touch-friendly interfaces
 - Adaptive layouts for all screen sizes
 - Minimalist shadows and hover effects
+- Grid-based layout that adapts to screen size
 
 ### ⚡ **Performance Optimized**
 
@@ -84,6 +101,7 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 - Optimized API calls with error handling
 - Smooth animations and transitions
 - **Majority Favicon**: Professional branding with optimized favicon delivery
+- Client-side only map rendering for better performance
 
 ### 🧪 **Comprehensive Testing**
 
@@ -102,10 +120,17 @@ A modern, responsive web application built with **Nuxt 3** and **Vue 3** that al
 
 ### **UI & Styling**
 
-- **Tailwind CSS v4** - Utility-first CSS framework
+- **Tailwind CSS v3.4.17** - Utility-first CSS framework
 - **Nuxt UI v3.1.3** - Beautiful Vue components
 - **Nuxt Image** - Optimized image handling
 - **Heroicons** - Beautiful SVG icons
+
+### **Mapping & Visualization**
+
+- **Leaflet** - Open-source interactive maps
+- **vue3-leaflet** - Vue 3 wrapper for Leaflet
+- **OpenStreetMap** - Collaborative mapping data
+- **GeoJSON** - Country boundary data
 
 ### **State Management**
 
@@ -195,14 +220,16 @@ npm run demo         # Show application features
 The application provides a comprehensive country exploration experience:
 
 1. **Search Functionality**: Type to filter countries in real-time with intelligent dropdown
-2. **Country Selection**: Click on any country to view basic information in an elegant card
-3. **Detailed Country Pages**: Navigate to dedicated pages with comprehensive country information
-4. **Dynamic Routing**: SEO-friendly URLs like `/country/US` for each country
-5. **Interactive Maps**: Direct access to Google Maps and OpenStreetMap
-6. **Theme Support**: Toggle between dark and light modes with full compatibility
-7. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
-8. **Performance**: Intelligent caching ensures fast subsequent loads
-9. **Professional Branding**: Majority favicon with optimized delivery
+2. **Interactive World Map**: Click on countries in a Leaflet-based world map to explore them instantly
+3. **Country Selection**: Click on any country to view basic information in an elegant card
+4. **Detailed Country Pages**: Navigate to dedicated pages with comprehensive country information
+5. **Dynamic Routing**: SEO-friendly URLs like `/country/US` for each country
+6. **Side-by-Side Layout**: Search and map components displayed together for better user experience
+7. **Interactive Maps**: Direct access to Google Maps and OpenStreetMap
+8. **Theme Support**: Toggle between dark and light modes with full compatibility
+9. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
+10. **Performance**: Intelligent caching ensures fast subsequent loads
+11. **Professional Branding**: Majority favicon with optimized delivery
 
 ## 🏗️ Project Structure
 
@@ -213,24 +240,25 @@ majority-app/
 │       └── main.css              # Global styles and Tailwind imports
 ├── components/
 │   ├── AppHeader.vue             # Header with dark mode toggle
-│   ├── CountrySearch.vue         # Search input with dropdown
+│   ├── CountrySearch.vue         # Search input with dropdown and refresh functionality
 │   ├── CountryDetails.vue        # Country information display with "View Details" button
+│   ├── InteractiveMap.vue        # Interactive world map with country click functionality
 │   ├── EmptyState.vue            # Empty state component
 │   └── AppFooter.vue             # Footer with API attribution
 ├── pages/
-│   ├── index.vue                 # Main application page (country search & selection)
+│   ├── index.vue                 # Main application page (search & map side-by-side)
 │   └── country/
 │       └── [code].vue            # Dynamic country details page (/country/US, /country/FR, etc.)
 ├── screenshots/                  # Application screenshots for documentation
 │   ├── main-page-light.png       # Main page in light mode
 │   ├── main-page-dark.png        # Main page in dark mode
 │   ├── search-functionality.png  # Search and filtering demo
+│   ├── interactive-map.png       # Interactive world map showcase
 │   ├── country-details-light.png # Country details page light mode
 │   ├── country-details-dark.png  # Country details page dark mode
 │   ├── mobile-responsive.png     # Mobile responsive design
-│   ├── lighthouse-performance.png # Lighthouse performance audit results
-│   ├── lighthouse-accessibility.png # Lighthouse accessibility audit results
-│   └── lighthouse-seo.png        # Lighthouse SEO audit results
+│   ├── lighthouse-desktop.png    # Lighthouse desktop audit results
+│   └── lighthouse-mobile.png     # Lighthouse mobile audit results
 ├── stores/
 │   └── countryStore.ts           # Pinia store with caching logic
 ├── types/
@@ -286,14 +314,21 @@ The application follows Vue.js best practices with a modular component structure
 ### **Component Breakdown**
 
 - **AppHeader.vue** (44 lines) - Header with title and dark mode toggle
-- **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, and status
+- **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, refresh functionality, and status
 - **CountryDetails.vue** (232 lines) - Country information display with "View Details" navigation button
+- **InteractiveMap.vue** (312 lines) - Interactive Leaflet-based world map with country click functionality
 - **EmptyState.vue** (30 lines) - Empty state when no country is selected
 - **AppFooter.vue** (24 lines) - Footer with API attribution
 
 ### **Page Structure**
 
-- **pages/index.vue** - Main application page with search and country selection
+- **pages/index.vue** (278 lines) - Main application page with side-by-side search and map layout:
+  - Grid-based responsive layout (1 column on mobile, 2 columns on desktop)
+  - Search component with refresh functionality
+  - Interactive map component with instructions
+  - Country details section below
+  - Skip navigation for accessibility
+  - Enhanced empty state with visual indicators
 - **pages/country/[code].vue** (458 lines) - Dynamic country details page with:
   - Comprehensive country information (Basic Info, Geography, Currencies, Languages, Government)
   - Interactive maps (Google Maps & OpenStreetMap links)
@@ -308,6 +343,7 @@ The application follows Vue.js best practices with a modular component structure
 - **Testability**: Individual components can be tested in isolation
 - **Readability**: Main page is now clean and focused on orchestration
 - **Scalability**: Easy to add new features or modify existing ones
+- **User Experience**: Side-by-side layout improves discoverability and interaction
 
 ## 🎯 Technical Highlights
 
@@ -319,6 +355,7 @@ This project demonstrates expertise in:
 - Reactive state management
 - Component architecture
 - TypeScript integration
+- Client-side only rendering for maps
 
 ### **Performance Optimization**
 
@@ -326,6 +363,7 @@ This project demonstrates expertise in:
 - Lazy loading implementation
 - Optimized API calls
 - Smooth user interactions
+- Efficient map rendering
 
 ### **Testing Excellence**
 
@@ -340,6 +378,7 @@ This project demonstrates expertise in:
 - Accessibility considerations
 - Modern design patterns
 - Smooth animations
+- Interactive map integration
 
 ### **Development Best Practices**
 
@@ -357,6 +396,13 @@ This project demonstrates expertise in:
 - **Data**: Country names, flags, capitals, populations, currencies, languages, geography, government
 - **Caching**: Intelligent client-side caching for optimal performance
 - **Error Handling**: Comprehensive error states with retry functionality
+
+### **GeoJSON Data**
+
+- **Source**: GitHub datasets for country boundaries
+- **Format**: GeoJSON FeatureCollection with country polygons
+- **Integration**: Real-time country selection from map clicks
+- **Performance**: Efficient rendering with Leaflet optimization
 
 ### **Data Structure**
 
@@ -411,12 +457,13 @@ interface CountryApiResponse {
 - Smooth hover animations
 - Color-coded information sections
 - Modern card designs
+- Interactive map with country boundaries
 
 ### **Responsive Breakpoints**
 
-- Mobile: 320px - 768px
-- Tablet: 768px - 1024px
-- Desktop: 1024px+
+- Mobile: 320px - 768px (single column layout)
+- Tablet: 768px - 1024px (transitional layout)
+- Desktop: 1024px+ (side-by-side layout)
 
 ### **Color Scheme**
 
@@ -434,6 +481,7 @@ interface CountryApiResponse {
 - Auto-imports for components
 - Optimized build settings
 - Development experience enhancements
+- Client-side only rendering for maps
 
 ### **Tailwind Configuration**
 
@@ -441,6 +489,7 @@ interface CountryApiResponse {
 - Responsive design utilities
 - Dark mode support
 - Custom animations
+- Grid system optimization
 
 ### **TypeScript Configuration**
 
@@ -528,6 +577,7 @@ NUXT_PUBLIC_SITE_URL=https://your-domain.com
 #### **Bundle Analysis**
 - **Vendor Chunk**: Vue, Vue Router (~150KB gzipped)
 - **UI Chunk**: Nuxt UI components (~80KB gzipped)
+- **Map Chunk**: Leaflet and vue3-leaflet (~120KB gzipped)
 - **App Chunk**: Application code (~50KB gzipped)
 - **CSS**: Tailwind + custom styles (~30KB gzipped)
 
@@ -550,7 +600,9 @@ This project is built for majority.
 - **Nuxt Team** for the amazing framework
 - **Vue.js Team** for the reactive framework
 - **Tailwind CSS** for the utility-first approach
+- **Leaflet** for the interactive mapping capabilities
+- **OpenStreetMap** for the map tiles and data
 
 ---
 
-**Built with modern Vue.js development practices and attention to performance, testing, and user experience.**
+**Built with modern Vue.js development practices and attention to performance, testing, user experience, and interactive mapping capabilities.**

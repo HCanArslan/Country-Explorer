@@ -11,9 +11,18 @@ export default defineNuxtConfig({
     // Conditionally load @nuxt/image only in production to avoid Sharp issues
     ...(process.env.NODE_ENV === 'production' ? ['@nuxt/image'] : []),
     '@nuxt/test-utils',
+    '@nuxtjs/tailwindcss',
   ],
 
   css: ['~/assets/css/main.css'],
+
+  // PostCSS configuration
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 
   // HTML head configuration
   app: {
@@ -95,6 +104,7 @@ export default defineNuxtConfig({
       'ufo',
       'ofetch',
       'nitropack',
+      '@vue-leaflet/vue-leaflet',
       // Only transpile sharp in production when @nuxt/image is loaded
       ...(process.env.NODE_ENV === 'production' ? ['sharp'] : []),
     ],
@@ -102,6 +112,25 @@ export default defineNuxtConfig({
 
   // Vite optimizations for production - Fixed module resolution
   vite: {
+    plugins: [
+      // Add CommonJS support for legacy modules
+      {
+        name: 'commonjs-externals',
+        config(config) {
+          config.build = config.build || {}
+          config.build.rollupOptions = config.build.rollupOptions || {}
+          config.build.rollupOptions.external = config.build.rollupOptions.external || []
+
+          // Don't externalize these packages, bundle them instead
+          const bundlePackages = ['object-assign', '@turf/turf', 'proj4leaflet', '@terraformer/wkt']
+          if (Array.isArray(config.build.rollupOptions.external)) {
+            config.build.rollupOptions.external = config.build.rollupOptions.external.filter(
+              (ext: string) => !bundlePackages.includes(ext),
+            )
+          }
+        },
+      },
+    ],
     build: {
       sourcemap: false,
       minify: 'terser',
@@ -110,14 +139,20 @@ export default defineNuxtConfig({
         output: {
           manualChunks: {
             vendor: ['vue', 'vue-router'],
+            leaflet: ['leaflet', '@vue-leaflet/vue-leaflet'],
           },
         },
       },
+      commonjsOptions: {
+        include: [/node_modules/],
+        transformMixedEsModules: true,
+      },
     },
     optimizeDeps: {
-      include: ['@vueuse/core', '@vue/shared'],
+      include: ['@vueuse/core', '@vue/shared', '@vue-leaflet/vue-leaflet', 'leaflet'],
       // Only exclude sharp in development
       exclude: process.env.NODE_ENV === 'development' ? ['sharp'] : [],
+      force: true,
     },
     resolve: {
       alias: {
@@ -126,6 +161,9 @@ export default defineNuxtConfig({
     },
     define: {
       global: 'globalThis',
+    },
+    ssr: {
+      noExternal: ['@vue-leaflet/vue-leaflet'],
     },
   },
 

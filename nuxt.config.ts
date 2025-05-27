@@ -109,31 +109,6 @@ export default defineNuxtConfig({
       routes: ['/'],
       crawlLinks: false,
     },
-    // Mobile-specific route rules
-    routeRules: {
-      // Homepage pre-rendered at build time
-      '/': { prerender: true },
-      // Country pages cached for 1 hour
-      '/country/**': {
-        headers: { 'Cache-Control': 's-maxage=3600' },
-        prerender: false,
-      },
-      // API routes cached
-      '/api/**': {
-        cors: true,
-        headers: {
-          'Cache-Control': 's-maxage=60',
-          'cache-control': 'max-age=300, stale-while-revalidate=60',
-        },
-      },
-      // Aggressive caching for mobile assets
-      '/_nuxt/**': {
-        headers: {
-          'cache-control': 'max-age=31536000, immutable',
-          vary: 'Accept-Encoding',
-        },
-      },
-    },
   },
 
   // Enhanced build optimizations
@@ -163,20 +138,17 @@ export default defineNuxtConfig({
           drop_console: true,
           drop_debugger: true,
           pure_funcs: ['console.log', 'console.info', 'console.debug'],
-          passes: 3,
-          unsafe_arrows: true,
-          unsafe_methods: true,
+          passes: 2,
+          unsafe_arrows: false,
+          unsafe_methods: false,
         },
       },
       rollupOptions: {
         output: {
           manualChunks: (id) => {
             // Critical mobile chunks
-            if (id.includes('leaflet')) {
-              return 'map-mobile'
-            }
-            if (id.includes('vue3-leaflet')) {
-              return 'map-mobile'
+            if (id.includes('leaflet') || id.includes('@vue-leaflet')) {
+              return 'map-vendor'
             }
 
             // Defer non-critical chunks on mobile
@@ -195,15 +167,15 @@ export default defineNuxtConfig({
       chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
-      include: ['@vueuse/core', '@vue/shared', 'leaflet', '@vue-leaflet/vue-leaflet'],
-      exclude: ['leaflet'],
+      include: ['@vueuse/core', '@vue/shared'],
+      exclude: ['leaflet', '@vue-leaflet/vue-leaflet'],
     },
     define: {
       global: 'globalThis',
     },
     ssr: {
-      noExternal: ['@vue-leaflet/vue-leaflet'],
-      external: ['leaflet'],
+      noExternal: [],
+      external: ['leaflet', '@vue-leaflet/vue-leaflet'],
     },
   },
 
@@ -242,9 +214,20 @@ export default defineNuxtConfig({
       headers: { 'Cache-Control': 's-maxage=3600' },
       prerender: false,
     },
-    // API routes cached
+    // API routes cached with CORS
     '/api/**': {
-      headers: { 'Cache-Control': 's-maxage=60' },
+      cors: true,
+      headers: {
+        'Cache-Control': 's-maxage=60',
+        'cache-control': 'max-age=300, stale-while-revalidate=60',
+      },
+    },
+    // Aggressive caching for static assets
+    '/_nuxt/**': {
+      headers: {
+        'cache-control': 'max-age=31536000, immutable',
+        vary: 'Accept-Encoding',
+      },
     },
   },
 

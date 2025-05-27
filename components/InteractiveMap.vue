@@ -433,41 +433,55 @@ const emit = defineEmits<{
 
 // Ensure Leaflet is properly loaded before Vue Leaflet components
 const ensureLeafletLoaded = async () => {
-  if (import.meta.client && !window.L) {
-    try {
-      await import('leaflet/dist/leaflet.css')
-      const L = await import('leaflet')
-      const LeafletLib = L.default || L
-
-      // Fix marker icons
-      if (LeafletLib?.Icon?.Default) {
-        try {
-          const iconRetinaUrl = await import('leaflet/dist/images/marker-icon-2x.png')
-          const iconUrl = await import('leaflet/dist/images/marker-icon.png')
-          const shadowUrl = await import('leaflet/dist/images/marker-shadow.png')
-
-          LeafletLib.Icon.Default.mergeOptions({
-            iconRetinaUrl: iconRetinaUrl.default,
-            iconUrl: iconUrl.default,
-            shadowUrl: shadowUrl.default,
-          })
-        } catch {
-          // Continue without icons - this is not critical
-        }
-      }
-
-      window.L = LeafletLib
-    } catch {
-      // Continue if Leaflet fails to load
+  if (!import.meta.client) return false
+  
+  if (window.L) return true
+  
+  try {
+    await import('leaflet/dist/leaflet.css')
+    const L = await import('leaflet')
+    const LeafletLib = L.default || L
+    
+    if (!LeafletLib) {
+      throw new Error('Leaflet library not available')
     }
+
+    // Fix marker icons
+    if (LeafletLib?.Icon?.Default) {
+      try {
+        const iconRetinaUrl = await import('leaflet/dist/images/marker-icon-2x.png')
+        const iconUrl = await import('leaflet/dist/images/marker-icon.png')
+        const shadowUrl = await import('leaflet/dist/images/marker-shadow.png')
+
+        LeafletLib.Icon.Default.mergeOptions({
+          iconRetinaUrl: iconRetinaUrl.default,
+          iconUrl: iconUrl.default,
+          shadowUrl: shadowUrl.default,
+        })
+      } catch {
+        // Continue without icons - this is not critical
+      }
+    }
+
+    window.L = LeafletLib
+    return true
+  } catch {
+    return false
   }
 }
 
 // Dynamic imports for @vue-leaflet/vue-leaflet components with error handling
 const LMap = defineAsyncComponent({
   loader: async () => {
-    await ensureLeafletLoaded()
+    const leafletReady = await ensureLeafletLoaded()
+    if (!leafletReady) {
+      throw new Error('Leaflet failed to initialize')
+    }
+    
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    if (!vueLeaflet?.LMap) {
+      throw new Error('Vue Leaflet LMap component not available')
+    }
     return vueLeaflet.LMap
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load map component'),
@@ -478,8 +492,15 @@ const LMap = defineAsyncComponent({
 
 const LTileLayer = defineAsyncComponent({
   loader: async () => {
-    await ensureLeafletLoaded()
+    const leafletReady = await ensureLeafletLoaded()
+    if (!leafletReady) {
+      throw new Error('Leaflet failed to initialize')
+    }
+    
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    if (!vueLeaflet?.LTileLayer) {
+      throw new Error('Vue Leaflet LTileLayer component not available')
+    }
     return vueLeaflet.LTileLayer
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load tile layer'),
@@ -489,8 +510,15 @@ const LTileLayer = defineAsyncComponent({
 
 const LGeoJson = defineAsyncComponent({
   loader: async () => {
-    await ensureLeafletLoaded()
+    const leafletReady = await ensureLeafletLoaded()
+    if (!leafletReady) {
+      throw new Error('Leaflet failed to initialize')
+    }
+    
     const vueLeaflet = await import('@vue-leaflet/vue-leaflet')
+    if (!vueLeaflet?.LGeoJson) {
+      throw new Error('Vue Leaflet LGeoJson component not available')
+    }
     return vueLeaflet.LGeoJson
   },
   errorComponent: () => h('div', { class: 'text-red-500 p-4' }, 'Failed to load GeoJSON layer'),

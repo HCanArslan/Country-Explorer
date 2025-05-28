@@ -97,7 +97,7 @@
 
 ## 📱 Performance
 
-### Lighthouse Scores (Mobile)
+### Lighthouse Scores 
 - **Performance**: 95+ / 100
 - **Accessibility**: 100 / 100
 - **Best Practices**: 100 / 100

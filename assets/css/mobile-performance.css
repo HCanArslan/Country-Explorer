@@ -4,8 +4,8 @@
 @media (max-width: 768px) {
   /* Faster animations on mobile */
   * {
-    animation-duration: 0.15s !important;
-    transition-duration: 0.15s !important;
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
   }
   
   /* Optimize scrolling */
@@ -15,6 +15,10 @@
   }
   
   /* Reduce blur effects on mobile */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(1px) !important;
+  }
+  
   .backdrop-blur-md {
     backdrop-filter: blur(2px) !important;
   }
@@ -30,6 +34,8 @@
     display: block;
     /* Improve tile loading performance */
     transform: translate3d(0, 0, 0);
+    /* Optimize for mobile */
+    backface-visibility: hidden;
   }
   
   /* Prevent layout shifts in map container */
@@ -37,11 +43,14 @@
     contain: layout style paint;
     /* Fixed dimensions to prevent CLS */
     min-height: 350px;
-    height: 350px !important;
     /* Improve touch performance */
     touch-action: pan-x pan-y;
     /* Hardware acceleration */
     transform: translate3d(0, 0, 0);
+    /* Optimize rendering */
+    backface-visibility: hidden;
+    /* Prevent overscroll */
+    overscroll-behavior: contain;
   }
   
   /* Optimize touch interactions */
@@ -49,6 +58,8 @@
     touch-action: manipulation;
     /* Improve tap responsiveness */
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Prevent layout shifts in tile container */
@@ -57,6 +68,7 @@
     transform: translate3d(0, 0, 0);
     /* Improve rendering performance */
     will-change: transform;
+    backface-visibility: hidden;
   }
   
   /* Optimize map pane for mobile */
@@ -64,6 +76,7 @@
     contain: layout style;
     /* Hardware acceleration for better performance */
     transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
   
   /* Reduce shadow complexity on mobile */
@@ -77,6 +90,7 @@
     will-change: transform;
     /* Improve modal animations */
     transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
   
   /* Reduce gradient complexity on mobile */
@@ -98,6 +112,15 @@
     transform: translate3d(0, 0, 0);
     /* Contain layout changes */
     contain: layout style paint;
+    backface-visibility: hidden;
+  }
+  
+  /* Ensure footer is always visible on mobile */
+  .country-details-modal {
+    /* Simple scrollable layout constrained to map container */
+    max-height: 80% !important;
+    min-height: 200px !important;
+    max-width: calc(100% - 1rem) !important;
   }
   
   /* Improve map zoom controls on mobile */
@@ -106,14 +129,56 @@
     transform-origin: top right;
     /* Better touch targets */
     touch-action: manipulation;
+    backface-visibility: hidden;
   }
   
   .leaflet-control-zoom a {
     /* Larger touch targets */
-    min-width: 32px !important;
-    min-height: 32px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
     /* Better visual feedback */
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+  
+  /* Optimize map attribution */
+  .leaflet-control-attribution {
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+    padding: 2px 4px !important;
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 769px) {
+  /* Optimize desktop map performance */
+  .leaflet-container {
+    /* Enable hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+  
+  .leaflet-tile {
+    /* Optimize tile rendering on desktop */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+  
+  .leaflet-interactive {
+    /* Smooth hover transitions on desktop */
+    transition: all 0.2s ease;
+  }
+  
+  /* Optimize zoom controls for desktop */
+  .leaflet-control-zoom a {
+    transition: all 0.15s ease;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
 }
 

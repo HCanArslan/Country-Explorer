@@ -25,12 +25,20 @@ useHead({
       innerHTML: `
         // Mobile map configuration for better performance
         window.__MOBILE_MAP_CONFIG__ = {
-          maxZoom: 8,
+          maxZoom: 10,
           tileSize: 256,
           detectRetina: false,
           updateWhenIdle: true,
-          keepBuffer: 0
+          keepBuffer: 1,
+          // Additional performance settings
+          preferCanvas: true,
+          zoomSnap: 1,
+          wheelDebounceTime: 100,
+          inertiaMaxSpeed: 1500
         };
+        
+        // Detect mobile device for better optimization
+        window.__IS_MOBILE__ = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
       `,
       type: 'text/javascript',
     },

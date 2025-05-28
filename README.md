@@ -470,7 +470,7 @@ const mobileOptimizedTileOptions = {
 /* Prevent layout shifts */
 .leaflet-container {
   contain: layout style paint;
-  min-height: 300px;
+  min-height: 352px;
   height: 300px !important;
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full" :style="{ height }">
+  <div class="relative w-full" :style="{ height: computedHeight }">
     <!-- Loading State -->
     <div
       v-if="isLoadingGeoJSON && !geoJSONError"
@@ -48,12 +48,15 @@
         <div
           v-if="selectedCountryData || isLoadingCountryData"
           :class="[
-            'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden',
+            'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-y-auto',
             isMobile
-              ? 'bottom-2 left-2 right-2 max-h-[45vh] min-h-[200px] max-w-[calc(100vw-1rem)]'
-              : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100vh-4rem)]',
+              ? 'bottom-2 left-2 right-2 max-h-[80%] min-h-[200px] max-w-[calc(100%-1rem)]'
+              : 'top-4 right-4 w-80 max-w-[calc(100%-2rem)] max-h-[calc(100vh-2rem)]',
           ]"
-          style="will-change: transform"
+          style="will-change: transform; contain: layout style paint"
+          @touchstart.stop
+          @touchmove.stop
+          @touchend.stop
         >
           <!-- Loading State for Country Data -->
           <div v-if="isLoadingCountryData" class="p-3">
@@ -71,9 +74,9 @@
           </div>
 
           <!-- Country Data Display -->
-          <div v-else-if="selectedCountryData" class="flex flex-col h-full">
+          <div v-else-if="selectedCountryData" :class="[isMobile ? 'country-details-modal' : '']">
             <!-- Header with Close Button -->
-            <div class="flex-shrink-0 p-1.5 pb-1">
+            <div :class="['flex-shrink-0', isMobile ? 'p-1 pb-0.5' : 'p-1.5 pb-1']">
               <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center space-x-1.5 mb-0.5">
@@ -111,7 +114,7 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-1.5 pb-1 min-h-0">
+            <div class="px-1.5 pb-0.5">
               <div class="space-y-1">
                 <!-- Primary Info Grid -->
                 <div :class="isMobile ? 'space-y-1' : 'grid grid-cols-2 gap-1'">
@@ -165,7 +168,10 @@
                 <!-- Region -->
                 <div
                   v-if="selectedCountryData.region"
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
+                  :class="[
+                    'bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600',
+                    isMobile ? 'p-1' : 'p-1.5',
+                  ]"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -195,7 +201,10 @@
                     selectedCountryData.languages &&
                     Object.keys(selectedCountryData.languages).length
                   "
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
+                  :class="[
+                    'bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600',
+                    isMobile ? 'p-1' : 'p-1.5',
+                  ]"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -219,7 +228,10 @@
                     selectedCountryData.currencies &&
                     Object.keys(selectedCountryData.currencies).length
                   "
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
+                  :class="[
+                    'bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600',
+                    isMobile ? 'p-1' : 'p-1.5',
+                  ]"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -250,7 +262,10 @@
 
             <!-- Footer with View Details Button -->
             <div
-              class="flex-shrink-0 p-1.5 border-t border-gray-200/60 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50"
+              :class="[
+                'flex-shrink-0 border-t border-gray-200/60 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50',
+                isMobile ? 'p-1' : 'p-1.5',
+              ]"
             >
               <NuxtLink
                 :to="`/country/${selectedCountryData.cca2?.toLowerCase()}`"
@@ -287,12 +302,7 @@
             :attribution="tileLayerAttribution"
             :options="mobileOptimizedTileOptions"
           />
-          <LGeoJson
-            v-if="geoJSONData"
-            :geojson="geoJSONData"
-            :options="geoJSONOptions"
-            :options-style="getCountryStyle"
-          />
+          <LGeoJson v-if="geoJSONData" :geojson="geoJSONData" :options="geoJSONOptions" />
         </LMap>
         <template #fallback>
           <div
@@ -508,61 +518,95 @@ const mapLoadError = ref(false)
 const mapZoom = ref(props.initialZoom)
 const mapCenter = ref<[number, number]>(props.initialCenter)
 
-const mapOptions = {
+// Computed height that's responsive to mobile/desktop
+const computedHeight = computed(() => {
+  // If a specific height prop is passed and it's not the default, use it
+  if (props.height !== '500px') {
+    return props.height
+  }
+  // Otherwise, use responsive height: taller on mobile for better modal accommodation
+  return isMobile.value ? '600px' : '500px'
+})
+
+// Map configuration with optimized settings for both desktop and mobile
+const mapOptions = computed(() => ({
   zoomControl: true,
   attributionControl: true,
-  scrollWheelZoom: true,
+  scrollWheelZoom: !isMobile.value, // Disable scroll zoom on mobile to prevent conflicts
   doubleClickZoom: true,
-  boxZoom: true,
-  keyboard: true,
+  boxZoom: !isMobile.value, // Disable box zoom on mobile
+  keyboard: !isMobile.value, // Disable keyboard on mobile
   dragging: true,
-  touchZoom: true,
-}
+  touchZoom: isMobile.value,
+  // Performance optimizations
+  preferCanvas: true, // Use canvas renderer for better performance
+  zoomSnap: isMobile.value ? 1 : 0.5, // Snap to integer zoom levels on mobile
+  zoomDelta: isMobile.value ? 1 : 1,
+  wheelDebounceTime: isMobile.value ? 100 : 40,
+  wheelPxPerZoomLevel: isMobile.value ? 120 : 60,
+  // Improve dragging performance
+  inertia: !isMobile.value,
+  inertiaDeceleration: 3000,
+  inertiaMaxSpeed: isMobile.value ? 1500 : 3000,
+  worldCopyJump: false, // Disable for better performance
+}))
 
 const tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const tileLayerAttribution = '© OpenStreetMap contributors'
 
-// Mobile-optimized tile layer options for faster LCP
+// Optimized tile layer options for both desktop and mobile
 const mobileOptimizedTileOptions = computed(() => {
   const mobileConfig = window.__MOBILE_MAP_CONFIG__
   return {
-    maxZoom: isMobile.value ? mobileConfig?.maxZoom || 8 : 18,
+    maxZoom: isMobile.value ? mobileConfig?.maxZoom || 10 : 18,
     minZoom: 1,
-    tileSize: isMobile.value ? mobileConfig?.tileSize || 256 : 256,
+    tileSize: 256,
     updateWhenZooming: !isMobile.value,
     updateWhenIdle: isMobile.value,
-    keepBuffer: isMobile.value ? 0 : 2, // Reduced buffer for faster loading
-    // Disable retina detection on mobile for faster loading
+    keepBuffer: isMobile.value ? 1 : 2,
+    // Optimize for device capabilities
     detectRetina: !isMobile.value && mobileConfig?.detectRetina !== false,
-    // Add crossOrigin for better caching
     crossOrigin: true,
-    // Optimize loading priority
-    loading: 'eager',
+    // Improve loading performance
+    loading: isMobile.value ? 'lazy' : 'eager',
+    // Add error handling
+    errorTileUrl:
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+    // Optimize caching
+    useCache: true,
+    cacheMaxAge: 86400000, // 24 hours
   }
 })
 
-// GeoJSON configuration
+// GeoJSON configuration with performance optimizations
 const geoJSONOptions = computed(() => ({
   onEachFeature: (feature: CountryFeature, layer: CountryLayer) => {
     // Add click event handler
-    layer.on('click', () => handleCountryClick(feature, layer))
-
-    // Add hover effects
-    layer.on('mouseover', () => {
-      if (layer !== selectedLayer.value) {
-        layer.setStyle({
-          fillOpacity: 0.5,
-          weight: 2,
-        })
-      }
+    layer.on('click', () => {
+      handleCountryClick(feature, layer)
     })
 
-    layer.on('mouseout', () => {
-      if (layer !== selectedLayer.value) {
-        layer.setStyle(getCountryStyle())
-      }
-    })
+    // Add hover effects only on desktop for better mobile performance
+    if (!isMobile.value) {
+      layer.on('mouseover', () => {
+        if (layer !== selectedLayer.value) {
+          layer.setStyle({
+            fillOpacity: 0.5,
+            weight: 2,
+          })
+        }
+      })
+
+      layer.on('mouseout', () => {
+        if (layer !== selectedLayer.value) {
+          layer.setStyle(getCountryStyle())
+        }
+      })
+    }
   },
+  // Performance optimizations
+  interactive: true,
+  bubblingMouseEvents: false,
 }))
 
 // Styling functions
@@ -1120,14 +1164,13 @@ onUnmounted(() => {
 @reference "@/assets/css/main.css";
 /* Ensure the map container has proper height */
 :deep(.leaflet-container) {
-  height: v-bind(height);
+  height: v-bind(computedHeight);
   min-height: 350px;
 }
 
 /* Mobile-specific map optimizations */
 @media (max-width: 768px) {
   :deep(.leaflet-container) {
-    height: 350px !important;
     touch-action: pan-x pan-y;
     transform: translate3d(0, 0, 0);
   }

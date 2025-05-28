@@ -83,9 +83,9 @@
 
               <!-- Map Component with mobile optimization -->
               <div
-                class="h-[300px] sm:h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                class="h-[352px] sm:h-[350px] lg:h-[352px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
                 style="
-                  min-height: 300px;
+                  min-height: 352px;
                   contain: layout style paint;
                   width: 100%;
                   aspect-ratio: 16/9;

@@ -48,6 +48,7 @@
     "@nuxtjs/color-mode": "^3.5.1",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.0",
+    "@vercel/analytics": "^1.5.0",
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "autoprefixer": "^10.4.21",
     "consola": "^3.2.3",

@@ -1,8 +1,13 @@
 <template>
-  <NuxtPage />
+  <div>
+    <NuxtPage />
+    <Analytics />
+  </div>
 </template>
 
 <script setup>
+import { Analytics } from '@vercel/analytics/vue'
+
 // Set meta tags for better mobile experience
 
 useHead({

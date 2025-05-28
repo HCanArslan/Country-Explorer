@@ -84,7 +84,7 @@
               <!-- Map Component with mobile optimization -->
               <div
                 class="h-[300px] sm:h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
-                style="min-height: 300px; contain: layout style paint"
+                style="min-height: 300px; contain: layout style paint; width: 100%; aspect-ratio: 16/9;"
               >
                 <ClientOnly>
                   <ErrorBoundary
@@ -100,7 +100,7 @@
                   <template #fallback>
                     <div
                       class="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700"
-                      style="min-height: 300px"
+                      style="min-height: 300px; width: 100%;"
                     >
                       <div class="text-center">
                         <div

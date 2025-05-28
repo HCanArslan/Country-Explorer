@@ -1,3 +1,15 @@
+// Global type declaration for mobile map config
+declare global {
+  interface Window {
+    __MOBILE_MAP_CONFIG__?: {
+      tileSize: number
+      zoomOffset: number
+      detectRetina: boolean
+      maxZoom: number
+    }
+  }
+}
+
 export default defineNuxtPlugin(() => {
   // Only run on client side
   if (import.meta.server) return
@@ -29,6 +41,23 @@ export default defineNuxtPlugin(() => {
     preloadLink.crossOrigin = 'anonymous'
     document.head.appendChild(preloadLink)
     
+    // Preload critical map tiles for faster LCP
+    const tilePreloads = [
+      'https://a.tile.openstreetmap.org/2/1/1.png',
+      'https://b.tile.openstreetmap.org/2/1/0.png',
+      'https://c.tile.openstreetmap.org/2/0/1.png',
+      'https://a.tile.openstreetmap.org/2/0/0.png',
+    ]
+
+    tilePreloads.forEach((tileUrl) => {
+      const tileLink = document.createElement('link')
+      tileLink.rel = 'preload'
+      tileLink.href = tileUrl
+      tileLink.as = 'image'
+      tileLink.crossOrigin = 'anonymous'
+      document.head.appendChild(tileLink)
+    })
+    
     // Optimize images loading
     const images = document.querySelectorAll('img')
     images.forEach((img) => {
@@ -36,12 +65,12 @@ export default defineNuxtPlugin(() => {
       img.decoding = 'async'
     })
     
-    // Reduce map quality on mobile
+    // Reduce map quality on mobile for faster loading
     window.__MOBILE_MAP_CONFIG__ = {
       tileSize: 256,
       zoomOffset: 0,
       detectRetina: false,
-      maxZoom: 10,
+      maxZoom: 8, // Reduced from 10 for faster loading
     }
   }
   
@@ -60,7 +89,7 @@ export default defineNuxtPlugin(() => {
     
     try {
       lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] })
-    } catch (e) {
+    } catch {
       // Fallback for browsers that don't support LCP
     }
     
@@ -81,7 +110,7 @@ export default defineNuxtPlugin(() => {
     
     try {
       clsObserver.observe({ entryTypes: ['layout-shift'] })
-    } catch (e) {
+    } catch {
       // Fallback for browsers that don't support CLS
     }
   }

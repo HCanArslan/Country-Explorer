@@ -46,8 +46,11 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        // Preconnect to external domains
+        // Preconnect to external domains for faster loading
         { rel: 'preconnect', href: 'https://restcountries.com' },
+        { rel: 'preconnect', href: 'https://a.tile.openstreetmap.org' },
+        { rel: 'preconnect', href: 'https://b.tile.openstreetmap.org' },
+        { rel: 'preconnect', href: 'https://c.tile.openstreetmap.org' },
         { rel: 'dns-prefetch', href: 'https://tile.openstreetmap.org' },
       ],
     },
@@ -61,28 +64,28 @@ export default defineNuxtConfig({
       brotli: true,
     },
     minify: true,
-          routeRules: {
-        // Static assets with long cache
-        '/favicon.ico': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
-        '/_nuxt/**': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
-        // API routes with shorter cache
-        '/api/**': {
-          headers: {
-            'Cache-Control': 'public, max-age=300, s-maxage=3600',
-            'Content-Encoding': 'identity',
-          },
+    routeRules: {
+      // Static assets with long cache
+      '/favicon.ico': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
+      '/_nuxt/**': { headers: { 'Cache-Control': 'public, max-age=31536000, immutable' } },
+      // API routes with shorter cache
+      '/api/**': {
+        headers: {
+          'Cache-Control': 'public, max-age=300, s-maxage=3600',
+          'Content-Encoding': 'identity',
         },
-        // Icon API specific handling
-        '/api/_nuxt_icon/**': {
-          headers: {
-            'Content-Encoding': 'identity',
-            'Cache-Control': 'public, max-age=31536000, immutable',
-          },
-        },
-        // Main pages with ISR
-        '/': { isr: 3600 },
-        '/country/**': { isr: 3600 },
       },
+      // Icon API specific handling
+      '/api/_nuxt_icon/**': {
+        headers: {
+          'Content-Encoding': 'identity',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      },
+      // Main pages with ISR
+      '/': { isr: 3600 },
+      '/country/**': { isr: 3600 },
+    },
   },
 
   // Optimized build configuration for mobile performance

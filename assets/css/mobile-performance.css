@@ -19,21 +19,39 @@
     backdrop-filter: blur(4px) !important;
   }
   
-  /* Optimize map tiles on mobile */
+  /* Optimize map tiles on mobile for faster LCP */
   .leaflet-tile {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     will-change: transform;
+    /* Prevent layout shifts during tile loading */
+    width: 256px !important;
+    height: 256px !important;
+    display: block;
   }
   
-  /* Prevent layout shifts */
+  /* Prevent layout shifts in map container */
   .leaflet-container {
     contain: layout style paint;
+    /* Fixed dimensions to prevent CLS */
+    min-height: 300px;
+    height: 300px !important;
   }
   
   /* Optimize touch interactions */
   .leaflet-interactive {
     touch-action: manipulation;
+  }
+  
+  /* Prevent layout shifts in tile container */
+  .leaflet-tile-container {
+    contain: layout;
+    transform: translate3d(0, 0, 0);
+  }
+  
+  /* Optimize map pane for mobile */
+  .leaflet-pane {
+    contain: layout style;
   }
   
   /* Reduce shadow complexity on mobile */
@@ -50,6 +68,12 @@
   /* Reduce gradient complexity on mobile */
   .bg-gradient-to-r {
     background: linear-gradient(90deg, var(--tw-gradient-from), var(--tw-gradient-to)) !important;
+  }
+  
+  /* Prevent layout shifts in map wrapper */
+  [data-v-3bdcfb7f] {
+    contain: layout style;
+    min-height: 300px;
   }
 }
 
@@ -130,5 +154,23 @@
   
   .rounded-xl {
     border-radius: 0.5rem !important;
+  }
+  
+  /* Specific optimizations for map loading performance */
+  .leaflet-loading {
+    background-color: #f3f4f6;
+    background-image: none;
+  }
+  
+  /* Optimize attribution control */
+  .leaflet-control-attribution {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Reduce zoom control size on mobile */
+  .leaflet-control-zoom {
+    transform: scale(0.8);
+    transform-origin: top right;
   }
 } 

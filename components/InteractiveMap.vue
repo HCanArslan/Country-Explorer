@@ -522,17 +522,24 @@ const mapOptions = {
 const tileLayerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const tileLayerAttribution = '© OpenStreetMap contributors'
 
-// Mobile-optimized tile layer options
-const mobileOptimizedTileOptions = computed(() => ({
-  maxZoom: isMobile.value ? 16 : 18,
-  minZoom: 1,
-  tileSize: isMobile.value ? 256 : 256,
-  updateWhenZooming: !isMobile.value,
-  updateWhenIdle: isMobile.value,
-  keepBuffer: isMobile.value ? 1 : 2,
-  // Reduce quality on mobile for faster loading
-  detectRetina: !isMobile.value,
-}))
+// Mobile-optimized tile layer options for faster LCP
+const mobileOptimizedTileOptions = computed(() => {
+  const mobileConfig = window.__MOBILE_MAP_CONFIG__
+  return {
+    maxZoom: isMobile.value ? (mobileConfig?.maxZoom || 8) : 18,
+    minZoom: 1,
+    tileSize: isMobile.value ? (mobileConfig?.tileSize || 256) : 256,
+    updateWhenZooming: !isMobile.value,
+    updateWhenIdle: isMobile.value,
+    keepBuffer: isMobile.value ? 0 : 2, // Reduced buffer for faster loading
+    // Disable retina detection on mobile for faster loading
+    detectRetina: !isMobile.value && (mobileConfig?.detectRetina !== false),
+    // Add crossOrigin for better caching
+    crossOrigin: true,
+    // Optimize loading priority
+    loading: 'eager',
+  }
+})
 
 // GeoJSON configuration
 const geoJSONOptions = computed(() => ({

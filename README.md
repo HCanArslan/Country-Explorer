@@ -62,7 +62,7 @@
 
 ## 🚀 Live Demo
 
-🔗 **[View Live Application](https://country-explorer-hcanarslan.vercel.app)**
+🔗 **[View Live Application](https://country-explorer-zeta.vercel.app/)**
 
 ## 🛠️ Tech Stack
 

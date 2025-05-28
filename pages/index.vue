@@ -81,9 +81,10 @@
                 <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-blue-500" />
               </div>
 
-              <!-- Map Component -->
+              <!-- Map Component with mobile optimization -->
               <div
-                class="h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                class="h-[300px] sm:h-[350px] lg:h-[400px] rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+                style="min-height: 300px; contain: layout style paint"
               >
                 <ClientOnly>
                   <ErrorBoundary
@@ -99,12 +100,13 @@
                   <template #fallback>
                     <div
                       class="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700"
+                      style="min-height: 300px"
                     >
                       <div class="text-center">
                         <div
-                          class="w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"
+                          class="w-6 h-6 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin mx-auto mb-3"
                         ></div>
-                        <p class="text-gray-600 dark:text-gray-400">Loading map...</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Loading map...</p>
                       </div>
                     </div>
                   </template>

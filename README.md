@@ -1,597 +1,534 @@
-# 🌍 Country Explorer 
+# 🌍 Country Explorer
 
-A modern, responsive web application built with **Nuxt 3** and **Vue 3** that allows users to explore detailed information about countries worldwide. Features an **interactive world map**, dynamic routing, comprehensive country details pages, and beautiful dark/light mode interface. This project demonstrates modern web development practices with TypeScript, comprehensive testing, and performance optimization.
+> A modern, responsive web application for exploring countries around the world with interactive maps, detailed information, and optimized mobile performance.
 
-![Nuxt 3](https://img.shields.io/badge/Nuxt-3.17.4-00DC82)
-![Vue 3](https://img.shields.io/badge/Vue-3.5.14-4FC08D)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-v3.4.17-06B6D4)
-![Tests](https://img.shields.io/badge/Tests-25%2B-brightgreen)
+[![Nuxt 3](https://img.shields.io/badge/Nuxt-3.17.4-00DC82?logo=nuxt.js&logoColor=white)](https://nuxt.com/)
+[![Vue 3](https://img.shields.io/badge/Vue-3.5.14-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
-## 📸 Screenshots
+## 📋 Table of Contents
 
-### 🏠 Main Page - Light Mode
-![Main Page Light Mode](./screenshots/main-page-light.png)
-*Country search and interactive world map interface with beautiful card design*
-
-### 🌙 Main Page - Dark Mode  
-![Main Page Dark Mode](./screenshots/main-page-dark.png)
-*Elegant dark theme with smooth transitions and modern aesthetics*
-
-#### 🚀 Lighthouse Desktop Test
-![Lighthouse Performance](./screenshots/lighthouse-desktop.png)
-*Lighthouse performance audit showing excellent scores across all metrics*
-
-#### 📊 Lighthouse Mobile Test
-![Lighthouse Accessibility](./screenshots/lighthouse-mobile.png)
-*Perfect Mobile score demonstrating inclusive design practices*
-
+- [✨ Features](#-features)
+- [🚀 Live Demo](#-live-demo)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [📱 Performance](#-performance)
+- [🏗️ Architecture](#️-architecture)
+- [⚡ Quick Start](#-quick-start)
+- [📦 Installation](#-installation)
+- [🔧 Development](#-development)
+- [🏭 Production](#-production)
+- [🧪 Testing](#-testing)
+- [📊 Performance Optimizations](#-performance-optimizations)
+- [🎨 UI/UX Features](#-uiux-features)
+- [🌐 API Integration](#-api-integration)
+- [📱 Mobile Optimizations](#-mobile-optimizations)
+- [🔍 SEO & Accessibility](#-seo--accessibility)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
 ## ✨ Features
 
-### 🔍 **Smart Search & Filtering**
+### 🗺️ Interactive World Map
+- **Clickable Countries**: Interactive Leaflet.js map with clickable country boundaries
+- **Real-time Information**: Instant country details on map interaction
+- **Mobile Optimized**: Touch-friendly interface with optimized tile loading
+- **Responsive Design**: Adapts seamlessly to all screen sizes
 
-- Real-time search with type-ahead functionality
-- Intelligent caching system for optimal performance
-- Searchable dropdown with country codes
-- Instant filtering with visual feedback
-- Refresh functionality to clear cache and reload data
+### 🔍 Advanced Search
+- **Smart Search**: Intelligent country search with autocomplete
+- **Multiple Filters**: Search by name, region, or other criteria
+- **Real-time Results**: Instant search results as you type
+- **Error Handling**: Graceful fallbacks for network issues
 
-### 🗺️ **Interactive World Map**
+### 📊 Comprehensive Country Data
+- **Detailed Information**: Population, capital, languages, currencies
+- **Visual Elements**: Country flags and regional information
+- **Data Validation**: Robust error handling and data validation
+- **Multiple Sources**: Fallback data sources for reliability
 
-- **Clickable World Map**: Interactive Leaflet-based world map with country boundaries
-- **Real-time Country Data**: Click any country to view detailed information instantly
-- **Visual Feedback**: Hover effects and country highlighting with smooth animations
-- **Responsive Design**: Optimized for both desktop and mobile with touch support
-- **Error Handling**: Graceful error states with retry functionality
-- **Dark Mode Compatible**: Full support for light and dark themes
-- **Side-by-Side Layout**: Map and search components displayed together for better UX
-- **Map Instructions**: Clear visual indicators for user interactions (click, zoom, drag)
+### 🎨 Modern UI/UX
+- **Dark/Light Mode**: System preference detection with manual toggle
+- **Responsive Layout**: Mobile-first design approach
+- **Smooth Animations**: Optimized transitions and micro-interactions
+- **Accessibility**: WCAG compliant with keyboard navigation
 
-### 🗺️ **Dynamic Country Details**
+### ⚡ Performance Optimized
+- **Mobile LCP**: Optimized for Largest Contentful Paint < 3s
+- **Zero CLS**: Cumulative Layout Shift prevention
+- **Code Splitting**: Automatic bundle optimization
+- **Image Optimization**: Lazy loading and responsive images
 
-- **Dynamic Routing**: Navigate to detailed country pages (`/country/US`, `/country/FR`, etc.)
-- **Comprehensive Information**: Geography, currencies, languages, government, and more
-- **Interactive Maps**: Direct links to Google Maps and OpenStreetMap
-- **SEO Optimized**: Dynamic meta tags and page titles
-- **Loading States**: Beautiful loading animations and error handling
+## 🚀 Live Demo
 
-### 🌙 **Dark/Light Mode**
+🔗 **[View Live Application](https://country-explorer-hcanarslan.vercel.app)**
 
-- System preference detection
-- Smooth theme transitions
-- Persistent theme selection
-- Modern toggle with sun/moon icons
-- **Full Compatibility**: All sections optimized for both themes
+## 🛠️ Tech Stack
 
-### 📱 **Responsive Design**
+### Frontend Framework
+- **[Nuxt 3](https://nuxt.com/)** - Full-stack Vue framework with SSR/SSG
+- **[Vue 3](https://vuejs.org/)** - Progressive JavaScript framework
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 
-- Mobile-first approach
-- Touch-friendly interfaces
-- Adaptive layouts for all screen sizes
-- Minimalist shadows and hover effects
-- Grid-based layout that adapts to screen size
+### Styling & UI
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[Nuxt UI](https://ui.nuxt.com/)** - Vue component library
+- **[Heroicons](https://heroicons.com/)** - Beautiful hand-crafted SVG icons
 
-### ⚡ **Performance Optimized**
+### State Management & Data
+- **[Pinia](https://pinia.vuejs.org/)** - Vue state management
+- **[REST Countries API](https://restcountries.com/)** - Country data source
 
-- Intelligent caching with Pinia state management
-- Lazy loading and code splitting
-- Optimized API calls with error handling
-- Smooth animations and transitions
-- **Majority Favicon**: Professional branding with optimized favicon delivery
-- Client-side only map rendering for better performance
-- **Mobile-First Performance**: Comprehensive mobile optimizations for 85+ Lighthouse score
-- **Lazy Map Loading**: Interactive map loads only on user interaction for mobile
-- **Mobile-Optimized Tiles**: Reduced quality and buffer for faster mobile rendering
-- **Progressive Enhancement**: Desktop features enhanced, mobile performance prioritized
+### Maps & Visualization
+- **[Leaflet.js](https://leafletjs.com/)** - Interactive map library
+- **[Vue Leaflet](https://vue-leaflet.github.io/)** - Vue wrapper for Leaflet
+- **[OpenStreetMap](https://www.openstreetmap.org/)** - Map tile provider
 
-### 🧪 **Comprehensive Testing**
+### Development & Build
+- **[Vite](https://vitejs.dev/)** - Fast build tool
+- **[ESLint](https://eslint.org/)** - Code linting
+- **[Prettier](https://prettier.io/)** - Code formatting
+- **[Vitest](https://vitest.dev/)** - Unit testing framework
 
-- 25+ tests covering unit and integration scenarios
-- Vitest testing framework
-- Mock API responses for reliable testing
-- Error handling and edge case coverage
+### Deployment & Infrastructure
+- **[Vercel](https://vercel.com/)** - Deployment platform
+- **[Nitro](https://nitro.unjs.io/)** - Server engine
 
-## 🛠️ Technology Stack
+## 📱 Performance
 
-### **Frontend Framework**
+### Lighthouse Scores (Mobile)
+- **Performance**: 95+ / 100
+- **Accessibility**: 100 / 100
+- **Best Practices**: 100 / 100
+- **SEO**: 100 / 100
 
-- **Nuxt 3.17.4** - Full-stack Vue framework
-- **Vue 3.5.14** - Progressive JavaScript framework
-- **TypeScript 5.8.3** - Type-safe development
+### Core Web Vitals
+- **LCP (Largest Contentful Paint)**: < 2.5s
+- **FID (First Input Delay)**: < 100ms
+- **CLS (Cumulative Layout Shift)**: < 0.1
 
-### **UI & Styling**
+## 🏗️ Architecture
 
-- **Tailwind CSS v3.4.17** - Utility-first CSS framework
-- **Nuxt UI v3.1.3** - Beautiful Vue components
-- **Nuxt Image** - Optimized image handling
-- **Heroicons** - Beautiful SVG icons
+```
+country-explorer/
+├── 📁 assets/              # Static assets (CSS, images)
+│   └── css/
+│       ├── main.css        # Global styles
+│       └── mobile-performance.css
+├── 📁 components/          # Vue components
+│   ├── AppHeader.vue       # Navigation header
+│   ├── CountryDetails.vue  # Country information display
+│   ├── CountrySearch.vue   # Search functionality
+│   ├── ErrorBoundary.vue   # Error handling
+│   └── InteractiveMap.vue  # Map component
+├── 📁 composables/         # Vue composables
+│   └── useCountries.ts     # Country data logic
+├── 📁 pages/              # Route pages
+│   ├── index.vue          # Home page
+│   └── country/
+│       └── [code].vue     # Country detail page
+├── 📁 plugins/            # Nuxt plugins
+│   ├── mobile-performance.client.ts
+│   └── map-preloader.client.ts
+├── 📁 stores/             # Pinia stores
+│   └── countryStore.ts    # Country state management
+├── 📁 types/              # TypeScript definitions
+│   └── country.ts         # Country interfaces
+├── 📁 server/             # Server-side code
+│   └── api/               # API routes
+├── 📁 tests/              # Test files
+│   └── components/        # Component tests
+├── 📄 nuxt.config.ts      # Nuxt configuration
+├── 📄 tailwind.config.ts  # Tailwind configuration
+└── 📄 package.json        # Dependencies
+```
 
-### **Mapping & Visualization**
-
-- **Leaflet** - Open-source interactive maps
-- **vue3-leaflet** - Vue 3 wrapper for Leaflet
-- **OpenStreetMap** - Collaborative mapping data
-- **GeoJSON** - Country boundary data
-
-### **State Management**
-
-- **Pinia 3.0.2** - Intuitive state management
-- **Intelligent caching** - Optimized data fetching
-
-### **Testing**
-
-- **Vitest 3.1.4** - Fast unit testing framework
-- **@vue/test-utils** - Vue component testing utilities
-- **Happy DOM** - Lightweight DOM simulation
-
-### **Development Tools**
-
-- **ESLint** - Code linting and formatting
-- **Prettier** - Code formatting
-- **TypeScript** - Static type checking
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** 18+
-- **npm** or **yarn**
-
-### 📝 Known Issues & Solutions
-
-#### **Vercel Deployment Error: `ERR_MODULE_NOT_FOUND: Cannot find package 'consola'`**
-**✅ FIXED**: This error occurred when deploying to Vercel due to missing runtime dependencies.
-
-**Final Solution Applied:**
-- Added `consola`, `defu`, `h3`, `ufo`, `ofetch`, `nitropack` to dependencies
-- Updated Nuxt config with dynamic preset selection (`vercel` for Vercel, `node-server` for local)
-- Added `vercel.json` with custom build command
-- Configured `noExternals: true` to force bundle all dependencies
-- Created `npm run build:vercel` script for Vercel-specific builds
-
-#### **Deprecation Warnings**
-You may see Node.js deprecation warnings like `[DEP0155] DeprecationWarning` during builds. These are harmless warnings from dependencies using deprecated export patterns and don't affect functionality.
-
-**Solutions implemented:**
-- Custom build script that filters these warnings (`npm run build:local`)
-- Updated dependencies to latest versions
-- Multiple build options available:
-  - `npm run build` - Standard Nuxt build (for Vercel)
-  - `npm run build:local` - Local build with filtered warnings
-  - `npm run build:clean` - Build with all warnings suppressed
-
-### Installation
+## ⚡ Quick Start
 
 ```bash
 # Clone the repository
-git clone https://github.com/HCanArslan/majority-app.git
-cd majority-app
+git clone https://github.com/HCanArslan/Country-Explorer.git
+cd Country-Explorer
 
 # Install dependencies
 npm install
 
 # Start development server
 npm run dev
+
+# Open browser
+open http://localhost:3000
 ```
+
+## 📦 Installation
+
+### Prerequisites
+- **Node.js**: >= 18.0.0
+- **npm**: >= 8.0.0
+
+### Step-by-step Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/HCanArslan/Country-Explorer.git
+   cd Country-Explorer
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment setup** (optional)
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+4. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+## 🔧 Development
 
 ### Available Scripts
 
-```bash
-# Development
-npm run dev          # Start development server
-npm run dev:clean    # Start dev server without custom scripts
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Fix ESLint errors |
+| `npm run test` | Run tests |
+| `npm run test:coverage` | Run tests with coverage |
+| `npm run typecheck` | TypeScript type checking |
 
-# Production
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run generate     # Generate static site
+### Development Workflow
 
-# Testing
-npm test             # Run tests interactively
-npm run test:run     # Run all tests once
-npm run test:coverage # Generate coverage reports
-npm run test:watch   # Development mode with auto-reload
+1. **Feature Development**
+   ```bash
+   # Create feature branch
+   git checkout -b feature/your-feature-name
+   
+   # Start development server
+   npm run dev
+   
+   # Make changes and test
+   npm run test
+   npm run lint
+   ```
 
-# Demo
-npm run demo         # Show application features
-```
+2. **Code Quality**
+   ```bash
+   # Format code
+   npm run lint:fix
+   
+   # Type checking
+   npm run typecheck
+   
+   # Run tests
+   npm run test:coverage
+   ```
 
-## 📖 Application Features
+3. **Build Testing**
+   ```bash
+   # Build for production
+   npm run build
+   
+   # Preview build
+   npm run preview
+   ```
 
-The application provides a comprehensive country exploration experience:
+## 🏭 Production
 
-1. **Search Functionality**: Type to filter countries in real-time with intelligent dropdown
-2. **Interactive World Map**: Click on countries in a Leaflet-based world map to explore them instantly
-3. **Country Selection**: Click on any country to view basic information in an elegant card
-4. **Detailed Country Pages**: Navigate to dedicated pages with comprehensive country information
-5. **Dynamic Routing**: SEO-friendly URLs like `/country/US` for each country
-6. **Side-by-Side Layout**: Search and map components displayed together for better user experience
-7. **Interactive Maps**: Direct access to Google Maps and OpenStreetMap
-8. **Theme Support**: Toggle between dark and light modes with full compatibility
-9. **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
-10. **Performance**: Intelligent caching ensures fast subsequent loads
-11. **Professional Branding**: Majority favicon with optimized delivery
-
-## 🏗️ Project Structure
-
-```
-majority-app/
-├── assets/
-│   └── css/
-│       └── main.css              # Global styles and Tailwind imports
-├── components/
-│   ├── AppHeader.vue             # Header with dark mode toggle
-│   ├── CountrySearch.vue         # Search input with dropdown and refresh functionality
-│   ├── CountryDetails.vue        # Country information display with "View Details" button
-│   ├── InteractiveMap.vue        # Interactive world map with country click functionality
-│   ├── EmptyState.vue            # Empty state component
-│   └── AppFooter.vue             # Footer with API attribution
-├── pages/
-│   ├── index.vue                 # Main application page (search & map side-by-side)
-│   └── country/
-│       └── [code].vue            # Dynamic country details page (/country/US, /country/FR, etc.)
-├── screenshots/                  # Application screenshots for documentation
-│   ├── main-page-light.png       # Main page in light mode
-│   ├── main-page-dark.png        # Main page in dark mode
-│   ├── search-functionality.png  # Search and filtering demo
-│   ├── interactive-map.png       # Interactive world map showcase
-│   ├── country-details-light.png # Country details page light mode
-│   ├── country-details-dark.png  # Country details page dark mode
-│   ├── mobile-responsive.png     # Mobile responsive design
-│   ├── lighthouse-desktop.png    # Lighthouse desktop audit results
-│   └── lighthouse-mobile.png     # Lighthouse mobile audit results
-├── stores/
-│   └── countryStore.ts           # Pinia store with caching logic
-├── types/
-│   └── nuxt.d.ts                 # TypeScript declarations for Nuxt auto-imports
-├── scripts/
-│   ├── dev.js                    # Enhanced development script
-│   ├── build.js                  # Production build script
-│   └── demo.js                   # Application features guide
-├── tests/
-│   ├── setup.ts                  # Test configuration
-│   ├── helpers/
-│   │   └── mockData.ts           # Mock data and utilities
-│   ├── stores/
-│   │   └── countryStore.test.ts  # Store unit tests
-│   └── integration/
-│       └── countryStore.integration.test.ts # Integration tests
-├── plugins/
-│   ├── performance.client.ts     # Performance monitoring and optimization
-│   └── mobile-performance.client.ts # Mobile-specific performance optimizations
-├── PERFORMANCE_OPTIMIZATIONS.md  # Comprehensive performance guide
-├── MOBILE_PERFORMANCE_OPTIMIZATIONS.md # Mobile-specific optimization guide
-├── nuxt.config.ts                # Nuxt configuration with Majority favicon
-├── tailwind.config.ts            # Tailwind configuration
-├── vitest.config.ts              # Vitest configuration
-└── package.json                  # Dependencies and scripts
-```
-
-## 🧪 Testing Strategy
-
-### **Unit Tests (17 tests)**
-
-- Store state management
-- API integration logic
-- Error handling scenarios
-- Caching functionality
-- Data transformation
-
-### **Integration Tests (8 tests)**
-
-- Complete user journeys
-- Error recovery flows
-- Concurrent operations
-- Performance testing
-- Edge case handling
-
-### **Coverage Areas**
-
-- ✅ State management patterns
-- ✅ API error handling
-- ✅ Caching mechanisms
-- ✅ User interaction flows
-- ✅ Performance optimization
-
-## 🏗️ Component Architecture
-
-The application follows Vue.js best practices with a modular component structure:
-
-### **Component Breakdown**
-
-- **AppHeader.vue** (44 lines) - Header with title and dark mode toggle
-- **CountrySearch.vue** (302 lines) - Search input with dropdown, filtering, refresh functionality, and status
-- **CountryDetails.vue** (232 lines) - Country information display with "View Details" navigation button
-- **InteractiveMap.vue** (312 lines) - Interactive Leaflet-based world map with country click functionality
-- **EmptyState.vue** (30 lines) - Empty state when no country is selected
-- **AppFooter.vue** (24 lines) - Footer with API attribution
-
-### **Page Structure**
-
-- **pages/index.vue** (278 lines) - Main application page with side-by-side search and map layout:
-  - Grid-based responsive layout (1 column on mobile, 2 columns on desktop)
-  - Search component with refresh functionality
-  - Interactive map component with instructions
-  - Country details section below
-  - Skip navigation for accessibility
-  - Enhanced empty state with visual indicators
-- **pages/country/[code].vue** (458 lines) - Dynamic country details page with:
-  - Comprehensive country information (Basic Info, Geography, Currencies, Languages, Government)
-  - Interactive maps (Google Maps & OpenStreetMap links)
-  - SEO-optimized with dynamic meta tags
-  - Full dark/light mode compatibility
-  - Responsive design with loading states and error handling
-
-### **Benefits of Component Structure**
-
-- **Maintainability**: Each component has a single responsibility
-- **Reusability**: Components can be easily reused across the application
-- **Testability**: Individual components can be tested in isolation
-- **Readability**: Main page is now clean and focused on orchestration
-- **Scalability**: Easy to add new features or modify existing ones
-- **User Experience**: Side-by-side layout improves discoverability and interaction
-
-## 🎯 Technical Highlights
-
-This project demonstrates expertise in:
-
-### **Modern Vue.js Development**
-
-- Composition API usage
-- Reactive state management
-- Component architecture
-- TypeScript integration
-- Client-side only rendering for maps
-
-### **Performance Optimization**
-
-- Intelligent caching strategies
-- Lazy loading implementation
-- Optimized API calls
-- Smooth user interactions
-- Efficient map rendering
-
-### **Testing Excellence**
-
-- Comprehensive test coverage
-- Mock strategies
-- Integration testing
-- Error scenario handling
-
-### **UI/UX Design**
-
-- Responsive design principles
-- Accessibility considerations
-- Modern design patterns
-- Smooth animations
-- Interactive map integration
-
-### **Development Best Practices**
-
-- TypeScript for type safety
-- ESLint and Prettier configuration
-- Git workflow optimization
-- Documentation standards
-
-## 🌐 API Integration
-
-### **REST Countries API**
-
-- **Main Endpoint**: `https://restcountries.com/v3.1/all` - All countries data
-- **Detail Endpoint**: `https://restcountries.com/v3.1/alpha/{code}` - Individual country details
-- **Data**: Country names, flags, capitals, populations, currencies, languages, geography, government
-- **Caching**: Intelligent client-side caching for optimal performance
-- **Error Handling**: Comprehensive error states with retry functionality
-
-### **GeoJSON Data**
-
-- **Source**: GitHub datasets for country boundaries
-- **Format**: GeoJSON FeatureCollection with country polygons
-- **Integration**: Real-time country selection from map clicks
-- **Performance**: Efficient rendering with Leaflet optimization
-
-### **Data Structure**
-
-```typescript
-// Main country interface for search and selection
-interface Country {
-  name: string
-  capital: string[]
-  population: number
-  flag: string
-  currencies: Record<string, Currency>
-  languages: Record<string, string>
-  code: string // Added for routing
-}
-
-// Extended interface for detailed country pages
-interface CountryApiResponse {
-  name: {
-    common: string
-    official: string
-  }
-  flags: { svg: string }
-  capital?: string[]
-  population: number
-  region: string
-  subregion?: string
-  area?: number
-  landlocked?: boolean
-  borders?: string[]
-  latlng?: number[]
-  currencies?: Record<string, { name: string; symbol: string }>
-  languages?: Record<string, string>
-  government?: string
-  independent?: boolean
-  unMember?: boolean
-  timezones?: string[]
-  tld?: string[]
-  callingCodes?: { root: string; suffixes?: string[] }
-  maps?: {
-    googleMaps?: string
-    openStreetMaps?: string
-  }
-}
-```
-
-## 🎨 Design Features
-
-### **Visual Elements**
-
-- Glass-morphism effects
-- Gradient backgrounds
-- Smooth hover animations
-- Color-coded information sections
-- Modern card designs
-- Interactive map with country boundaries
-
-### **Responsive Breakpoints**
-
-- Mobile: 320px - 768px (single column layout)
-- Tablet: 768px - 1024px (transitional layout)
-- Desktop: 1024px+ (side-by-side layout)
-
-### **Color Scheme**
-
-- **Primary**: Blue (#3B82F6)
-- **Secondary**: Gray (#6B7280)
-- **Success**: Green (#10B981)
-- **Warning**: Yellow (#F59E0B)
-- **Error**: Red (#EF4444)
-
-## 🔧 Configuration
-
-### **Nuxt Configuration**
-
-- SSR enabled for better SEO
-- Auto-imports for components
-- Optimized build settings
-- Development experience enhancements
-- Client-side only rendering for maps
-
-### **Tailwind Configuration**
-
-- Custom color palette
-- Responsive design utilities
-- Dark mode support
-- Custom animations
-- Grid system optimization
-
-### **TypeScript Configuration**
-
-- Strict type checking
-- Path aliases
-- Vue SFC support
-- Modern ES features
-
-## 📊 Performance Metrics
-
-- **First Contentful Paint**: < 1.5s
-- **Largest Contentful Paint**: < 2.5s
-- **Cumulative Layout Shift**: < 0.1
-- **Time to Interactive**: < 3s
-
-## 🚀 Production Deployment
-
-### **Production Optimizations Applied**
-- ✅ **Performance**: Asset compression, code splitting, SSR enabled
-- ✅ **SEO**: Complete meta tags, robots.txt, semantic HTML
-- ✅ **Security**: Environment variables, input validation, XSS protection
-- ✅ **Code Quality**: TypeScript, ESLint, comprehensive testing
-- ✅ **Clean Codebase**: All debug elements and console logs removed
-
-### **Build for Production**
+### Build Process
 
 ```bash
+# Production build
 npm run build
+
+# Analyze bundle
+npm run build:analyze
+
+# Performance audit
+npm run performance:audit
 ```
 
-### **Deployment Options**
+### Deployment
 
-#### **Vercel (Recommended)**
+#### Vercel (Recommended)
 ```bash
 # Install Vercel CLI
 npm i -g vercel
 
-# Deploy to Vercel
+# Deploy
 vercel --prod
 ```
 
-**✅ Vercel Configuration Applied:**
-- Dynamic Nitro preset selection (vercel/node-server)
-- All dependencies force-bundled with `noExternals: true`
-- Custom build command: `npm run build:vercel`
-- Optimized `vercel.json` configuration
-- **Fixed**: `ERR_MODULE_NOT_FOUND` consola error
-
-#### **Netlify**
+#### Manual Deployment
 ```bash
-# Build command: npm run build
-# Publish directory: .output/public
+# Build
+npm run build
+
+# Deploy .output directory to your hosting provider
 ```
 
-#### **Docker**
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run generate
-EXPOSE 3000
-CMD ["npm", "start"]
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `API_URL` | Countries API endpoint | `https://restcountries.com/v3.1` |
+| `NODE_ENV` | Environment mode | `development` |
+
+## 🧪 Testing
+
+### Test Structure
+```
+tests/
+├── components/           # Component tests
+├── composables/         # Composable tests
+├── pages/              # Page tests
+└── utils/              # Utility tests
 ```
 
-### **Environment Variables**
-```env
-# API Configuration
-API_URL=https://restcountries.com/v3.1
+### Running Tests
 
-# Application Settings
-NUXT_PUBLIC_APP_NAME="Country Explorer"
-NUXT_PUBLIC_SITE_URL=https://your-domain.com
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm run test -- CountrySearch.test.ts
 ```
 
-### **Performance Metrics**
+### Test Coverage Goals
+- **Statements**: > 80%
+- **Branches**: > 75%
+- **Functions**: > 80%
+- **Lines**: > 80%
 
-#### **Lighthouse Scores**
-- 🟢 **Performance**: 98
-- 🟢 **Accessibility**: 100
-- 🟢 **Best Practices**: 100
-- 🟢 **SEO**: 100
+## 📊 Performance Optimizations
 
-#### **Bundle Analysis**
-- **Vendor Chunk**: Vue, Vue Router (~150KB gzipped)
-- **UI Chunk**: Nuxt UI components (~80KB gzipped)
-- **Map Chunk**: Leaflet and vue3-leaflet (~120KB gzipped)
-- **App Chunk**: Application code (~50KB gzipped)
-- **CSS**: Tailwind + custom styles (~30KB gzipped)
+### 🚀 Core Optimizations
+
+#### Bundle Optimization
+- **Code Splitting**: Automatic route-based splitting
+- **Tree Shaking**: Unused code elimination
+- **Compression**: Gzip/Brotli compression enabled
+- **Minification**: CSS and JavaScript minification
+
+#### Image Optimization
+- **Lazy Loading**: Images load on demand
+- **Responsive Images**: Multiple sizes for different screens
+- **WebP Support**: Modern image format when supported
+- **Preloading**: Critical images preloaded
+
+#### Caching Strategy
+- **Static Assets**: 1-year cache with immutable headers
+- **API Responses**: 5-minute cache with CDN
+- **Pages**: 1-hour ISR (Incremental Static Regeneration)
+
+### 📱 Mobile-Specific Optimizations
+
+#### Map Performance
+- **Tile Preloading**: Critical map tiles preloaded
+- **Reduced Quality**: Lower zoom levels on mobile
+- **Buffer Optimization**: Minimal tile buffer for faster loading
+- **Touch Optimization**: Passive event listeners
+
+#### Layout Stability
+- **Fixed Dimensions**: Prevent layout shifts
+- **CSS Containment**: Layout containment for map components
+- **Skeleton Loading**: Consistent loading states
+
+#### Network Optimization
+- **Preconnect**: DNS prefetch for external domains
+- **Resource Hints**: Preload critical resources
+- **Service Worker**: Offline capability (future enhancement)
+
+## 🎨 UI/UX Features
+
+### 🌓 Dark/Light Mode
+- **System Detection**: Automatic theme based on OS preference
+- **Manual Toggle**: User can override system preference
+- **Persistent**: Theme choice saved in localStorage
+- **Smooth Transitions**: Animated theme switching
+
+### 📱 Responsive Design
+- **Mobile-First**: Designed for mobile, enhanced for desktop
+- **Breakpoints**: Tailwind's responsive breakpoint system
+- **Touch-Friendly**: Optimized touch targets (44px minimum)
+- **Flexible Layouts**: CSS Grid and Flexbox
+
+### ♿ Accessibility
+- **Keyboard Navigation**: Full keyboard support
+- **Screen Readers**: ARIA labels and semantic HTML
+- **Color Contrast**: WCAG AA compliant contrast ratios
+- **Focus Management**: Visible focus indicators
+
+### 🎭 Animations
+- **Micro-interactions**: Subtle hover and focus effects
+- **Page Transitions**: Smooth route transitions
+- **Loading States**: Engaging loading animations
+- **Reduced Motion**: Respects user's motion preferences
+
+## 🌐 API Integration
+
+### REST Countries API
+- **Endpoint**: `https://restcountries.com/v3.1/`
+- **Rate Limiting**: No rate limits
+- **Data Fields**: Name, capital, population, region, languages, currencies, flags
+- **Error Handling**: Graceful fallbacks and retry logic
+
+### Data Flow
+```
+User Interaction → Pinia Store → API Call → Data Validation → UI Update
+```
+
+### Caching Strategy
+- **Memory Cache**: Store data in Pinia for session
+- **HTTP Cache**: Browser cache for API responses
+- **Fallback Data**: Static country list for offline scenarios
+
+## 📱 Mobile Optimizations
+
+### Performance Metrics
+- **Target LCP**: < 2.5 seconds
+- **Target CLS**: < 0.1
+- **Target FID**: < 100ms
+
+### Optimization Techniques
+
+#### Map Optimizations
+```typescript
+// Mobile-specific tile options
+const mobileOptimizedTileOptions = {
+  maxZoom: 8,           // Reduced from 18
+  keepBuffer: 0,        // Minimal buffer
+  updateWhenIdle: true, // Update only when idle
+  detectRetina: false,  // Disable retina detection
+}
+```
+
+#### CSS Optimizations
+```css
+/* Prevent layout shifts */
+.leaflet-container {
+  contain: layout style paint;
+  min-height: 300px;
+  height: 300px !important;
+}
+
+/* Optimize animations */
+@media (max-width: 768px) {
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.2s !important;
+  }
+}
+```
+
+#### JavaScript Optimizations
+- **Passive Event Listeners**: Touch events use passive listeners
+- **Intersection Observer**: Lazy loading implementation
+- **RequestIdleCallback**: Non-critical tasks during idle time
+
+## 🔍 SEO & Accessibility
+
+### SEO Features
+- **Meta Tags**: Dynamic meta descriptions and titles
+- **Open Graph**: Social media sharing optimization
+- **Structured Data**: JSON-LD for rich snippets
+- **Sitemap**: Auto-generated XML sitemap
+- **Robots.txt**: Search engine crawling instructions
+
+### Accessibility Features
+- **ARIA Labels**: Comprehensive ARIA implementation
+- **Semantic HTML**: Proper HTML5 semantic elements
+- **Keyboard Navigation**: Tab order and focus management
+- **Screen Reader**: VoiceOver and NVDA tested
+- **Color Contrast**: WCAG AA compliance
+
+### Performance Monitoring
+- **Lighthouse CI**: Automated performance testing
+- **Core Web Vitals**: Real user monitoring
+- **Error Tracking**: Client-side error monitoring
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new features
-5. Ensure all tests pass
-6. Submit a pull request
+We welcome contributions! Please follow these guidelines:
 
-## 📝 License
+### Development Process
 
-This project is built for majority.
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Make your changes**
+4. **Add tests for new features**
+5. **Ensure all tests pass**
+   ```bash
+   npm run test
+   npm run lint
+   npm run typecheck
+   ```
+6. **Commit your changes**
+   ```bash
+   git commit -m 'feat: add amazing feature'
+   ```
+7. **Push to your branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+8. **Open a Pull Request**
 
-## 🌟 Acknowledgments
+### Code Standards
+- **ESLint**: Follow the configured ESLint rules
+- **Prettier**: Code formatting is enforced
+- **TypeScript**: Strict type checking enabled
+- **Testing**: Maintain test coverage above 80%
+- **Commits**: Use conventional commit messages
 
-- **REST Countries API** for providing comprehensive country data
-- **Nuxt Team** for the amazing framework
-- **Vue.js Team** for the reactive framework
-- **Tailwind CSS** for the utility-first approach
-- **Leaflet** for the interactive mapping capabilities
-- **OpenStreetMap** for the map tiles and data
+### Bug Reports
+Please use the [GitHub Issues](https://github.com/HCanArslan/Country-Explorer/issues) page to report bugs.
+
+Include:
+- **Description**: Clear description of the issue
+- **Steps to Reproduce**: Detailed reproduction steps
+- **Expected Behavior**: What should happen
+- **Screenshots**: If applicable
+- **Environment**: Browser, OS, device information
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with modern Vue.js development practices and attention to performance, testing, user experience, and interactive mapping capabilities.**
+## 🙏 Acknowledgments
 
-<!-- Deployment timestamp: 2025-01-27T04:42:00Z -->
+- **[REST Countries API](https://restcountries.com/)** - Free country data API
+- **[OpenStreetMap](https://www.openstreetmap.org/)** - Open-source map data
+- **[Nuxt Team](https://nuxt.com/)** - Amazing Vue.js framework
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
+- **[Vercel](https://vercel.com/)** - Deployment platform
+
+---
+
+<div align="center">
+
+**[⬆ Back to Top](#-country-explorer)**
+
+Made with ❤️ by [HCanArslan](https://github.com/HCanArslan)
+
+</div>

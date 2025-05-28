@@ -526,14 +526,14 @@ const tileLayerAttribution = '© OpenStreetMap contributors'
 const mobileOptimizedTileOptions = computed(() => {
   const mobileConfig = window.__MOBILE_MAP_CONFIG__
   return {
-    maxZoom: isMobile.value ? (mobileConfig?.maxZoom || 8) : 18,
+    maxZoom: isMobile.value ? mobileConfig?.maxZoom || 8 : 18,
     minZoom: 1,
-    tileSize: isMobile.value ? (mobileConfig?.tileSize || 256) : 256,
+    tileSize: isMobile.value ? mobileConfig?.tileSize || 256 : 256,
     updateWhenZooming: !isMobile.value,
     updateWhenIdle: isMobile.value,
     keepBuffer: isMobile.value ? 0 : 2, // Reduced buffer for faster loading
     // Disable retina detection on mobile for faster loading
-    detectRetina: !isMobile.value && (mobileConfig?.detectRetina !== false),
+    detectRetina: !isMobile.value && mobileConfig?.detectRetina !== false,
     // Add crossOrigin for better caching
     crossOrigin: true,
     // Optimize loading priority

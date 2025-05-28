@@ -23,19 +23,19 @@ export default defineNuxtPlugin(() => {
     // Distribute across different tile servers
     const server = servers[serverIndex % servers.length]
     const optimizedUrl = tileUrl.replace('https://a.', `https://${server}.`)
-    
+
     // Create preload link
     const link = document.createElement('link')
     link.rel = 'preload'
     link.href = optimizedUrl
     link.as = 'image'
     link.crossOrigin = 'anonymous'
-    
+
     // Add to head with slight delay to avoid blocking critical resources
     setTimeout(() => {
       document.head.appendChild(link)
     }, index * 50) // Stagger the preloads
-    
+
     serverIndex++
   })
 
@@ -47,4 +47,4 @@ export default defineNuxtPlugin(() => {
     preconnectLink.crossOrigin = 'anonymous'
     document.head.appendChild(preconnectLink)
   })
-}) 
+})

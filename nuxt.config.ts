@@ -46,7 +46,8 @@ export default defineNuxtConfig({
   // Simple Nitro configuration for Vercel
   nitro: {
     preset: 'vercel',
-    compressPublicAssets: true,
+    compressPublicAssets: false,
+    minify: false,
   },
 
   // Simple build configuration

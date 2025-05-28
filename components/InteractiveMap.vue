@@ -50,8 +50,8 @@
           :class="[
             'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden',
             isMobile
-              ? 'bottom-2 left-2 right-2 max-h-[45vh] min-h-[200px]'
-              : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100%-2rem)]',
+              ? 'bottom-1 left-1 right-1 max-h-[40vh] min-h-[180px] max-w-[calc(100vw-0.5rem)]'
+              : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100vh-4rem)]',
           ]"
           style="will-change: transform"
         >
@@ -73,65 +73,65 @@
           <!-- Country Data Display -->
           <div v-else-if="selectedCountryData" class="flex flex-col h-full">
             <!-- Header with Close Button -->
-            <div class="flex-shrink-0 p-2 pb-1">
+            <div class="flex-shrink-0 p-1.5 pb-1">
               <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center space-x-2 mb-1">
+                  <div class="flex items-center space-x-1.5 mb-0.5">
                     <img
                       v-if="selectedCountryData.flags?.svg"
                       :src="selectedCountryData.flags.svg"
                       :alt="`${selectedCountryData.name?.common} flag`"
-                      class="w-6 h-4 object-cover rounded shadow-sm flex-shrink-0"
+                      class="w-5 h-3.5 object-cover rounded shadow-sm flex-shrink-0"
                       loading="lazy"
-                      width="24"
-                      height="16"
+                      width="20"
+                      height="14"
                     />
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white truncate">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate">
                       {{ selectedCountryData.name?.common }}
                     </h3>
                   </div>
                   <p
                     v-if="selectedCountryData.name?.official"
-                    class="text-xs text-gray-600 dark:text-gray-400 ml-8 truncate"
+                    class="text-[10px] text-gray-600 dark:text-gray-400 ml-6 truncate"
                   >
                     {{ selectedCountryData.name.official }}
                   </p>
                 </div>
                 <button
-                  class="flex-shrink-0 ml-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  class="flex-shrink-0 ml-1.5 p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   aria-label="Close country details"
                   @click="clearSelection"
                 >
                   <UIcon
                     name="i-heroicons-x-mark"
-                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    class="w-4 h-4 text-gray-500 dark:text-gray-400"
                   />
                 </button>
               </div>
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-2 pb-1 min-h-0">
-              <div class="space-y-1.5">
+            <div class="flex-1 overflow-y-auto px-1.5 pb-1 min-h-0">
+              <div class="space-y-1">
                 <!-- Primary Info Grid -->
-                <div :class="isMobile ? 'space-y-1.5' : 'grid grid-cols-2 gap-1.5'">
+                <div :class="isMobile ? 'space-y-1' : 'grid grid-cols-2 gap-1'">
                   <!-- Capital -->
                   <div
                     v-if="selectedCountryData.capital?.length"
-                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1 border border-gray-200 dark:border-gray-600"
                   >
-                    <div class="flex items-center gap-1 mb-1">
+                    <div class="flex items-center gap-0.5 mb-0.5">
                       <UIcon
                         name="i-heroicons-building-office-2"
-                        class="w-3 h-3 text-blue-500 dark:text-blue-400 flex-shrink-0"
+                        class="w-2.5 h-2.5 text-blue-500 dark:text-blue-400 flex-shrink-0"
                       />
                       <span
-                        class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                        class="text-[9px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
                       >
                         Capital
                       </span>
                     </div>
-                    <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                    <p class="text-[10px] font-medium text-gray-900 dark:text-gray-100 leading-tight">
                       {{ selectedCountryData.capital.join(', ') }}
                     </p>
                   </div>
@@ -139,20 +139,22 @@
                   <!-- Population -->
                   <div
                     v-if="selectedCountryData.population"
-                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1 border border-gray-200 dark:border-gray-600"
                   >
-                    <div class="flex items-center gap-1 mb-1">
+                    <div class="flex items-center gap-0.5 mb-0.5">
                       <UIcon
                         name="i-heroicons-users"
-                        class="w-3 h-3 text-green-500 dark:text-green-400 flex-shrink-0"
+                        class="w-2.5 h-2.5 text-green-500 dark:text-green-400 flex-shrink-0"
                       />
                       <span
-                        class="text-[10px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
+                        class="text-[9px] font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide"
                       >
                         Population
                       </span>
                     </div>
-                    <p class="text-xs font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                    <p
+                      class="text-[10px] font-medium text-gray-900 dark:text-gray-100 leading-tight"
+                    >
                       {{ selectedCountryData.population.toLocaleString() }}
                     </p>
                   </div>
@@ -246,7 +248,7 @@
 
             <!-- Footer with View Details Button -->
             <div
-              class="flex-shrink-0 p-2 border-t border-gray-200/60 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50"
+              class="flex-shrink-0 p-1.5 border-t border-gray-200/60 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50"
             >
               <NuxtLink
                 :to="`/country/${selectedCountryData.cca2?.toLowerCase()}`"
@@ -256,10 +258,10 @@
                   color="blue"
                   variant="solid"
                   size="xs"
-                  class="w-full justify-center text-xs font-medium py-1.5 px-2"
+                  class="w-full justify-center text-[10px] font-medium py-1 px-1.5"
                 >
-                  <UIcon name="i-heroicons-arrow-right" class="w-3 h-3 mr-1" />
-                  View Details
+                  <UIcon name="i-heroicons-arrow-right" class="w-2.5 h-2.5 mr-0.5" />
+                  Details
                 </UButton>
               </NuxtLink>
             </div>

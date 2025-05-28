@@ -14,6 +14,7 @@
 - [🚀 Live Demo](#-live-demo)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [📱 Performance](#-performance)
+- [📊 Analytics & Monitoring](#-analytics--monitoring)
 - [🏗️ Architecture](#️-architecture)
 - [⚡ Quick Start](#-quick-start)
 - [📦 Installation](#-installation)
@@ -60,6 +61,12 @@
 - **Code Splitting**: Automatic bundle optimization
 - **Image Optimization**: Lazy loading and responsive images
 
+### 📊 Analytics & Monitoring
+- **Web Analytics**: Real-time visitor tracking with Vercel Analytics
+- **Performance Monitoring**: Core Web Vitals and page performance metrics
+- **User Behavior**: Page views, navigation patterns, and user engagement
+- **Privacy-Focused**: GDPR compliant analytics without cookies
+
 ## 🚀 Live Demo
 
 🔗 **[View Live Application](https://country-explorer-zeta.vercel.app/)**
@@ -93,6 +100,7 @@
 
 ### Deployment & Infrastructure
 - **[Vercel](https://vercel.com/)** - Deployment platform
+- **[Vercel Analytics](https://vercel.com/analytics)** - Web analytics and performance monitoring
 - **[Nitro](https://nitro.unjs.io/)** - Server engine
 
 ## 📱 Performance
@@ -107,6 +115,44 @@
 - **LCP (Largest Contentful Paint)**: < 2.5s
 - **FID (First Input Delay)**: < 100ms
 - **CLS (Cumulative Layout Shift)**: < 0.1
+
+## 📊 Analytics & Monitoring
+
+### 🔍 Vercel Analytics Integration
+The application includes comprehensive web analytics powered by **Vercel Analytics**, providing real-time insights into user behavior and application performance.
+
+#### Features
+- **Real-time Tracking**: Live visitor data and page view analytics
+- **Performance Metrics**: Core Web Vitals monitoring and performance insights
+- **User Journey**: Navigation patterns and user engagement tracking
+- **Privacy-First**: GDPR compliant analytics without cookies or personal data collection
+- **Zero Configuration**: Automatic setup with no additional configuration required
+
+#### Implementation
+```typescript
+// app.vue - Analytics component integration
+import { Analytics } from '@vercel/analytics/vue'
+
+// Automatically tracks:
+// - Page views across all routes
+// - Navigation events
+// - Core Web Vitals
+// - User engagement metrics
+```
+
+#### Analytics Dashboard
+Access your analytics data through the [Vercel Dashboard](https://vercel.com/analytics) to monitor:
+- **Traffic Patterns**: Visitor counts, page views, and session duration
+- **Performance Insights**: Real user monitoring of Core Web Vitals
+- **Geographic Data**: Visitor locations and regional performance
+- **Device Analytics**: Desktop vs mobile usage patterns
+- **Referral Sources**: Traffic sources and campaign effectiveness
+
+#### Privacy & Compliance
+- **No Cookies**: Analytics work without storing cookies
+- **Anonymous Data**: No personally identifiable information collected
+- **GDPR Compliant**: Meets European privacy regulations
+- **Lightweight**: < 1KB impact on bundle size
 
 ## 🏗️ Architecture
 

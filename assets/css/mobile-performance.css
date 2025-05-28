@@ -4,8 +4,8 @@
 @media (max-width: 768px) {
   /* Faster animations on mobile */
   * {
-    animation-duration: 0.2s !important;
-    transition-duration: 0.2s !important;
+    animation-duration: 0.15s !important;
+    transition-duration: 0.15s !important;
   }
   
   /* Optimize scrolling */
@@ -16,7 +16,7 @@
   
   /* Reduce blur effects on mobile */
   .backdrop-blur-md {
-    backdrop-filter: blur(4px) !important;
+    backdrop-filter: blur(2px) !important;
   }
   
   /* Optimize map tiles on mobile for faster LCP */
@@ -28,41 +28,55 @@
     width: 256px !important;
     height: 256px !important;
     display: block;
+    /* Improve tile loading performance */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Prevent layout shifts in map container */
   .leaflet-container {
     contain: layout style paint;
     /* Fixed dimensions to prevent CLS */
-    min-height: 300px;
-    height: 300px !important;
+    min-height: 350px;
+    height: 350px !important;
+    /* Improve touch performance */
+    touch-action: pan-x pan-y;
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Optimize touch interactions */
   .leaflet-interactive {
     touch-action: manipulation;
+    /* Improve tap responsiveness */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
   
   /* Prevent layout shifts in tile container */
   .leaflet-tile-container {
     contain: layout;
     transform: translate3d(0, 0, 0);
+    /* Improve rendering performance */
+    will-change: transform;
   }
   
   /* Optimize map pane for mobile */
   .leaflet-pane {
     contain: layout style;
+    /* Hardware acceleration for better performance */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Reduce shadow complexity on mobile */
   .shadow-lg {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1) !important;
   }
   
   /* Optimize modal performance on mobile */
   .modal-container {
     contain: layout style paint;
     will-change: transform;
+    /* Improve modal animations */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Reduce gradient complexity on mobile */
@@ -73,7 +87,33 @@
   /* Prevent layout shifts in map wrapper */
   [data-v-3bdcfb7f] {
     contain: layout style;
-    min-height: 300px;
+    min-height: 350px;
+  }
+  
+  /* Optimize country details panel for mobile */
+  .country-details-panel {
+    /* Improve scrolling performance */
+    -webkit-overflow-scrolling: touch;
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    /* Contain layout changes */
+    contain: layout style paint;
+  }
+  
+  /* Improve map zoom controls on mobile */
+  .leaflet-control-zoom {
+    transform: scale(0.9) translate3d(0, 0, 0);
+    transform-origin: top right;
+    /* Better touch targets */
+    touch-action: manipulation;
+  }
+  
+  .leaflet-control-zoom a {
+    /* Larger touch targets */
+    min-width: 32px !important;
+    min-height: 32px !important;
+    /* Better visual feedback */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   }
 }
 

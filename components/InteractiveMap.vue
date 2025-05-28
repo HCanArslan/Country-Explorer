@@ -50,7 +50,7 @@
           :class="[
             'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden',
             isMobile
-              ? 'bottom-1 left-1 right-1 max-h-[40vh] min-h-[180px] max-w-[calc(100vw-0.5rem)]'
+              ? 'bottom-2 left-2 right-2 max-h-[45vh] min-h-[200px] max-w-[calc(100vw-1rem)]'
               : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100vh-4rem)]',
           ]"
           style="will-change: transform"
@@ -1003,15 +1003,22 @@ function onMapReady() {
   mapReady.value = true
 }
 
-// Mobile detection
+// Mobile detection with improved performance
 function checkMobile() {
   if (import.meta.client) {
-    isMobile.value = window.innerWidth < 768
+    isMobile.value = window.innerWidth < 768 || 'ontouchstart' in window
   }
 }
 
+// Throttled resize handler for better performance
+let resizeTimeout: NodeJS.Timeout | null = null
 function handleResize() {
-  checkMobile()
+  if (resizeTimeout) {
+    clearTimeout(resizeTimeout)
+  }
+  resizeTimeout = setTimeout(() => {
+    checkMobile()
+  }, 150)
 }
 
 // Load GeoJSON data
@@ -1117,9 +1124,44 @@ onUnmounted(() => {
   min-height: 350px;
 }
 
+/* Mobile-specific map optimizations */
+@media (max-width: 768px) {
+  :deep(.leaflet-container) {
+    height: 350px !important;
+    touch-action: pan-x pan-y;
+    transform: translate3d(0, 0, 0);
+  }
+
+  :deep(.leaflet-tile) {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translate3d(0, 0, 0);
+  }
+
+  :deep(.leaflet-interactive) {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  :deep(.leaflet-control-zoom) {
+    transform: scale(0.9) translate3d(0, 0, 0);
+    transform-origin: top right;
+  }
+}
+
 /* Dark mode adjustments for Leaflet controls */
 :deep(.leaflet-control-zoom a) {
   @apply bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600;
+}
+
+/* Mobile touch improvements for zoom controls */
+@media (max-width: 768px) {
+  :deep(.leaflet-control-zoom a) {
+    min-width: 32px !important;
+    min-height: 32px !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
 }
 
 :deep(.leaflet-control-zoom a:hover) {
@@ -1130,14 +1172,36 @@ onUnmounted(() => {
   @apply bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400;
 }
 
+/* Smaller attribution on mobile */
+@media (max-width: 768px) {
+  :deep(.leaflet-control-attribution) {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+  }
+}
+
 /* Custom scrollbar for country details panel */
 .overflow-y-auto {
   scrollbar-width: thin;
   scrollbar-color: rgb(156 163 175) transparent;
 }
 
+/* Mobile scroll optimization */
+@media (max-width: 768px) {
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
 .overflow-y-auto::-webkit-scrollbar {
   width: 6px;
+}
+
+@media (max-width: 768px) {
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 4px;
+  }
 }
 
 .overflow-y-auto::-webkit-scrollbar-track {
@@ -1151,5 +1215,19 @@ onUnmounted(() => {
 
 .dark .overflow-y-auto::-webkit-scrollbar-thumb {
   background-color: rgb(75 85 99);
+}
+
+/* Country details panel mobile optimizations */
+@media (max-width: 768px) {
+  /* Reduce backdrop blur on mobile for better performance */
+  .backdrop-blur-md {
+    backdrop-filter: blur(2px) !important;
+  }
+
+  /* Hardware acceleration for better performance */
+  .absolute {
+    transform: translate3d(0, 0, 0);
+    contain: layout style paint;
+  }
 }
 </style>

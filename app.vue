@@ -20,5 +20,20 @@ useHead({
     },
   ],
   title: 'Country Explorer - Discover Countries Worldwide',
+  script: [
+    {
+      innerHTML: `
+        // Mobile map configuration for better performance
+        window.__MOBILE_MAP_CONFIG__ = {
+          maxZoom: 8,
+          tileSize: 256,
+          detectRetina: false,
+          updateWhenIdle: true,
+          keepBuffer: 0
+        };
+      `,
+      type: 'text/javascript',
+    },
+  ],
 })
 </script>

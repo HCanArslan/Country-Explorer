@@ -46,12 +46,12 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        // Preconnect to external domains for faster loading
+        // Only preconnect to essential domains
         { rel: 'preconnect', href: 'https://restcountries.com' },
-        { rel: 'preconnect', href: 'https://a.tile.openstreetmap.org' },
-        { rel: 'preconnect', href: 'https://b.tile.openstreetmap.org' },
-        { rel: 'preconnect', href: 'https://c.tile.openstreetmap.org' },
         { rel: 'dns-prefetch', href: 'https://tile.openstreetmap.org' },
+        { rel: 'dns-prefetch', href: 'https://a.tile.openstreetmap.org' },
+        { rel: 'dns-prefetch', href: 'https://b.tile.openstreetmap.org' },
+        { rel: 'dns-prefetch', href: 'https://c.tile.openstreetmap.org' },
       ],
     },
   },
@@ -72,14 +72,13 @@ export default defineNuxtConfig({
       '/api/**': {
         headers: {
           'Cache-Control': 'public, max-age=300, s-maxage=3600',
-          'Content-Encoding': 'identity',
         },
       },
-      // Icon API specific handling
+      // Icon API specific handling - no compression
       '/api/_nuxt_icon/**': {
         headers: {
-          'Content-Encoding': 'identity',
           'Cache-Control': 'public, max-age=31536000, immutable',
+          'Content-Type': 'application/json',
         },
       },
       // Main pages with ISR

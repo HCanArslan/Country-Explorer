@@ -48,15 +48,15 @@
         <div
           v-if="selectedCountryData || isLoadingCountryData"
           :class="[
-            'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50',
+            'absolute z-[1000] bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden',
             isMobile
-              ? 'bottom-2 left-2 right-2 max-h-[50vh] min-h-[200px]'
-              : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100%-1rem)]',
+              ? 'bottom-2 left-2 right-2 max-h-[45vh] min-h-[200px]'
+              : 'top-2 right-2 w-80 max-w-[calc(100%-1rem)] max-h-[calc(100%-2rem)]',
           ]"
           style="will-change: transform"
         >
           <!-- Loading State for Country Data -->
-          <div v-if="isLoadingCountryData" class="p-4">
+          <div v-if="isLoadingCountryData" class="p-3">
             <div class="flex items-center space-x-2 mb-3">
               <div
                 class="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-blue-500 rounded-full animate-spin"
@@ -73,7 +73,7 @@
           <!-- Country Data Display -->
           <div v-else-if="selectedCountryData" class="flex flex-col h-full">
             <!-- Header with Close Button -->
-            <div class="flex-shrink-0 p-4 pb-2">
+            <div class="flex-shrink-0 p-2 pb-1">
               <div class="flex items-start justify-between">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center space-x-2 mb-1">
@@ -111,14 +111,14 @@
             </div>
 
             <!-- Scrollable Content -->
-            <div class="flex-1 overflow-y-auto px-4 pb-2">
-              <div class="space-y-2">
+            <div class="flex-1 overflow-y-auto px-2 pb-1 min-h-0">
+              <div class="space-y-1.5">
                 <!-- Primary Info Grid -->
-                <div :class="isMobile ? 'space-y-2' : 'grid grid-cols-2 gap-2'">
+                <div :class="isMobile ? 'space-y-1.5' : 'grid grid-cols-2 gap-1.5'">
                   <!-- Capital -->
                   <div
                     v-if="selectedCountryData.capital?.length"
-                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
                   >
                     <div class="flex items-center gap-1 mb-1">
                       <UIcon
@@ -139,7 +139,7 @@
                   <!-- Population -->
                   <div
                     v-if="selectedCountryData.population"
-                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                    class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
                   >
                     <div class="flex items-center gap-1 mb-1">
                       <UIcon
@@ -161,7 +161,7 @@
                 <!-- Region -->
                 <div
                   v-if="selectedCountryData.region"
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -191,7 +191,7 @@
                     selectedCountryData.languages &&
                     Object.keys(selectedCountryData.languages).length
                   "
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -215,7 +215,7 @@
                     selectedCountryData.currencies &&
                     Object.keys(selectedCountryData.currencies).length
                   "
-                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-2 border border-gray-200 dark:border-gray-600"
+                  class="bg-gray-100 dark:bg-gray-700 rounded-md p-1.5 border border-gray-200 dark:border-gray-600"
                 >
                   <div class="flex items-center gap-1 mb-1">
                     <UIcon
@@ -245,7 +245,9 @@
             </div>
 
             <!-- Footer with View Details Button -->
-            <div class="flex-shrink-0 p-4 pt-2 border-t border-gray-200/60 dark:border-gray-700/60">
+            <div
+              class="flex-shrink-0 p-2 border-t border-gray-200/60 dark:border-gray-700/60 bg-gray-50/50 dark:bg-gray-800/50"
+            >
               <NuxtLink
                 :to="`/country/${selectedCountryData.cca2?.toLowerCase()}`"
                 class="block w-full"
@@ -253,12 +255,11 @@
                 <UButton
                   color="blue"
                   variant="solid"
-                  size="sm"
-                  class="w-full justify-center"
-                  :class="isMobile ? 'text-xs py-2' : 'text-sm'"
+                  size="xs"
+                  class="w-full justify-center text-xs font-medium py-1.5 px-2"
                 >
-                  <UIcon name="i-heroicons-arrow-right" class="w-4 h-4 mr-1" />
-                  View Full Details
+                  <UIcon name="i-heroicons-arrow-right" class="w-3 h-3 mr-1" />
+                  View Details
                 </UButton>
               </NuxtLink>
             </div>
@@ -576,8 +577,11 @@ function getSelectedCountryStyle() {
 
 // Event handlers
 async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) {
+  // Debug: Log all available properties to understand the data structure
+  console.log('Country feature properties:', feature.properties)
+
   // Try multiple possible country identifier fields with better mapping
-  let isoCode =
+  const rawIsoCode =
     feature.properties?.ISO_A3 ||
     feature.properties?.iso_a3 ||
     feature.properties?.ISO3 ||
@@ -587,11 +591,16 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
     feature.properties?.ISO_A2 ||
     feature.properties?.iso_a2 ||
     feature.properties?.ISO2 ||
-    feature.properties?.iso2
+    feature.properties?.iso2 ||
+    feature.properties?.cca3 ||
+    feature.properties?.cca2
+
+  let isoCode: string | null = null
 
   // Clean up the ISO code (remove any extra characters, ensure proper format)
-  if (isoCode) {
-    isoCode = String(isoCode).trim().toUpperCase()
+  if (rawIsoCode) {
+    isoCode = String(rawIsoCode).trim().toUpperCase()
+    console.log('Raw ISO code found:', rawIsoCode, '-> Cleaned:', isoCode)
 
     // Handle special cases and common mapping issues
     const isoCodeMappings: Record<string, string> = {
@@ -695,14 +704,24 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
       FRO: 'FO',
       GRL: 'GL',
       SJM: 'SJ',
+      // Handle some problematic codes
+      '-99': null, // Invalid code
+      'N/A': null, // Invalid code
+      '': null, // Empty string
     }
 
     // Use mapping if available, otherwise keep original
-    isoCode = isoCodeMappings[isoCode] || isoCode
+    const mappedCode = isoCodeMappings[isoCode]
+    if (mappedCode === null) {
+      isoCode = null // Mark as invalid
+    } else if (mappedCode) {
+      console.log('Mapped ISO code:', isoCode, '->', mappedCode)
+      isoCode = mappedCode
+    }
   }
 
   if (!isoCode) {
-    console.warn('No ISO code found for country feature:', feature.properties)
+    console.warn('No valid ISO code found for country feature:', feature.properties)
 
     // Try to use country name as fallback
     const countryName =
@@ -711,7 +730,9 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
       feature.properties?.NAME_EN ||
       feature.properties?.name_en ||
       feature.properties?.ADMIN ||
-      feature.properties?.admin
+      feature.properties?.admin ||
+      feature.properties?.NAME_LONG ||
+      feature.properties?.name_long
 
     if (countryName) {
       console.log('Attempting to load country by name:', countryName)
@@ -733,6 +754,7 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
   layer.setStyle(getSelectedCountryStyle())
 
   // Load country data
+  console.log('Attempting to load country data with ISO code:', isoCode)
   await loadCountryData(isoCode)
 }
 
@@ -740,18 +762,22 @@ async function loadCountryData(isoCode: string) {
   isLoadingCountryData.value = true
   countryDataError.value = null
 
+  console.log('loadCountryData called with:', isoCode)
+
   try {
     // Try different API endpoints for better compatibility
-    let response: CountryData[] | null = null
-    
+    let response: CountryData[] | CountryData | null = null
+
     // First try with alpha code (2 or 3 letter)
     try {
-      response = await $fetch<CountryData[]>(
+      console.log('Trying alpha code lookup for:', isoCode)
+      response = await $fetch<CountryData[] | CountryData>(
         `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
       )
+      console.log('Alpha code lookup successful:', response)
     } catch (alphaError) {
       console.warn(`Alpha code lookup failed for ${isoCode}:`, alphaError)
-      
+
       // If 3-letter code failed, try 2-letter code
       if (isoCode.length === 3) {
         // Try to convert 3-letter to 2-letter using common mappings
@@ -771,31 +797,161 @@ async function loadCountryData(isoCode: string) {
           RUS: 'RU',
           MEX: 'MX',
           ZAF: 'ZA',
+          ARG: 'AR',
+          THA: 'TH',
+          EGY: 'EG',
+          NGA: 'NG',
+          VNM: 'VN',
+          PHL: 'PH',
+          MYS: 'MY',
+          SGP: 'SG',
+          CHE: 'CH',
+          AUT: 'AT',
+          BEL: 'BE',
+          NLD: 'NL',
+          SWE: 'SE',
+          NOR: 'NO',
+          DNK: 'DK',
+          FIN: 'FI',
+          POL: 'PL',
+          CZE: 'CZ',
+          HUN: 'HU',
+          PRT: 'PT',
+          GRC: 'GR',
+          IRE: 'IE',
+          NZL: 'NZ',
+          ISR: 'IL',
+          ARE: 'AE',
+          QAT: 'QA',
+          KWT: 'KW',
+          BHR: 'BH',
+          OMN: 'OM',
+          JOR: 'JO',
+          LBN: 'LB',
+          SYR: 'SY',
+          IRQ: 'IQ',
+          IRN: 'IR',
+          AFG: 'AF',
+          PAK: 'PK',
+          BGD: 'BD',
+          LKA: 'LK',
+          NPL: 'NP',
+          BTN: 'BT',
+          MMR: 'MM',
+          LAO: 'LA',
+          KHM: 'KH',
+          PRK: 'KP',
+          MNG: 'MN',
+          KAZ: 'KZ',
+          UZB: 'UZ',
+          TKM: 'TM',
+          KGZ: 'KG',
+          TJK: 'TJ',
+          AZE: 'AZ',
+          ARM: 'AM',
+          GEO: 'GE',
+          UKR: 'UA',
+          BLR: 'BY',
+          MDA: 'MD',
+          ROU: 'RO',
+          BGR: 'BG',
+          SRB: 'RS',
+          HRV: 'HR',
+          BIH: 'BA',
+          MNE: 'ME',
+          MKD: 'MK',
+          ALB: 'AL',
+          SVN: 'SI',
+          SVK: 'SK',
+          EST: 'EE',
+          LVA: 'LV',
+          LTU: 'LT',
+          CYP: 'CY',
+          MLT: 'MT',
+          LUX: 'LU',
+          MCO: 'MC',
+          AND: 'AD',
+          SMR: 'SM',
+          VAT: 'VA',
+          LIE: 'LI',
+          ISL: 'IS',
+          FRO: 'FO',
+          GRL: 'GL',
+          SJM: 'SJ',
         }
 
         const twoLetterCode = threeToTwoMapping[isoCode]
         if (twoLetterCode) {
           try {
-            response = await $fetch<CountryData[]>(
+            console.log('Trying 2-letter code lookup for:', twoLetterCode)
+            response = await $fetch<CountryData[] | CountryData>(
               `https://restcountries.com/v3.1/alpha/${twoLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
             )
+            console.log('2-letter code lookup successful:', response)
           } catch (twoLetterError) {
             console.warn(`Two-letter code lookup failed for ${twoLetterCode}:`, twoLetterError)
+          }
+        }
+      } else if (isoCode.length === 2) {
+        // If 2-letter code failed, try some 3-letter equivalents
+        const twoToThreeMapping: Record<string, string> = {
+          US: 'USA',
+          GB: 'GBR',
+          FR: 'FRA',
+          DE: 'DEU',
+          IT: 'ITA',
+          ES: 'ESP',
+          CA: 'CAN',
+          AU: 'AUS',
+          JP: 'JPN',
+          CN: 'CHN',
+          IN: 'IND',
+          BR: 'BRA',
+          RU: 'RUS',
+          MX: 'MEX',
+          ZA: 'ZAF',
+        }
+
+        const threeLetterCode = twoToThreeMapping[isoCode]
+        if (threeLetterCode) {
+          try {
+            console.log('Trying 3-letter code lookup for:', threeLetterCode)
+            response = await $fetch<CountryData[] | CountryData>(
+              `https://restcountries.com/v3.1/alpha/${threeLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
+            )
+            console.log('3-letter code lookup successful:', response)
+          } catch (threeLetterError) {
+            console.warn(
+              `Three-letter code lookup failed for ${threeLetterCode}:`,
+              threeLetterError,
+            )
           }
         }
       }
     }
 
-    if (response && response.length > 0) {
-      selectedCountryData.value = response[0]
-      emit('countrySelected', response[0])
+    // Handle both array and single object responses
+    let countryData: CountryData | null = null
+
+    if (Array.isArray(response) && response.length > 0) {
+      countryData = response[0]
+      console.log('Country data loaded successfully (array):', countryData)
+    } else if (response && !Array.isArray(response)) {
+      countryData = response as CountryData
+      console.log('Country data loaded successfully (object):', countryData)
+    }
+
+    if (countryData) {
+      selectedCountryData.value = countryData
+      emit('countrySelected', countryData)
     } else {
+      console.error('No country data found in response:', response)
       throw new Error('No country data found')
     }
   } catch (error) {
     console.error('Error loading country data:', error)
     countryDataError.value = `Unable to load information for country code: ${isoCode}`
-    
+
     // Clear selection on error
     selectedCountryData.value = null
     if (selectedLayer.value) {
@@ -813,8 +969,11 @@ async function loadCountryDataByName(countryName: string, layer: CountryLayer) {
 
   try {
     // Clean up country name for search
-    const cleanName = countryName.trim().replace(/[^\w\s]/g, '').toLowerCase()
-    
+    const cleanName = countryName
+      .trim()
+      .replace(/[^\w\s]/g, '')
+      .toLowerCase()
+
     const response = await $fetch<CountryData[]>(
       `https://restcountries.com/v3.1/name/${encodeURIComponent(cleanName)}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3&fullText=false`,
     )
@@ -826,7 +985,7 @@ async function loadCountryDataByName(countryName: string, layer: CountryLayer) {
       }
       selectedLayer.value = layer
       layer.setStyle(getSelectedCountryStyle())
-      
+
       selectedCountryData.value = response[0]
       emit('countrySelected', response[0])
     } else {
@@ -948,7 +1107,6 @@ async function loadGeoJSONData() {
     }
 
     console.log(`Successfully loaded ${validFeatures.length} countries`)
-
   } catch (error) {
     console.error('Error loading GeoJSON data:', error)
     geoJSONError.value = error instanceof Error ? error.message : 'Failed to load map data'

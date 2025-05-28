@@ -762,7 +762,7 @@ async function loadCountryData(isoCode: string) {
       response = await $fetch<CountryData[] | CountryData>(
         `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
       )
-    } catch (alphaError) {
+    } catch {
       // If 3-letter code failed, try 2-letter code
       if (isoCode.length === 3) {
         // Try to convert 3-letter to 2-letter using common mappings
@@ -871,7 +871,7 @@ async function loadCountryData(isoCode: string) {
             response = await $fetch<CountryData[] | CountryData>(
               `https://restcountries.com/v3.1/alpha/${twoLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
             )
-          } catch (twoLetterError) {
+          } catch {
             // Silent fallback
           }
         }
@@ -901,7 +901,7 @@ async function loadCountryData(isoCode: string) {
             response = await $fetch<CountryData[] | CountryData>(
               `https://restcountries.com/v3.1/alpha/${threeLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
             )
-          } catch (threeLetterError) {
+          } catch {
             // Silent fallback
           }
         }
@@ -923,7 +923,7 @@ async function loadCountryData(isoCode: string) {
     } else {
       throw new Error('No country data found')
     }
-  } catch (error) {
+  } catch {
     countryDataError.value = `Unable to load information for country code: ${isoCode}`
 
     // Clear selection on error
@@ -965,7 +965,7 @@ async function loadCountryDataByName(countryName: string, layer: CountryLayer) {
     } else {
       throw new Error('No country data found by name')
     }
-  } catch (error) {
+  } catch {
     countryDataError.value = `Unable to load information for: ${countryName}`
     selectedCountryData.value = null
   } finally {
@@ -1017,13 +1017,13 @@ async function loadGeoJSONData() {
       response = await $fetch<GeoJSONData>(
         'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson',
       )
-    } catch (primaryError) {
+    } catch {
       // Fallback source: Alternative GitHub repository
       try {
         response = await $fetch<GeoJSONData>(
           'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
         )
-      } catch (fallbackError) {
+      } catch {
         // Final fallback: Simple world countries
         response = await $fetch<GeoJSONData>(
           'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',

@@ -46,8 +46,19 @@ export default defineNuxtConfig({
   // Simple Nitro configuration for Vercel
   nitro: {
     preset: 'vercel',
-    compressPublicAssets: false,
+    compressPublicAssets: {
+      gzip: false,
+      brotli: false,
+    },
     minify: false,
+    routeRules: {
+      '/api/_nuxt_icon/**': {
+        headers: {
+          'Content-Encoding': 'identity',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+      },
+    },
   },
 
   // Simple build configuration

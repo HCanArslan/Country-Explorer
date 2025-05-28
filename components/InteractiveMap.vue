@@ -577,9 +577,6 @@ function getSelectedCountryStyle() {
 
 // Event handlers
 async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) {
-  // Debug: Log all available properties to understand the data structure
-  console.log('Country feature properties:', feature.properties)
-
   // Try multiple possible country identifier fields with better mapping
   const rawIsoCode =
     feature.properties?.ISO_A3 ||
@@ -600,7 +597,6 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
   // Clean up the ISO code (remove any extra characters, ensure proper format)
   if (rawIsoCode) {
     isoCode = String(rawIsoCode).trim().toUpperCase()
-    console.log('Raw ISO code found:', rawIsoCode, '-> Cleaned:', isoCode)
 
     // Handle special cases and common mapping issues
     const isoCodeMappings: Record<string, string> = {
@@ -715,14 +711,11 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
     if (mappedCode === null) {
       isoCode = null // Mark as invalid
     } else if (mappedCode) {
-      console.log('Mapped ISO code:', isoCode, '->', mappedCode)
       isoCode = mappedCode
     }
   }
 
   if (!isoCode) {
-    console.warn('No valid ISO code found for country feature:', feature.properties)
-
     // Try to use country name as fallback
     const countryName =
       feature.properties?.NAME ||
@@ -735,7 +728,6 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
       feature.properties?.name_long
 
     if (countryName) {
-      console.log('Attempting to load country by name:', countryName)
       await loadCountryDataByName(String(countryName), layer)
       return
     }
@@ -754,7 +746,6 @@ async function handleCountryClick(feature: CountryFeature, layer: CountryLayer) 
   layer.setStyle(getSelectedCountryStyle())
 
   // Load country data
-  console.log('Attempting to load country data with ISO code:', isoCode)
   await loadCountryData(isoCode)
 }
 
@@ -762,22 +753,16 @@ async function loadCountryData(isoCode: string) {
   isLoadingCountryData.value = true
   countryDataError.value = null
 
-  console.log('loadCountryData called with:', isoCode)
-
   try {
     // Try different API endpoints for better compatibility
     let response: CountryData[] | CountryData | null = null
 
     // First try with alpha code (2 or 3 letter)
     try {
-      console.log('Trying alpha code lookup for:', isoCode)
       response = await $fetch<CountryData[] | CountryData>(
         `https://restcountries.com/v3.1/alpha/${isoCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
       )
-      console.log('Alpha code lookup successful:', response)
     } catch (alphaError) {
-      console.warn(`Alpha code lookup failed for ${isoCode}:`, alphaError)
-
       // If 3-letter code failed, try 2-letter code
       if (isoCode.length === 3) {
         // Try to convert 3-letter to 2-letter using common mappings
@@ -883,13 +868,11 @@ async function loadCountryData(isoCode: string) {
         const twoLetterCode = threeToTwoMapping[isoCode]
         if (twoLetterCode) {
           try {
-            console.log('Trying 2-letter code lookup for:', twoLetterCode)
             response = await $fetch<CountryData[] | CountryData>(
               `https://restcountries.com/v3.1/alpha/${twoLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
             )
-            console.log('2-letter code lookup successful:', response)
           } catch (twoLetterError) {
-            console.warn(`Two-letter code lookup failed for ${twoLetterCode}:`, twoLetterError)
+            // Silent fallback
           }
         }
       } else if (isoCode.length === 2) {
@@ -915,16 +898,11 @@ async function loadCountryData(isoCode: string) {
         const threeLetterCode = twoToThreeMapping[isoCode]
         if (threeLetterCode) {
           try {
-            console.log('Trying 3-letter code lookup for:', threeLetterCode)
             response = await $fetch<CountryData[] | CountryData>(
               `https://restcountries.com/v3.1/alpha/${threeLetterCode}?fields=name,capital,population,region,subregion,languages,currencies,flags,cca2,cca3`,
             )
-            console.log('3-letter code lookup successful:', response)
           } catch (threeLetterError) {
-            console.warn(
-              `Three-letter code lookup failed for ${threeLetterCode}:`,
-              threeLetterError,
-            )
+            // Silent fallback
           }
         }
       }
@@ -935,21 +913,17 @@ async function loadCountryData(isoCode: string) {
 
     if (Array.isArray(response) && response.length > 0) {
       countryData = response[0]
-      console.log('Country data loaded successfully (array):', countryData)
     } else if (response && !Array.isArray(response)) {
       countryData = response as CountryData
-      console.log('Country data loaded successfully (object):', countryData)
     }
 
     if (countryData) {
       selectedCountryData.value = countryData
       emit('countrySelected', countryData)
     } else {
-      console.error('No country data found in response:', response)
       throw new Error('No country data found')
     }
   } catch (error) {
-    console.error('Error loading country data:', error)
     countryDataError.value = `Unable to load information for country code: ${isoCode}`
 
     // Clear selection on error
@@ -992,7 +966,6 @@ async function loadCountryDataByName(countryName: string, layer: CountryLayer) {
       throw new Error('No country data found by name')
     }
   } catch (error) {
-    console.error('Error loading country data by name:', error)
     countryDataError.value = `Unable to load information for: ${countryName}`
     selectedCountryData.value = null
   } finally {
@@ -1045,16 +1018,12 @@ async function loadGeoJSONData() {
         'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson',
       )
     } catch (primaryError) {
-      console.warn('Primary GeoJSON source failed, trying fallback:', primaryError)
-
       // Fallback source: Alternative GitHub repository
       try {
         response = await $fetch<GeoJSONData>(
           'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson',
         )
       } catch (fallbackError) {
-        console.warn('Fallback GeoJSON source failed, trying final source:', fallbackError)
-
         // Final fallback: Simple world countries
         response = await $fetch<GeoJSONData>(
           'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson',
@@ -1105,10 +1074,7 @@ async function loadGeoJSONData() {
       type: 'FeatureCollection',
       features: validFeatures,
     }
-
-    console.log(`Successfully loaded ${validFeatures.length} countries`)
   } catch (error) {
-    console.error('Error loading GeoJSON data:', error)
     geoJSONError.value = error instanceof Error ? error.message : 'Failed to load map data'
     mapLoadError.value = true
   } finally {

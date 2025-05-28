@@ -131,7 +131,9 @@
                         Capital
                       </span>
                     </div>
-                    <p class="text-[10px] font-medium text-gray-900 dark:text-gray-100 leading-tight">
+                    <p
+                      class="text-[10px] font-medium text-gray-900 dark:text-gray-100 leading-tight"
+                    >
                       {{ selectedCountryData.capital.join(', ') }}
                     </p>
                   </div>

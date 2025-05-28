@@ -396,7 +396,8 @@ const ensureLeafletLoaded = async () => {
   }
 
   try {
-    // Import Leaflet CSS using dynamic import
+    // Import Leaflet CSS using dynamic import (ignore TypeScript error for CSS import)
+    // @ts-expect-error TypeScript doesn't recognize CSS imports in dynamic imports
     await import('leaflet/dist/leaflet.css')
     const L = await import('leaflet')
     const LeafletLib = L.default || L
